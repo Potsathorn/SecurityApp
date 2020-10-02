@@ -19,8 +19,8 @@ class CardsStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var darkCardWidth = MediaQuery.of(context).size.width - 2 * kPaddingL;
-    var darkCardHeight = MediaQuery.of(context).size.height / 3;
+    var darkCardWidth = MediaQuery.of(context).size.width - 0.5 * kPaddingL;
+    var darkCardHeight = MediaQuery.of(context).size.height / 4;
 
     return Padding(
       padding: EdgeInsets.only(

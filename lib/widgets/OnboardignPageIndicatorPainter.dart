@@ -4,14 +4,12 @@ import 'package:Security/screens/onbording/onbording.dart';
 import 'package:Security/screens/onbording/pages/CommunityPage.dart';
 import 'package:Security/screens/onbording/pages/EducationPage.dart';
 import 'package:Security/screens/onbording/pages/WorkPage.dart';
+import 'package:Security/widgets/AppBarHome.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
 import 'Header.dart';
 import 'NextPageButton.dart';
-
-
-
 
 class _OnboardignPageIndicatorPainter extends CustomPainter {
   final Color color;
@@ -161,7 +159,7 @@ class _OnboardingState extends State<Onboarding> {
     // Navigator.of(context).push(
     //   MaterialPageRoute(
     //     builder: (_){
-          
+
     //     },
     //   ),
     // );
@@ -170,15 +168,17 @@ class _OnboardingState extends State<Onboarding> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //appBar: AppBar(),
       backgroundColor: kBlue,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(kPaddingL),
+          padding: const EdgeInsets.all(kPaddingS),
           child: Column(
             children: <Widget>[
-              Header(
-                onSkip: _goToLogin,
-              ),
+              AppBarHome(notify: _goToLogin, setting: _goToLogin),
+              // Header(
+              //   onSkip: _goToLogin,
+              // ),
               Expanded(
                 child: _getPage(),
               ),
@@ -196,5 +196,4 @@ class _OnboardingState extends State<Onboarding> {
   }
 }
 
-class Login {
-}
+class Login {}

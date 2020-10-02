@@ -19,6 +19,9 @@ class Header extends StatelessWidget {
           color: kWhite,
           size: 32.0,
         ),
+        // Text("Home Security"),
+        // Icon(Icons.settings),
+        // Icon(Icons.notifications_active),
         GestureDetector(
           onTap: onSkip,
           child: Text(
@@ -27,6 +30,7 @@ class Header extends StatelessWidget {
                 Theme.of(context).textTheme.subtitle1.copyWith(color: kWhite),
           ),
         ),
+        
       ],
     );
   }
