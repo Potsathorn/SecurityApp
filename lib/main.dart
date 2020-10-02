@@ -1,3 +1,8 @@
+import 'package:Security/constants.dart';
+import 'package:Security/widgets/CardsStack.dart';
+import 'package:Security/widgets/Header.dart';
+import 'package:Security/widgets/IconContainer.dart';
+import 'package:Security/widgets/Logo.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -97,6 +102,10 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Logo(color: kBlue, size: 50),
+            Header(onSkip: _incrementCounter),
+            IconContainer(icon: Icons.accessibility, padding: 10.0),
+           // CardsStack(pageNumber: 1, lightCardChild: null, darkCardChild: null),
             Text(
               'You have pushed the button this many times:',
             ),
