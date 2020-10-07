@@ -5,10 +5,14 @@ import 'package:Security/screens/onbording/pages/CommunityPage.dart';
 import 'package:Security/screens/onbording/pages/EducationPage.dart';
 import 'package:Security/screens/onbording/pages/WorkPage.dart';
 import 'package:Security/widgets/AppBarHome.dart';
+import 'package:Security/widgets/CardsStack.dart';
+import 'package:Security/widgets/HomeEnv.dart';
+import 'package:Security/widgets/IconWithText.dart';
+import 'package:Security/widgets/toggleScene.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
-import 'Header.dart';
+//import 'Header.dart';
 import 'NextPageButton.dart';
 
 class _OnboardignPageIndicatorPainter extends CustomPainter {
@@ -175,19 +179,48 @@ class _OnboardingState extends State<Onboarding> {
           padding: const EdgeInsets.all(kPaddingS),
           child: Column(
             children: <Widget>[
-              AppBarHome(notify: _goToLogin, setting: _goToLogin),
+              Container(
+                  color: Colors.pink,),
+                 // child: AppBarHome(notify: _goToLogin, setting: _goToLogin)),
+              CardsStack(
+                  pageNumber: 1,
+                  lightCardChild: CommunityLightCardContent(),
+                  darkCardChild: CommunityDarkCardContent()),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+                child: Text('Home Environment'),
+              ),
+              HomeEnv(),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 18, 0, 0),
+                child: Text('Security Control'),
+              ),
+
+              Container(
+                width: 160.0,
+                height: 120.0,
+                child: IconWithText(icon: Icons.mail, size: 40, iconName: "Mail", gotoPage: _nextPage),
+                decoration: BoxDecoration(
+                  color: Colors.purple,
+                  borderRadius: BorderRadius.all(Radius.circular(25),
+                  
+                ),
+              ),)
+
               // Header(
               //   onSkip: _goToLogin,
               // ),
-              Expanded(
-                child: _getPage(),
-              ),
-              OnboardingPageIndicator(
-                currentPage: _currentPage,
-                child: NextPageButton(
-                  onPressed: _nextPage,
-                ),
-              ),
+              // Expanded(
+              //   child: _getPage(),
+              // ),
+              // HomeEnv(),
+              // ToggleScene(),
+              // OnboardingPageIndicator(
+              //   currentPage: _currentPage,
+              //   child: NextPageButton(
+              //     onPressed: _nextPage,
+              //   ),
+              // ),
             ],
           ),
         ),

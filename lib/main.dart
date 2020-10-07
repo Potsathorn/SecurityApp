@@ -1,4 +1,12 @@
 import 'package:Security/constants.dart';
+import 'package:Security/screens/Alarm.dart';
+import 'package:Security/screens/Home.dart';
+import 'package:Security/screens/IntrusionShow.dart';
+import 'package:Security/screens/Lightning.dart';
+import 'package:Security/screens/RemoteLocking.dart';
+import 'package:Security/screens/test1.dart';
+import 'package:Security/test.dart';
+import 'package:Security/widgets/CircleIcon.dart';
 import 'package:Security/widgets/Header.dart';
 import 'package:Security/widgets/IconContainer.dart';
 import 'package:Security/widgets/Logo.dart';
@@ -31,7 +39,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Onboarding(),
+      home:LightningControl(),
     );
   }
 }
