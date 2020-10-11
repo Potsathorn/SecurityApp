@@ -8,15 +8,14 @@ class CardGreetingStack extends StatelessWidget {
   void tt() {}
   final String urlImage;
   final ProfileGreeting profile;
-  final ToggleScene sceneChoosed;
+  
 
   const CardGreetingStack(
       {@required this.urlImage,
       @required this.profile,
-      @required this.sceneChoosed})
+      })
       : assert(urlImage != null),
-        assert(profile != null),
-        assert(sceneChoosed != null);
+        assert(profile != null);
 
   @override
   Widget build(BuildContext context) {

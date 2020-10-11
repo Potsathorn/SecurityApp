@@ -24,6 +24,13 @@ dependencies:
   flutter:
     sdk: flutter
   toggle_switch: 
+  web_socket_channel:
+  gesture_zoom_box:
+  save_in_gallery:
+  flutter_speed_dial:
+  intl:
+  fluttertoast:
+  passcode_screen:
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -7,18 +7,37 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
-  void _gotoAttendance() {}
-  void _gotoIntrusion() {}
-  void _gotoCamera() {}
-  void _gotoLockink() {}
-  void _gotoLightnig() {}
-  void _gotoAlarm() {}
-  void _notify() {}
-  void _setting() {}
   @override
   Widget build(BuildContext context) {
+    void _gotoAttendance() {
+      Navigator.pushNamed(context, "/showAttendance_page");
+    }
+
+    void _gotoIntrusion() {
+      Navigator.pushNamed(context, "/showIntrusion_page");
+    }
+
+    void _gotoCamera() {
+      Navigator.pushNamed(context, "/showCamera_page");
+    }
+
+    void _gotoLockink() {
+      Navigator.pushNamed(context, "/showLocking_page");
+    }
+
+    void _gotoLightnig() {
+      Navigator.pushNamed(context, "/showLightning_page");
+    }
+
+    void _gotoAlarm() {
+      Navigator.pushNamed(context, "/showAlarm_page");
+    }
+
+    void _notify() {}
+    void _setting() {}
     return Scaffold(
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Container(
               color: Colors.blue[300],
@@ -28,13 +47,14 @@ class HomePage extends StatelessWidget {
                     title: 'Security Home', notify: _notify, setting: _setting),
               )),
           CardGreetingStack(
-              urlImage:
-                  'https://cf.bstatic.com/images/hotel/max1024x768/115/115643736.jpg',
-              profile: ProfileGreeting(
-                  greeting: 'Good Morning',
-                  name: 'Taem Potsathorn',
-                  pathImage: 'https://scontent.fbkk14-1.fna.fbcdn.net/v/t1.0-9/13177687_995427020556595_9011059072266479109_n.jpg?_nc_cat=106&_nc_sid=174925&_nc_ohc=mSEMdIUWPp4AX9qrhK0&_nc_ht=scontent.fbkk14-1.fna&oh=63c13e736bd0e094686a5f4e3dd150f9&oe=5FA01EA7'),
-              sceneChoosed: ToggleScene()),
+            urlImage:
+                'https://cf.bstatic.com/images/hotel/max1024x768/115/115643736.jpg',
+            profile: ProfileGreeting(
+                greeting: 'Good Morning',
+                name: 'Taem Potsathorn',
+                pathImage:
+                    'https://scontent.fbkk14-1.fna.fbcdn.net/v/t1.0-9/13177687_995427020556595_9011059072266479109_n.jpg?_nc_cat=106&_nc_sid=174925&_nc_ohc=mSEMdIUWPp4AX9qrhK0&_nc_ht=scontent.fbkk14-1.fna&oh=63c13e736bd0e094686a5f4e3dd150f9&oe=5FA01EA7'),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -140,8 +160,7 @@ class HomePage extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(10, 7, 10, 0),
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.blue[300],
-                  width: 2.0),
+                border: Border.all(color: Colors.blue[300], width: 2.0),
                 borderRadius: BorderRadius.all(
                     Radius.circular(40.0) //         <--- border radius here
                     ),

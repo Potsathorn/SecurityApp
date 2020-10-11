@@ -21,7 +21,7 @@ class IconWithText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      onPressed: () => gotoPage,
+      onPressed: gotoPage,
       //color: Colors.orange,
       padding: EdgeInsets.all(3.0),
       child: Column(
