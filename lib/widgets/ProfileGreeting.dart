@@ -16,8 +16,9 @@ class ProfileGreeting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _imageCircle(pathImage),
+       
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,6 +34,7 @@ class ProfileGreeting extends StatelessWidget {
             ),
           ],
         ),
+         _imageCircle(pathImage),
       ],
     );
   }
@@ -40,8 +42,8 @@ class ProfileGreeting extends StatelessWidget {
 
 Widget _imageCircle(String url) {
   return Container(
-      width: 90.0,
-      height: 90.0,
+      width: 50.0,
+      height: 50.0,
       decoration: new BoxDecoration(
           shape: BoxShape.circle,
           image: new DecorationImage(

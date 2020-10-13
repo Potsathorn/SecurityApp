@@ -1,13 +1,23 @@
+import 'package:Security/widgets/neuRect.dart';
+import 'package:Security/widgets/neuRectTapped.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_icons/flutter_icons.dart';
 
 import 'desigh.dart';
 //import 'package:smart_home/design.dart';
-class MySmartHome extends StatelessWidget {
+class MySmartHome extends StatefulWidget {
   final Design design;
 
   const MySmartHome({Key key, this.design}) : super(key: key);
+
+  @override
+  _MySmartHomeState createState() => _MySmartHomeState();
+}
+
+class _MySmartHomeState extends State<MySmartHome> {
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +48,7 @@ class MySmartHome extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Design(
+                      NeuRect(
                         height1: 55,
                         width1: 55,
                         color: Color(0xFFe6ebf2),
@@ -47,8 +57,9 @@ class MySmartHome extends StatelessWidget {
                         bLevel: 3.0,
                         iconData: Icons.wifi,
                         iconSize: 30.0,
+                        text: 'WiFi',
                       ),
-                      Design(
+                      NeuRectTapped(
                         height1: 55,
                         width1: 55,
                         color: Color(0xFFe6ebf2),
@@ -57,6 +68,7 @@ class MySmartHome extends StatelessWidget {
                         bLevel: 5.0,
                         iconData: Icons.accessibility_new,
                         iconSize: 30.0,
+                        text: 'Humidity',
                       ),
                       Design(
                         height1: 55,
