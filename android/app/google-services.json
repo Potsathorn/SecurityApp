@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "7675272709",
+    "firebase_url": "https://security-home-1a836.firebaseio.com",
+    "project_id": "security-home-1a836",
+    "storage_bucket": "security-home-1a836.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:7675272709:android:3b2223d0fd60ce06c7866c",
+        "android_client_info": {
+          "package_name": "com.example.Security"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "7675272709-3985qn4u40742hdvpu1vqsi8t7j9h90k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh9gzEYpBwmKm-gGs1OXflb6bRPPRDu68"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "7675272709-3985qn4u40742hdvpu1vqsi8t7j9h90k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

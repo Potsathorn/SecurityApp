@@ -4,6 +4,7 @@ import 'package:Security/screens/NeuScene.dart';
 import 'package:Security/widgets/IconWithText.dart';
 import 'package:Security/widgets/NeuRectButton.dart';
 import 'package:Security/widgets/ProfileGreeting.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -18,26 +19,62 @@ class NeuHome extends StatefulWidget {
 class _NeuHomeState extends State<NeuHome> {
   String groupScene;
 
-  bool isActived = false;
-  bool isLocked = false;
-  bool isOn = false;
+  final bdref = FirebaseDatabase.instance.reference();
+  var realTimeData;
+
+  void writeData() {
+    bdref.child('Test').set({
+      'id': 'Test1',
+      'data': 'This is a test send data from App to Firebase'
+    });
+  }
+
+  void readData() {
+    bdref.once().then((DataSnapshot dataSnapshot) {
+      realTimeData = dataSnapshot.value;
+      print(dataSnapshot.value);
+      // print(st['Test Val']['Value']);
+
+      // print(st['Security Light']['Light']);
+    });
+
+    setState(() {});
+  }
+
+  void updateData() {
+    setState(() {
+      // val = 'This is a updated value';
+    });
+    bdref.child('Test').update({'data': 'This is a updated value'});
+  }
+
+  void deleteData() {
+    setState(() {
+      // val = '';
+    });
+    bdref.child('Test').remove();
+  }
+
+  bool isActived;
+  bool isLocked;
+  bool isOn;
 
   Timer _timer;
   double progressValue = 0;
   double progressValueshow = 100;
   double secondaryProgressValue = 0;
 
-  void _gotoLockink() {
-    Navigator.pushNamed(context, "/showLocking_page");
-  }
+  // void _gotoLockink() {
+  //   Navigator.pushNamed(context, "/showLocking_page");
+  // }
 
-  void _gotoLightnig() {
-    Navigator.pushNamed(context, "/showLightning_page");
-  }
+  // void _gotoLightnig() {
+  //   Navigator.pushNamed(context, "/showLightning_page");
+  // }
 
-  void _gotoAlarm() {
-    Navigator.pushNamed(context, "/showAlarm_page");
-  }
+  // void _gotoAlarm() {
+  //   Navigator.pushNamed(context, "/showAlarm_page");
+  // }
 
   _NeuHomeState() {
     _timer = Timer.periodic(const Duration(milliseconds: 5), (Timer _timer) {
@@ -57,6 +94,50 @@ class _NeuHomeState extends State<NeuHome> {
 
   @override
   Widget build(BuildContext context) {
+    readData();
+
+    bool isOnLight() {
+      //readData();
+      return (realTimeData['Security Light']['Light'] == 'On') ? true : false;
+    }
+
+    bool isDoorLock() {
+      //readData();
+      return (realTimeData['Remote Locking']['Door'] == 'Lock') ? true : false;
+    }
+
+    bool isAlertActive() {
+      //readData();
+      return (realTimeData['Sound Alarm']['Alert'] == 'Active') ? true : false;
+    }
+
+
+
+
+    if(isOn == null){
+      (isOn != null) ? isOn = isOnLight() : isOn = isOnLight();
+    }
+
+    if(isLocked == null){
+      (isLocked != null) ? isLocked = isDoorLock() : isLocked = isDoorLock();
+    }
+
+    if(isActived == null){
+      (isActived != null) ? isActived = isAlertActive() : isActived = isAlertActive();
+    }
+  
+
+    if(groupScene == null){
+      groupScene = 'Coming Home';
+    }
+    else{
+
+    }
+    
+
+    
+
+    //isOn = isOnLight();
     return Scaffold(
       backgroundColor: Color(0xFFe6ebf2),
       // appBar: AppBar(
@@ -558,6 +639,10 @@ class _NeuHomeState extends State<NeuHome> {
                               onChanged: (value) {
                                 setState(() {
                                   isLocked = value;
+                                  bdref
+                                    .child('Remote Locking')
+                                    .update({'Door': (isLocked) ? 'Lock' : 'Unlock'});
+                                setState(() {});
                                 });
                               },
                             ),
@@ -638,9 +723,12 @@ class _NeuHomeState extends State<NeuHome> {
                                 activeTrackColor: Colors.cyan,
                               ),
                               onChanged: (value) {
-                                setState(() {
-                                  isOn = value;
-                                });
+                                isOn = value;
+
+                                bdref
+                                    .child('Security Light')
+                                    .update({'Light': (isOn) ? 'On' : 'Off'});
+                                setState(() {});
                               },
                             ),
                           ),
@@ -730,6 +818,11 @@ class _NeuHomeState extends State<NeuHome> {
                               onChanged: (value) {
                                 setState(() {
                                   isActived = value;
+                                   bdref
+                                    .child('Sound Alarm')
+                                    .update({'Alert': (isActived) ? 'Active' : 'Inactive'});
+                                setState(() {});
+                                  
                                 });
                               },
                             ),
