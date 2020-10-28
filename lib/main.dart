@@ -19,11 +19,14 @@ import 'package:Security/widgets/Header.dart';
 import 'package:Security/widgets/IconContainer.dart';
 import 'package:Security/widgets/Logo.dart';
 import 'package:Security/widgets/OnboardignPageIndicatorPainter.dart';
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/io.dart';
 
+import 'Scene_Observer.dart';
+
 void main() {
-  
+  Bloc.observer = SceneObserver();
   runApp(MyApp());
 }
 
