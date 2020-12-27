@@ -5,7 +5,7 @@ import 'package:bloc/bloc.dart';
 /// {@endtemplate}
 class SceneCubit extends Cubit<String> {
   /// {@macro counter_cubit}
-  SceneCubit() : super("Coming Home");
+  SceneCubit() : super("I'm Home");
 
   // Add 1 to the current state.
   void scenetoggle(String mode) => emit(mode);

@@ -23,7 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  toggle_switch: 
+  toggle_switch:
+  horizontal_data_table:
   web_socket_channel:
   gesture_zoom_box:
   save_in_gallery:
@@ -33,7 +34,7 @@ dependencies:
   passcode_screen:
   flutter_neumorphic:
   flutter_icons:
-  syncfusion_flutter_gauges:
+  #syncfusion_flutter_gauges:
   carousel_slider:
 
   firebase_core:
@@ -51,8 +52,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
- # //bloc_test: ^7.0.0
- #// mockito: ^4.0.0
+  bloc_test: ^7.0.0
+  mockito: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

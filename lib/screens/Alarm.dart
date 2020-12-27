@@ -149,6 +149,7 @@ class AlarmSystemPage extends StatelessWidget {
                         fontSize: 15),
                   ),
                 ]),
+                
                 TableRow(
                   
                   children: [

@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 import 'package:Security/widgets/circle.dart';
 import 'package:Security/widgets/keyboard.dart';
@@ -31,13 +30,35 @@ class _NeuHomeState extends State<NeuHome> {
       StreamController<bool>.broadcast();
   bool isAuthenticated = false;
 
-  void _gotoHome() {
-    Navigator.pushNamed(context, "/showHome_page");
+  void _gotoCamera() {
+    Navigator.pushNamed(context, "/showCamera_page");
+  }
+
+  void _gotoIntrusion() {
+    Navigator.pushNamed(context, "/showIntrusion_page");
+  }
+
+  void _gotoAttendance() {
+    Navigator.pushNamed(context, "/showAttendance_page");
+  }
+
+  void _gotoLockink() {
+    Navigator.pushNamed(context, "/showLocking_page");
+  }
+
+  void _gotoLightnig() {
+    Navigator.pushNamed(context, "/showLightning_page");
+  }
+
+  void _gotoAlarm() {
+    Navigator.pushNamed(context, "/showAlarm_page");
   }
 
   bool isActived = false;
   bool isLocked = false;
   bool isOn = false;
+
+  Color themeColor = Colors.blue[800];
 
   List<String> inMembers = [];
   List<String> outMembers = [];
@@ -50,6 +71,7 @@ class _NeuHomeState extends State<NeuHome> {
 
   String statusSecurity = 'Loading...';
   String statusSecurityDes = 'Loading...';
+  IconData iconSecurity = Icons.verified_user_outlined;
 
   final bdref = FirebaseDatabase.instance.reference();
   var realTimeData;
@@ -72,68 +94,54 @@ class _NeuHomeState extends State<NeuHome> {
       var snapshot = event.snapshot;
 
       String value = snapshot.value['Light'];
-      // print('Value is $value');
 
       (value == 'On') ? isOn = true : isOn = false;
       setState(() {});
-
-      //
     });
 
     bdref.child('Remote Locking').onValue.listen((event) {
       var snapshot = event.snapshot;
 
       String value = snapshot.value['Door'];
-      //print('Value is $value');
 
       (value == 'Lock') ? isLocked = true : isLocked = false;
-
-      //
     });
 
     bdref.child('Sound Alarm').onValue.listen((event) {
       var snapshot = event.snapshot;
 
       String value = snapshot.value['Alert'];
-      // print('Value is $value');
 
       (value == 'Active') ? isActived = true : isActived = false;
-
-      //
+      // print(value);
     });
 
-    // bdref.child('Intrusion Detection').onValue.listen((event) {
-    //   var snapshot = event.snapshot;
+    bdref.child('Intrusion Detection').onValue.listen((event) {
+      var snapshot = event.snapshot;
 
-    //   String value = snapshot.value['Motion'];
-    //   print('Value is $value');
+      String value = snapshot.value['Motion'];
 
-    //   (value == 'Normal') ? noMotion = true : noMotion = false;
+      (value == 'Normal') ? noMotion = true : noMotion = false;
+      //print(value);
+    });
 
-    //   //
-    // });
+    bdref.child('Intrusion Detection').onValue.listen((event) {
+      var snapshot = event.snapshot;
 
-    // bdref.child('Intrusion Detection').onValue.listen((event) {
-    //   var snapshot = event.snapshot;
+      String value = snapshot.value['Vibration'];
 
-    //   String value = snapshot.value['Vibration'];
-    //   print('Value is $value');
+      (value == 'Normal') ? noVibration = true : noVibration = false;
+      //print(value);
+    });
 
-    //   (value == 'Normal') ? noVibration = true : noVibration = false;
+    bdref.child('Intrusion Detection').onValue.listen((event) {
+      var snapshot = event.snapshot;
 
-    //   //
-    // });
+      String value = snapshot.value['Contact'];
 
-    // bdref.child('Intrusion Detection').onValue.listen((event) {
-    //   var snapshot = event.snapshot;
-
-    //   String value = snapshot.value['Contact'];
-    //   print('Value is $value');
-
-    //   (value == 'Normal') ? noContact = true : noContact = false;
-
-    //   //
-    // });
+      (value == 'Normal') ? noContact = true : noContact = false;
+      //print(value);
+    });
   }
 
   void readData() {
@@ -158,36 +166,43 @@ class _NeuHomeState extends State<NeuHome> {
           ? noContact = true
           : noContact = false;
 
-      //print('1Update Value is ${realTimeData['Security Light']['Light']}');
+      // (noContact) ? progressValueshow += 40 : progressValueshow += 2;
+      // (noVibration) ? progressValueshow += 40 : progressValueshow += 2;
+      // (noMotion) ? progressValueshow += 20 : progressValueshow += 10;
 
-      (noContact) ? progressValueshow += 40 : progressValueshow += 2;
-      (noVibration) ? progressValueshow += 40 : progressValueshow += 2;
-      (noMotion) ? progressValueshow += 20 : progressValueshow += 10;
-
-      if (progressValueshow == 100) {
-        statusSecurity = 'Secure';
-      } else if (progressValueshow >= 80) {
-        statusSecurity = 'Normal';
-      } else if (progressValueshow >= 40) {
-        statusSecurity = 'Abnormal';
-      } else {
-        statusSecurity = 'Insecure';
-      }
+      // if (progressValueshow == 100) {
+      //   statusSecurity = 'Secure';
+      // } else if (progressValueshow >= 80) {
+      //   statusSecurity = 'Normal';
+      // } else if (progressValueshow >= 40) {
+      //   statusSecurity = 'Abnormal';
+      // } else {
+      //   statusSecurity = 'Insecure';
+      // }
 
       if (noContact && noVibration && noMotion) {
         statusSecurityDes = 'No intrusion was detected';
+        iconSecurity = Icons.verified_user_outlined;
+        statusSecurity = 'Undetected';
       } else if (!noMotion && noContact && noVibration) {
-        statusSecurityDes = 'Motion was detected';
+        statusSecurityDes = 'Motion Sensor';
+        iconSecurity = Icons.directions_walk_rounded;
+        statusSecurity = 'Motion was detected';
       } else if (noMotion && noContact && !noVibration) {
-        statusSecurityDes = 'Vibration was detected';
+        statusSecurityDes = 'Vibration Sensor';
+        iconSecurity = Icons.vibration_rounded;
+        statusSecurity = 'Vibration was detected';
       } else if (noMotion && !noContact && noVibration) {
-        statusSecurityDes = 'Contact was detected';
+        statusSecurityDes = 'Contact Sensor';
+        iconSecurity = Icons.sensor_door;
+        statusSecurity = 'Contact was detected';
       } else {
         statusSecurityDes = 'Intrusion was detected';
+        iconSecurity = Icons.warning_amber_rounded;
+        statusSecurity = 'Detected';
       }
 
       membersAccess = realTimeData['Members Access'];
-      // print(membersAccess);
 
       listMembers.add(membersAccess);
 
@@ -200,27 +215,20 @@ class _NeuHomeState extends State<NeuHome> {
           }
         });
       }
-
-      // print(dataSnapshot.value);
-      // print(st['Test Val']['Value']);
-
-      // print(st['Security Light']['Light']);
     });
 
-    setState(() {});
+    setState(() {
+      themeColor = (isActived) ? Colors.redAccent[700] : Colors.blue[800];
+    });
   }
 
   void updateData() {
-    setState(() {
-      // val = 'This is a updated value';
-    });
+    setState(() {});
     bdref.child('Test').update({'data': 'This is a updated value'});
   }
 
   void deleteData() {
-    setState(() {
-      // val = '';
-    });
+    setState(() {});
     bdref.child('Test').remove();
   }
 
@@ -283,22 +291,7 @@ class _NeuHomeState extends State<NeuHome> {
     Navigator.maybePop(context);
   }
 
-  ///////===
-
-  // void _gotoLockink() {
-  //   Navigator.pushNamed(context, "/showLocking_page");
-  // }
-
-  // void _gotoLightnig() {
-  //   Navigator.pushNamed(context, "/showLightning_page");
-  // }
-
-  // void _gotoAlarm() {
-  //   Navigator.pushNamed(context, "/showAlarm_page");
-  // }
-
   _NeuHomeState() {
-    //test();
     _timer = Timer.periodic(const Duration(milliseconds: 5), (Timer _timer) {
       setState(() {
         progressValue++;
@@ -313,390 +306,345 @@ class _NeuHomeState extends State<NeuHome> {
     });
   }
 
-  // var progressValue
-
   @override
   Widget build(BuildContext context) {
     realtime();
-    // String motion = realTimeData['Intrusion Detection']['Motion'];
-    // String vibration = realTimeData['Intrusion Detection']['Vibration'];
-    // String contact = realTimeData['Intrusion Detection']['Contact'];
+    readData();
 
-    // print(motion);
+    // bool isDoorLock() {
+    //   // readData();
 
-    //  print(vibration);
-    //   print(contact);
+    //   return (realTimeData['Remote Locking']['Door'] == 'Lock') ? true : false;
+    // }
 
-    bool isDoorLock() {
-      // readData();
-      return (realTimeData['Remote Locking']['Door'] == 'Lock') ? true : false;
-    }
+    // bool isOnLight() {
+    //   return (realTimeData['Security Light']['Light'] == 'On') ? true : false;
+    // }
 
-    bool isOnLight() {
-      return (realTimeData['Security Light']['Light'] == 'On') ? true : false;
-    }
-
-    bool isAlertActive() {
-      //readData();
-      return (realTimeData['Sound Alarm']['Alert'] == 'Active') ? true : false;
-    }
+    // bool isAlertActive() {
+    //   //readData();
+    //   return (realTimeData['Sound Alarm']['Alert'] == 'Active') ? true : false;
+    // }
 
     List<String> inOutHomeAccess(String access) {
       return (access == 'In') ? inMembers : outMembers;
     }
 
-    if (isOn == null) {
-      (isOn != null) ? isOn = isOnLight() : isOn = isOnLight();
-    }
+    // if (isOn == null) {
+    //   (isOn != null) ? isOn = isOnLight() : isOn = isOnLight();
+    // }
 
-    if (isLocked == null) {
-      (isLocked != null) ? isLocked = isDoorLock() : isLocked = isDoorLock();
-    }
+    // if (isLocked == null) {
+    //   (isLocked != null) ? isLocked = isDoorLock() : isLocked = isDoorLock();
+    // }
 
-    if (isActived == null) {
-      (isActived != null)
-          ? isActived = isAlertActive()
-          : isActived = isAlertActive();
-    }
+    // if (isActived == null) {
+    //   (isActived != null)
+    //       ? isActived = isAlertActive()
+    //       : isActived = isAlertActive();
+    // }
 
     if (groupScene == null) {
-      groupScene = 'Coming Home';
+      groupScene = "I'm Home";
     } else {}
 
-    return BlocProvider(
-      create: (_) => SceneCubit(),
-      child: Scaffold(
-        backgroundColor: Color(0xFFe6ebf2),
-        // appBar: AppBar(
-        //   title: Center(
-        //     child: Text('SMART HOME'),
-        //   ),
-        // ),
-        body: Column(
-          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Container(
-              //color: Colors.cyan[300],
-              child: Center(
+    return Scaffold(
+      backgroundColor: Color(0xFFe6ebf2),
+      body: Column(
+        children: [
+          Container(
+            child: Center(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 40.0,
+                  ),
+                  ListTile(
+                    title: Text(
+                      'Welcome Home!',
+                      style: TextStyle(
+                        color: themeColor,
+                        letterSpacing: 1.5,
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "nunito",
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Taem Potsathorn',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                      ),
+                    ),
+                    trailing: Container(
+                        width: 50.0,
+                        height: 50.0,
+                        decoration: new BoxDecoration(
+                          image: new DecorationImage(
+                              fit: BoxFit.fill,
+                              image: new NetworkImage(
+                                  "https://lh5.ggpht.com/_S0f-AWxKVdM/S5TpU6kRmUI/AAAAAAAAL4Y/wrjx3_23kw4/s72-c/d_silhouette%5B2%5D.jpg?imgmax=800")),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8),
+                          ),
+                          shape: BoxShape.rectangle,
+                        )),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 3.0,
+          ),
+          Neumorphic(
+            style: NeumorphicStyle(shape: NeumorphicShape.flat, intensity: 1),
+            child: Container(
+              color: Color(0xFFe6ebf2),
+              width: MediaQuery.of(context).size.width - 20,
+              child: ListTile(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    NeumorphicRadio(
+                      groupValue: groupScene,
+                      style:
+                          NeumorphicRadioStyle(shape: NeumorphicShape.convex),
+                      value: "I'm Home",
+                      onChanged: (value) {
+                        context.bloc<SceneCubit>().scenetoggle(value);
+                        setState(() {
+                          groupScene = value;
+                        });
+                      },
+                      child: Container(
+                          color: (groupScene == "I'm Home")
+                              ? ((!isActived) ? themeColor : Color(0xFFd51a00))
+                              : Color(0xFFe6ebf2),
+                          height: 40,
+                          width: 40,
+                          child: Center(
+                              child: Icon(
+                            SimpleLineIcons.login,
+                            color: (groupScene == "I'm Home")
+                                ? Colors.white
+                                : Colors.black.withOpacity(.5),
+                          ))),
+                    ),
+                    SizedBox(
+                      width: 5.0,
+                    ),
+                    NeumorphicRadio(
+                      groupValue: groupScene,
+                      style:
+                          NeumorphicRadioStyle(shape: NeumorphicShape.convex),
+                      value: "I'm Leave",
+                      onChanged: (value) {
+                        context.bloc<SceneCubit>().scenetoggle(value);
+                        setState(() {
+                          groupScene = value;
+                        });
+                      },
+                      child: Container(
+                          color: (groupScene == "I'm Leave")
+                              ? (!isActived)
+                                  ? themeColor
+                                  : Color(0xFFd51a00)
+                              : Color(0xFFe6ebf2),
+                          height: 40,
+                          width: 40,
+                          child: Center(
+                              child: Icon(
+                            SimpleLineIcons.logout,
+                            color: (groupScene == "I'm Leave")
+                                ? Colors.white
+                                : Colors.black.withOpacity(.5),
+                          ))),
+                    ),
+                    SizedBox(
+                      width: 5.0,
+                    ),
+                    NeumorphicRadio(
+                      groupValue: groupScene,
+                      style:
+                          NeumorphicRadioStyle(shape: NeumorphicShape.convex),
+                      value: "Watch Over",
+                      onChanged: (value) {
+                        context.bloc<SceneCubit>().scenetoggle(value);
+                        setState(() {
+                          groupScene = value;
+                        });
+                      },
+                      child: Container(
+                          color: (groupScene == 'Watch Over')
+                              ? (!isActived)
+                                  ? themeColor
+                                  : Color(0xFFd51a00)
+                              : Color(0xFFe6ebf2),
+                          height: 40,
+                          width: 40,
+                          child: Center(
+                              child: Icon(
+                            FontAwesome.eye,
+                            color: (groupScene == 'Watch Over')
+                                ? Colors.white
+                                : Colors.black.withOpacity(.5),
+                          ))),
+                    ),
+                    SizedBox(
+                      width: 5.0,
+                    ),
+                    NeumorphicRadio(
+                      groupValue: groupScene,
+                      style:
+                          NeumorphicRadioStyle(shape: NeumorphicShape.convex),
+                      value: "Good Night",
+                      onChanged: (value) {
+                        context.bloc<SceneCubit>().scenetoggle(value);
+                        setState(() {
+                          groupScene = value;
+                        });
+                      },
+                      child: Container(
+                          color: (groupScene == 'Good Night')
+                              ? (!isActived)
+                                  ? themeColor
+                                  : Color(0xFFd51a00)
+                              : Color(0xFFe6ebf2),
+                          height: 40,
+                          width: 40,
+                          child: Center(
+                              child: Icon(
+                            FontAwesome.moon_o,
+                            color: (groupScene == 'Good Night')
+                                ? Colors.white
+                                : Colors.black.withOpacity(.5),
+                          ))),
+                    ),
+                  ],
+                ),
+                trailing: (groupScene != null)
+                    ? Container(
+                        color: Color(0xFFe6ebf2),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(3, 6, 3, 3),
+                          child: BlocBuilder<SceneCubit, String>(
+                            builder: (context, state) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text("Scene",
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                        color: Colors.black.withOpacity(.5),
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                  Text(state, //trow Excep debug
+                                      style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: (!isActived)
+                                            ? themeColor
+                                            : Color(0xFFd51a00),
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      )
+                    : Text(''),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                '  Members Last Access',
+                style: TextStyle(
+                  color: Colors.black.withOpacity(.5),
+                  letterSpacing: 1,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "nunito",
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 5.0,
+          ),
+          Neumorphic(
+              style: NeumorphicStyle(shape: NeumorphicShape.flat, intensity: 1),
+              child: Container(
+                color: Color(0xFFe6ebf2),
+                width: MediaQuery.of(context).size.width - 20,
+                // height: 50.0,
                 child: Column(
                   children: [
-                    SizedBox(
-                      height: 40.0,
-                    ),
                     ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        backgroundImage: new NetworkImage(
+                            "https://lh5.ggpht.com/_S0f-AWxKVdM/S5TpU6kRmUI/AAAAAAAAL4Y/wrjx3_23kw4/s72-c/d_silhouette%5B2%5D.jpg?imgmax=800"),
+                      ),
                       title: Text(
-                        'Welcome Home!',
+                        'Taem Potsathorn',
                         style: TextStyle(
-                          color: Colors.black.withOpacity(0.6),
-                          letterSpacing: 1.5,
-                          fontSize: 25.0,
+                          color: themeColor,
+
+                          //letterSpacing: 1,
+                          fontSize: 15.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: "nunito",
                         ),
                       ),
-                      subtitle: Text(
-                        'Taem Potsathorn',
-                        style: TextStyle(
-                          // letterSpacing: 1.5,
-                          fontSize: 20.0,
-                          // fontWeight: FontWeight.bold,
-                          // fontFamily: "nunito",
-                        ),
-                      ),
-                      trailing: Container(
-                          width: 50.0,
-                          height: 50.0,
-                          decoration: new BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(15),
-                              ),
-                              shape: BoxShape.rectangle,
-                              image: new DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: new NetworkImage(
-                                      'https://scontent.fbkk14-1.fna.fbcdn.net/v/t1.0-9/13177687_995427020556595_9011059072266479109_n.jpg?_nc_cat=106&_nc_sid=174925&_nc_ohc=mSEMdIUWPp4AX9qrhK0&_nc_ht=scontent.fbkk14-1.fna&oh=63c13e736bd0e094686a5f4e3dd150f9&oe=5FA01EA7')))),
+                      subtitle: Text('26/12/2020, 7:47 PM'),
+                      trailing: Icon(Icons.keyboard_arrow_right),
+                      onTap: () {
+                        _gotoAttendance();
+                      },
                     ),
                   ],
                 ),
-              ),
-            ),
-            SizedBox(
-              height: 3.0,
-            ),
-            ListTile(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  NeumorphicRadio(
-                    groupValue: groupScene,
-                    style: NeumorphicRadioStyle(
-                        //   boxShape: NeumorphicBoxShape.circle(),
-                        shape: NeumorphicShape.convex),
-                    value: "Coming Home",
-                    onChanged: (value) {
-                      setState(() {
-                        groupScene = value;
-                      });
-                    },
-                    child: Container(
-                        color: (groupScene == 'Coming Home')
-                            ? Colors.cyan
-                            : Color(0xFFe6ebf2),
-                        height: 40,
-                        width: 40,
-                        child: Center(
-                            child: Icon(
-                          SimpleLineIcons.login,
-                          color: (groupScene == 'Coming Home')
-                              ? Colors.white
-                              : Colors.black.withOpacity(.5),
-                        ))),
-                  ),
-                  SizedBox(
-                    width: 5.0,
-                  ),
-                  NeumorphicRadio(
-                    groupValue: groupScene,
-                    style: NeumorphicRadioStyle(
-                        // boxShape: NeumorphicBoxShape.circle(),
-                        shape: NeumorphicShape.convex),
-                    value: "Going Out",
-                    onChanged: (value) {
-                      setState(() {
-                        groupScene = value;
-                      });
-                    },
-                    child: Container(
-                        color: (groupScene == 'Going Out')
-                            ? Colors.cyan
-                            : Color(0xFFe6ebf2),
-                        height: 40,
-                        width: 40,
-                        child: Center(
-                            child: Icon(
-                          SimpleLineIcons.logout,
-                          color: (groupScene == 'Going Out')
-                              ? Colors.white
-                              : Colors.black.withOpacity(.5),
-                        ))),
-                  ),
-                  SizedBox(
-                    width: 5.0,
-                  ),
-                  NeumorphicRadio(
-                    groupValue: groupScene,
-                    style: NeumorphicRadioStyle(
-                        // boxShape: NeumorphicBoxShape.circle(),
-                        shape: NeumorphicShape.convex),
-                    value: "Watch Over",
-                    onChanged: (value) {
-                      setState(() {
-                        groupScene = value;
-                      });
-                    },
-                    child: Container(
-                        color: (groupScene == 'Watch Over')
-                            ? Colors.cyan
-                            : Color(0xFFe6ebf2),
-                        height: 40,
-                        width: 40,
-                        child: Center(
-                            child: Icon(
-                          FontAwesome.eye,
-                          color: (groupScene == 'Watch Over')
-                              ? Colors.white
-                              : Colors.black.withOpacity(.5),
-                        ))),
-                  ),
-                  SizedBox(
-                    width: 5.0,
-                  ),
-                  NeumorphicRadio(
-                    groupValue: groupScene,
-                    style: NeumorphicRadioStyle(
-                        // boxShape: NeumorphicBoxShape.circle(),
-                        shape: NeumorphicShape.convex),
-                    value: "Good Night",
-                    onChanged: (value) {
-                      setState(() {
-                        groupScene = value;
-                      });
-                    },
-                    child: Container(
-                        color: (groupScene == 'Good Night')
-                            ? Colors.cyan
-                            : Color(0xFFe6ebf2),
-                        height: 40,
-                        width: 40,
-                        child: Center(
-                            child: Icon(
-                          FontAwesome.moon_o,
-                          color: (groupScene == 'Good Night')
-                              ? Colors.white
-                              : Colors.black.withOpacity(.5),
-                        ))),
-                  ),
-                ],
-              ),
-              trailing: (groupScene != null)
-                  ? Neumorphic(
-                      style: NeumorphicStyle(
-                          // boxShape: NeumorphicBoxShape.circle(),
-                          //  shape: NeumorphicShape.concave
-                          ),
-                      child: Container(
-                        color: Color(0xFFe6ebf2),
-                        child: Padding(
-                          padding: const EdgeInsets.all(3.0),
-                          child: BlocBuilder<SceneCubit, String>(
-                            builder: (context, state) {
-                              return Text(state, //trow Excep debug
-                                  style: TextStyle(
-                                    // letterSpacing: 1.5,
-                                    fontSize: 20.0,
-                                    color: Colors.cyan,
-                                    fontWeight: FontWeight.bold,
-                                    // fontWeight: FontWeight.bold,
-                                    // fontFamily: "nunito",
-                                  ));
-                            },
-                          ),
-
-                          // Text(groupScene, //trow Excep debug
-                          //     style: TextStyle(
-                          //       // letterSpacing: 1.5,
-                          //       fontSize: 20.0,
-                          //       color: Colors.cyan,
-                          //       fontWeight: FontWeight.bold,
-                          //       // fontWeight: FontWeight.bold,
-                          //       // fontFamily: "nunito",
-                          //     )),
-                        ),
-                      ),
-                    )
-                  : Text(''),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            Neumorphic(
+              )),
+          SizedBox(
+            height: 20.0,
+          ),
+          GestureDetector(
+            onTap: () => _gotoIntrusion(),
+            child: Neumorphic(
               style: NeumorphicStyle(
                   // boxShape: NeumorphicBoxShape.circle(),
-                  shape: NeumorphicShape.concave),
-              child: Container(
-                color: Color(0xFFe6ebf2),
-                width: MediaQuery.of(context).size.width - 20,
-                height: 90.0,
-                child: ListTile(
-                  // leading: Neumorphic(
-                  //   child: Container(
-                  //     color: Colors.blueAccent[50],
-                  //     width: 50,
-                  //     height: 50,
-                  //     child: Center(
-                  //       child: Icon(FontAwesome.users,
-                  //       color: Colors.cyan,),
-                  //     ),
-                  //   ),
-                  // ),
-                  title: Row(
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            'Family Members Access',
-                            style: TextStyle(
-                              color: Colors.black.withOpacity(.5),
-                              //letterSpacing: 1,
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "nunito",
-                            ),
-                          ),
-                          SizedBox(
-                            width: 110.0,
-                          ),
-                          Neumorphic(
-                            style: NeumorphicStyle(
-                                boxShape: NeumorphicBoxShape.circle(),
-                                shape: NeumorphicShape.convex),
-                            child: Container(
-                              color: Color(0xFFe6ebf2),
-                              width: 30,
-                              height: 25,
-                              child: GestureDetector(
-                                onTap: () => context.bloc<SceneCubit>().changeState(),
-                                                              child: Icon(
-                                  Icons.arrow_forward_ios_rounded,
-                                  color: Colors.cyan,
-                                  size: 20,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  subtitle: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      for (var p in inOutHomeAccess('In')) NeuCircleImg(name: p)
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 15.0,
-            ),
-            Neumorphic(
+                  shape: NeumorphicShape.flat,
+                  intensity: 1),
               child: Container(
                 color: Color(0xFFe6ebf2),
                 width: MediaQuery.of(context).size.width - 20,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    SizedBox(
+                      width: 7,
+                    ),
                     Column(
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            // Icon(
-                            //   FontAwesome.do,
-                            //   color: Colors.cyan,
-                            //   size: 35,
-                            // ),
-                            // SizedBox(
-                            //   width: 10.0,
-                            // ),
-                            // Icon(
-                            //   FontAwesome.shield,
-                            //   color: Colors.cyan,
-                            //   size: 35,
-                            // ),
-                            // SizedBox(
-                            //   width: 10.0,
-                            // ),
                             Icon(
-                              Icons.security_outlined,
-                              color: Colors.cyan,
+                              Icons.policy,
+                              color: (statusSecurity == 'Undetected')
+                                  ? themeColor
+                                  : Colors.redAccent[700],
                               size: 35,
                             ),
                           ],
                         ),
-                        // Neumorphic(
-                        //   style: NeumorphicStyle(
-                        //       //boxShape: NeumorphicBoxShape.circle(),
-                        //       shape: NeumorphicShape.concave),
-                        //   child: Container(
-                        //       width: 30.0,
-                        //       height: 30.0,
-                        //       child: Icon(
-                        //         FontAwesome.shield,
-                        //         color: Colors.cyan,
-                        //       )),
-                        // ),
                         Row(
                           children: [
                             Text(
@@ -720,7 +668,6 @@ class _NeuHomeState extends State<NeuHome> {
                             color: Colors.black.withOpacity(.5),
                             letterSpacing: 1,
                             fontSize: 15.0,
-                            // fontWeight: FontWeight.bold,
                             fontFamily: "nunito",
                           ),
                         ),
@@ -730,9 +677,11 @@ class _NeuHomeState extends State<NeuHome> {
                         Text(
                           statusSecurity,
                           style: TextStyle(
-                            color: Colors.cyan,
-                            letterSpacing: 1,
-                            fontSize: 25.0,
+                            color: (statusSecurity == 'Undetected')
+                                ? themeColor
+                                : Colors.redAccent[700],
+                            //letterSpacing: 1,
+                            fontSize: 20.0,
                             fontWeight: FontWeight.bold,
                             fontFamily: "nunito",
                           ),
@@ -740,478 +689,535 @@ class _NeuHomeState extends State<NeuHome> {
                       ],
                     ),
                     Neumorphic(
-                      style: NeumorphicStyle(
-                          // boxShape: NeumorphicBoxShape.circle(),
-                          shape: NeumorphicShape.convex),
+                      style: NeumorphicStyle(shape: NeumorphicShape.convex),
                       child: Container(
-                          height: 120,
-                          width: 120,
-                          color: Color(0xFFe6ebf2),
-                          child: SfRadialGauge(axes: <RadialAxis>[
-                            RadialAxis(
-                                showLabels: false,
-                                showTicks: false,
-                                startAngle: 270,
-                                endAngle: 270,
-                                radiusFactor: 0.8,
-                                axisLineStyle: AxisLineStyle(
-                                  thickness: 0.2,
-                                  color: const Color.fromARGB(30, 0, 169, 181),
-                                  thicknessUnit: GaugeSizeUnit.factor,
-                                  cornerStyle: CornerStyle.startCurve,
-                                ),
-                                pointers: <GaugePointer>[
-                                  RangePointer(
-                                      value: progressValue,
-                                      width: 0.2,
-                                      sizeUnit: GaugeSizeUnit.factor,
-                                      enableAnimation: true,
-                                      animationDuration: 100,
-                                      animationType: AnimationType.linear,
-                                      cornerStyle: CornerStyle.startCurve,
-                                      gradient: const SweepGradient(
-                                          colors: <Color>[
-                                            Color(0xFF00a9b5),
-                                            Color(0xFFa4edeb)
-                                          ],
-                                          stops: <double>[
-                                            0.25,
-                                            0.75
-                                          ])),
-                                  MarkerPointer(
-                                    value: progressValue,
-                                    markerType: MarkerType.circle,
-                                    enableAnimation: true,
-                                    animationDuration: 100,
-                                    animationType: AnimationType.linear,
-                                    color: const Color(0xFF87e8e8),
-                                  )
-                                ],
-                                annotations: <GaugeAnnotation>[
-                                  GaugeAnnotation(
-                                      positionFactor: 0,
-                                      widget: Text(
-                                          progressValue.toStringAsFixed(0) +
-                                              '%',
-                                          style: TextStyle(
-                                              color:
-                                                  Colors.black.withOpacity(.6),
-                                              fontFamily: "nunito",
-                                              fontSize: 27.0)))
-                                ]),
-                          ])),
+                        height: 120,
+                        width: 120,
+                        color: Color(0xFFe6ebf2),
+                        child: Icon(
+                          iconSecurity,
+                          color: (statusSecurity == 'Undetected')
+                              ? themeColor
+                              : Colors.redAccent[700],
+                          size: 100,
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-            SizedBox(
-              height: 20.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  '  Security System Control',
-                  style: TextStyle(
-                    color: Colors.black.withOpacity(.5),
-                    letterSpacing: 1,
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "nunito",
-                  ),
+          ),
+          SizedBox(
+            height: 20.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                '  Security System Control',
+                style: TextStyle(
+                  color: Colors.black.withOpacity(.5),
+                  letterSpacing: 1,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "nunito",
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Neumorphic(
-                  style: NeumorphicStyle(
-                      // boxShape: NeumorphicBoxShape.circle(),
-                      shape: NeumorphicShape.convex),
-                  child: Container(
-                    color: Color(0xFFe6ebf2),
-                    width: MediaQuery.of(context).size.width / 2.2,
-                    height: MediaQuery.of(context).size.width / 3,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Icon(
-                          Icons.lock_outline,
-                          color: Colors.black.withOpacity(.5),
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Text(
-                          'Remote Locking',
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(.5),
-                            //letterSpacing: 1,
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "nunito",
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Neumorphic(
+                style:
+                    NeumorphicStyle(shape: NeumorphicShape.flat, intensity: 1),
+                child: Container(
+                  color: Color(0xFFe6ebf2),
+                  width: MediaQuery.of(context).size.width / 2.2,
+                  height: MediaQuery.of(context).size.width / 3,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
                           ),
-                        ),
-                        SizedBox(
-                          height: 3.0,
-                        ),
-                        Text(
-                          'Manage your door latch',
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(.5),
-                            //letterSpacing: 1,
-                            fontSize: 13.0,
-                            // fontWeight: FontWeight.bold,
-                            fontFamily: "nunito",
+                          Icon(
+                            Icons.lock_outline,
+                            color: (isLocked)
+                                ? themeColor
+                                : Colors.black.withOpacity(.5),
                           ),
-                        ),
-                        SizedBox(
-                          height: 13.0,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text(
-                              (isLocked) ? 'Lock' : 'Unlock',
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
+                          ),
+                          GestureDetector(
+                            onTap: () => _gotoLockink(),
+                            child: Text(
+                              'Remote Locking',
                               style: TextStyle(
-                                color: Colors.black.withOpacity(.5),
+                                color: (isLocked)
+                                    ? themeColor
+                                    : Colors.black.withOpacity(.5),
                                 //letterSpacing: 1,
-                                fontSize: 17.0,
+                                fontSize: 15.0,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: "nunito",
                               ),
                             ),
-                            SizedBox(
-                              width: 13.0,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 3.0,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'Manage your door latch',
+                            style: TextStyle(
+                              color: (isLocked)
+                                  ? themeColor
+                                  : Colors.black.withOpacity(.5),
+                              fontSize: 13.0,
+                              fontFamily: "nunito",
                             ),
-                            Container(
-                              height: 20,
-                              width: 40,
-                              child: NeumorphicSwitch(
-                                value: isLocked,
-                                style: NeumorphicSwitchStyle(
-                                  activeTrackColor: Colors.cyan,
-                                ),
-                                onChanged: (value) {
-                                  (isLocked) ? isAuthenticated = false : null;
-                                  (isLocked && !isAuthenticated)
-                                      ? _showLockScreen(
-                                          context,
-                                          opaque: false,
-                                          cancelButton: Text(
-                                            'Cancel',
-                                            style: const TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.white),
-                                            semanticsLabel: 'Cancel',
-                                          ),
-                                        )
-                                      : setState(() {
-                                          isLocked = value;
-                                          bdref.child('Remote Locking').update({
-                                            'Door':
-                                                (isLocked) ? 'Lock' : 'Unlock'
-                                          });
-
-                                          // ignore: unnecessary_statements
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 13.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            (isLocked) ? 'Lock' : 'Unlock',
+                            style: TextStyle(
+                              color: (isLocked)
+                                  ? themeColor
+                                  : Colors.black.withOpacity(.5),
+                              //letterSpacing: 1,
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "nunito",
+                            ),
+                          ),
+                          SizedBox(
+                            width: 13.0,
+                          ),
+                          Container(
+                            height: 20,
+                            width: 40,
+                            child: NeumorphicSwitch(
+                              value: isLocked,
+                              style: NeumorphicSwitchStyle(
+                                activeTrackColor: (!isActived)
+                                    ? themeColor
+                                    : Color(0xFFd51a00),
+                              ),
+                              onChanged: (value) {
+                                (isLocked) ? isAuthenticated = false : null;
+                                (isLocked && !isAuthenticated)
+                                    ? _showLockScreen(
+                                        context,
+                                        opaque: false,
+                                        cancelButton: Text(
+                                          'Cancel',
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white),
+                                          semanticsLabel: 'Cancel',
+                                        ),
+                                      )
+                                    : setState(() {
+                                        isLocked = value;
+                                        bdref.child('Remote Locking').update({
+                                          'Door': (isLocked) ? 'Lock' : 'Unlock'
                                         });
 
-                                  //   isAuthenticated
-                                  //       ? setState(() {
-                                  //           isLocked = value;
-                                  //           bdref.child('Remote Locking').update({
-                                  //             'Door': (isLocked) ? 'Lock' : 'Unlock'
-                                  //           });
-
-                                  //           // ignore: unnecessary_statements
-                                  //         })
-                                  //       : print(!isAuthenticated);
-                                  //   print(isAuthenticated);
-                                },
-                              ),
+                                        // ignore: unnecessary_statements
+                                      });
+                              },
                             ),
-                          ],
-                        )
-                      ],
-                    ),
-                    //color: Colors.red,
+                          ),
+                        ],
+                      )
+                    ],
                   ),
+                  //color: Colors.red,
                 ),
-                Neumorphic(
-                  style: NeumorphicStyle(
-                      // boxShape: NeumorphicBoxShape.circle(),
-                      shape: NeumorphicShape.convex),
-                  child: Container(
-                    color: Color(0xFFe6ebf2),
-                    width: MediaQuery.of(context).size.width / 2.2,
-                    height: MediaQuery.of(context).size.width / 3,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Icon(
-                          Icons.lightbulb_outline,
-                          color: Colors.black.withOpacity(.5),
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Text(
-                          'Security Lightning',
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(.5),
-                            //letterSpacing: 1,
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "nunito",
+              ),
+              Neumorphic(
+                style: NeumorphicStyle(
+                    // boxShape: NeumorphicBoxShape.circle(),
+                    shape: NeumorphicShape.flat,
+                    intensity: 1),
+                child: Container(
+                  color: Color(0xFFe6ebf2),
+                  width: MediaQuery.of(context).size.width / 2.2,
+                  height: MediaQuery.of(context).size.width / 3,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
                           ),
-                        ),
-                        SizedBox(
-                          height: 3.0,
-                        ),
-                        Text(
-                          'Manage your lights',
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(.5),
-                            //letterSpacing: 1,
-                            fontSize: 13.0,
-                            // fontWeight: FontWeight.bold,
-                            fontFamily: "nunito",
+                          Icon(
+                            Icons.lightbulb_outline,
+                            color: (isOn)
+                                ? themeColor
+                                : Colors.black.withOpacity(.5),
                           ),
-                        ),
-                        SizedBox(
-                          height: 13.0,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text(
-                              (isOn) ? 'On' : 'Off',
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
+                          ),
+                          GestureDetector(
+                            onTap: () => _gotoLightnig(),
+                            child: Text(
+                              'Security Lighting',
                               style: TextStyle(
-                                color: Colors.black.withOpacity(.5),
+                                color: (isOn)
+                                    ? themeColor
+                                    : Colors.black.withOpacity(.5),
                                 //letterSpacing: 1,
-                                fontSize: 17.0,
+                                fontSize: 15.0,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: "nunito",
                               ),
                             ),
-                            SizedBox(
-                              width: 13.0,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 3.0,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'Manage your lights',
+                            style: TextStyle(
+                              color: (isOn)
+                                  ? themeColor
+                                  : Colors.black.withOpacity(.5),
+                              //letterSpacing: 1,
+                              fontSize: 13.0,
+                              // fontWeight: FontWeight.bold,
+                              fontFamily: "nunito",
                             ),
-                            Container(
-                              height: 20,
-                              width: 40,
-                              child: NeumorphicSwitch(
-                                value: isOn,
-                                style: NeumorphicSwitchStyle(
-                                  activeTrackColor: Colors.cyan,
-                                ),
-                                onChanged: (value) {
-                                  isOn = value;
-
-                                  bdref
-                                      .child('Security Light')
-                                      .update({'Light': (isOn) ? 'On' : 'Off'});
-                                  setState(() {});
-                                },
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 13.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            (isOn) ? 'On' : 'Off',
+                            style: TextStyle(
+                              color: (isOn)
+                                  ? themeColor
+                                  : Colors.black.withOpacity(.5),
+                              //letterSpacing: 1,
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "nunito",
+                            ),
+                          ),
+                          SizedBox(
+                            width: 13.0,
+                          ),
+                          Container(
+                            height: 20,
+                            width: 40,
+                            child: NeumorphicSwitch(
+                              value: isOn,
+                              style: NeumorphicSwitchStyle(
+                                activeTrackColor: (!isActived)
+                                    ? themeColor
+                                    : Color(0xFFd51a00),
                               ),
+                              onChanged: (value) {
+                                isOn = value;
+
+                                bdref
+                                    .child('Security Light')
+                                    .update({'Light': (isOn) ? 'On' : 'Off'});
+                                setState(() {});
+                              },
                             ),
-                          ],
-                        )
-                      ],
-                    ),
-                    //color: Colors.red,
+                          ),
+                        ],
+                      )
+                    ],
                   ),
+                  //color: Colors.red,
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 15.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Neumorphic(
-                  style: NeumorphicStyle(
-                      // boxShape: NeumorphicBoxShape.circle(),
-                      shape: NeumorphicShape.convex),
-                  child: Container(
-                    color: Color(0xFFe6ebf2),
-                    width: MediaQuery.of(context).size.width / 2.2,
-                    height: MediaQuery.of(context).size.width / 3,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Icon(
-                          Icons.notifications_active_outlined,
-                          color: Colors.black.withOpacity(.5),
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Text(
-                          'Sound Alarm',
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(.5),
-                            //letterSpacing: 1,
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "nunito",
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 15.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Neumorphic(
+                style: NeumorphicStyle(
+                    // boxShape: NeumorphicBoxShape.circle(),
+                    shape: NeumorphicShape.flat,
+                    intensity: 1),
+                child: Container(
+                  color: Color(0xFFe6ebf2),
+                  width: MediaQuery.of(context).size.width / 2.2,
+                  height: MediaQuery.of(context).size.width / 3,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
                           ),
-                        ),
-                        SizedBox(
-                          height: 3.0,
-                        ),
-                        Text(
-                          'Manage your sound alarm',
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(.5),
-                            //letterSpacing: 1,
-                            fontSize: 13.0,
-                            // fontWeight: FontWeight.bold,
-                            fontFamily: "nunito",
+                          Icon(
+                            Icons.notifications_active_outlined,
+                            color: (isActived)
+                                ? themeColor
+                                : Colors.black.withOpacity(.5),
                           ),
-                        ),
-                        SizedBox(
-                          height: 13.0,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text(
-                              (isActived) ? 'Active' : 'Inactive',
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
+                          ),
+                          GestureDetector(
+                            onTap: () => _gotoAlarm(),
+                            child: Text(
+                              'Sound Alarm',
                               style: TextStyle(
-                                color: Colors.black.withOpacity(.5),
+                                color: (isActived)
+                                    ? themeColor
+                                    : Colors.black.withOpacity(.5),
                                 //letterSpacing: 1,
-                                fontSize: 17.0,
+                                fontSize: 15.0,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: "nunito",
                               ),
                             ),
-                            SizedBox(
-                              width: 13.0,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 3.0,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'Manage your sound alarm',
+                            style: TextStyle(
+                              color: (isActived)
+                                  ? themeColor
+                                  : Colors.black.withOpacity(.5),
+                              fontSize: 13.0,
+                              fontFamily: "nunito",
                             ),
-                            Container(
-                              height: 20,
-                              width: 40,
-                              child: NeumorphicSwitch(
-                                value: isActived,
-                                style: NeumorphicSwitchStyle(
-                                  activeTrackColor: Colors.cyan,
-                                ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    // print(in_out_HomeAccess('In'));
-                                    // print(in_out_HomeAccess('Out'));
-
-                                    isActived = value;
-                                    bdref.child('Sound Alarm').update({
-                                      'Alert':
-                                          (isActived) ? 'Active' : 'Inactive'
-                                    });
-                                    setState(() {});
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 13.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            (isActived) ? 'Active' : 'Inactive',
+                            style: TextStyle(
+                              color: (isActived)
+                                  ? themeColor
+                                  : Colors.black.withOpacity(.5),
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "nunito",
+                            ),
+                          ),
+                          SizedBox(
+                            width: 13.0,
+                          ),
+                          Container(
+                            height: 20,
+                            width: 40,
+                            child: NeumorphicSwitch(
+                              value: isActived,
+                              style: NeumorphicSwitchStyle(
+                                activeTrackColor: (!isActived)
+                                    ? themeColor
+                                    : Color(0xFFd51a00),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  isActived = value;
+                                  bdref.child('Sound Alarm').update({
+                                    'Alert': (isActived) ? 'Active' : 'Inactive'
                                   });
-                                },
-                              ),
+
+                                  setState(() {});
+                                });
+                              },
                             ),
-                          ],
-                        )
-                      ],
-                    ),
-                    //color: Colors.red,
+                          ),
+                        ],
+                      )
+                    ],
                   ),
                 ),
-                Neumorphic(
-                  style: NeumorphicStyle(
-                      // boxShape: NeumorphicBoxShape.circle(),
-                      shape: NeumorphicShape.convex),
-                  child: Container(
-                    color: Color(0xFFe6ebf2),
-                    width: MediaQuery.of(context).size.width / 2.2,
-                    height: MediaQuery.of(context).size.width / 3,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Icon(
-                          Icons.videocam_outlined,
-                          color: Colors.black.withOpacity(.5),
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Text(
-                          'Video Streaming',
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(.5),
-                            //letterSpacing: 1,
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "nunito",
+              ),
+              Neumorphic(
+                style:
+                    NeumorphicStyle(shape: NeumorphicShape.flat, intensity: 1),
+                child: Container(
+                  color: Color(0xFFe6ebf2),
+                  width: MediaQuery.of(context).size.width / 2.2,
+                  height: MediaQuery.of(context).size.width / 3,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
                           ),
-                        ),
-                        SizedBox(
-                          height: 3.0,
-                        ),
-                        Text(
-                          'Moitors home activities',
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(.5),
-                            //letterSpacing: 1,
-                            fontSize: 13.0,
-                            // fontWeight: FontWeight.bold,
-                            fontFamily: "nunito",
+                          Icon(
+                            Icons.videocam_outlined,
+                            color: themeColor,
                           ),
-                        ),
-                        SizedBox(
-                          height: 13.0,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text(
-                              'Streaming...',
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
+                          ),
+                          GestureDetector(
+                            onTap: () => _gotoCamera(),
+                            child: Text(
+                              'Video Streaming',
                               style: TextStyle(
-                                color: Colors.black.withOpacity(.5),
+                                color: themeColor,
                                 //letterSpacing: 1,
-                                fontSize: 17.0,
+                                fontSize: 15.0,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: "nunito",
                               ),
                             ),
-                            SizedBox(
-                              width: 13.0,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 3.0,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'Monitors home activities',
+                            style: TextStyle(
+                              color: themeColor,
+                              //letterSpacing: 1,
+                              fontSize: 13.0,
+                              // fontWeight: FontWeight.bold,
+                              fontFamily: "nunito",
                             ),
-                            Icon(
-                              Icons.double_arrow_rounded,
-                              color: Colors.cyan,
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                    //color: Colors.red,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 13.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            'Streaming...',
+                            style: TextStyle(
+                              color: themeColor,
+                              //letterSpacing: 1,
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "nunito",
+                            ),
+                          ),
+                          SizedBox(
+                            width: 13.0,
+                          ),
+                          Icon(
+                            Icons.double_arrow_rounded,
+                            color:
+                                (!isActived) ? themeColor : Color(0xFFd51a00),
+                          )
+                        ],
+                      )
+                    ],
                   ),
                 ),
-              ],
-            )
-          ],
-        ),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }
