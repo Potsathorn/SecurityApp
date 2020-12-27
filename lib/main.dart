@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
        // home:  ExampleHomePage(title: 'Passcode Lock Screen '),
         routes: {
           '/showHome_page': (context) => HomePage(),
-          '/showAttendance_page': (context) => AttendancePage(title: 'Passcode Lock Screen '),
+          '/showAttendance_page': (context) => AttendancePage(title: 'Attendance Last Access '),
           '/showIntrusion_page': (context) => IntrusionShowPage(),
           '/showCamera_page': (context) => Home(
                 channel: IOWebSocketChannel.connect('ws://35.240.225.236:65080'),

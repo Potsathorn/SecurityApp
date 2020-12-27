@@ -202,19 +202,19 @@ class _NeuHomeState extends State<NeuHome> {
         statusSecurity = 'Detected';
       }
 
-      membersAccess = realTimeData['Members Access'];
+      // membersAccess = realTimeData['Members Access'];
 
-      listMembers.add(membersAccess);
+      // listMembers.add(membersAccess);
 
-      for (var i in listMembers) {
-        i.forEach((key, value) {
-          if (value['Status'] == 'In') {
-            inMembers.add(key);
-          } else {
-            outMembers.add(key);
-          }
-        });
-      }
+      // for (var i in listMembers) {
+      //   i.forEach((key, value) {
+      //     if (value['Status'] == 'In') {
+      //       inMembers.add(key);
+      //     } else {
+      //       outMembers.add(key);
+      //     }
+      //   });
+      // }
     });
 
     setState(() {
@@ -1120,7 +1120,7 @@ class _NeuHomeState extends State<NeuHome> {
               ),
               Neumorphic(
                 style:
-                    NeumorphicStyle(shape: NeumorphicShape.flat, intensity: 1),
+                    NeumorphicStyle(shape: NeumorphicShape.flat, intensity: 1,),
                 child: Container(
                   color: Color(0xFFe6ebf2),
                   width: MediaQuery.of(context).size.width / 2.2,
