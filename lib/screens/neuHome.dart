@@ -75,10 +75,12 @@ class _NeuHomeState extends State<NeuHome> {
 
   final bdref = FirebaseDatabase.instance.reference();
   var realTimeData;
+  List<UserInfo> memInfo = [];
 
   void initState() {
     super.initState();
     readData();
+    // realtime();
     //test();
   }
 
@@ -141,6 +143,42 @@ class _NeuHomeState extends State<NeuHome> {
 
       (value == 'Normal') ? noContact = true : noContact = false;
       //print(value);
+    });
+    bdref.child('Members Access').onValue.listen((event) {
+      memInfo.clear();
+      listMembers.clear();
+
+      var snapshot = event.snapshot;
+      var members = snapshot.value;
+
+      listMembers.add(members);
+
+      for (var i in listMembers) {
+        i.forEach((key, value) {
+          String _genURL() {
+            if (value['Name'] == 'Taem Potsathorn') {
+              return "https://cdn3.iconfinder.com/data/icons/business-round-flat-vol-1-1/36/user_account_profile_avatar_person_businessman_old-512.png";
+            } else if (value['Name'] == 'Taeng Jidapa') {
+              return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQVtMhWm3H7Vb8N07Tbb4V-ifx-bV9ncfyEQ&usqp=CAU";
+            } else if (value['Name'] == 'Tar Chanita') {
+              return "https://icons-for-free.com/iconfiles/png/512/avatar+contact+people+profile+profile+photo+user+icon-1320086030365969618.png";
+            } else {
+              return "https://lh5.ggpht.com/_S0f-AWxKVdM/S5TpU6kRmUI/AAAAAAAAL4Y/wrjx3_23kw4/s72-c/d_silhouette%5B2%5D.jpg?imgmax=800";
+            }
+          }
+
+          memInfo.add(UserInfo(value['ID'], value['Name'], value['Date'],
+              value['Time'], _genURL()));
+        });
+      }
+
+      memInfo.sort((b, a) {
+        return a.id.compareTo(b.id);
+      });
+
+      //print(memInfo[0].name);
+
+      setState(() {});
     });
   }
 
@@ -587,13 +625,16 @@ class _NeuHomeState extends State<NeuHome> {
                 child: Column(
                   children: [
                     ListTile(
-                      leading: CircleAvatar(
+                      leading:  CircleAvatar(
+                        radius: 30.0,
                         backgroundColor: Colors.white,
                         backgroundImage: new NetworkImage(
-                            "https://lh5.ggpht.com/_S0f-AWxKVdM/S5TpU6kRmUI/AAAAAAAAL4Y/wrjx3_23kw4/s72-c/d_silhouette%5B2%5D.jpg?imgmax=800"),
+                            // ignore: null_aware_before_operator
+                            (memInfo?.length > 0 ? memInfo[0].utlimg : 'https://lh5.ggpht.com/_S0f-AWxKVdM/S5TpU6kRmUI/AAAAAAAAL4Y/wrjx3_23kw4/s72-c/d_silhouette%5B2%5D.jpg?imgmax=800'),),
                       ),
                       title: Text(
-                        'Taem Potsathorn',
+                        // ignore: null_aware_before_operator
+                        (memInfo?.length > 0 ? memInfo[0].name : ''),
                         style: TextStyle(
                           color: themeColor,
 
@@ -603,7 +644,13 @@ class _NeuHomeState extends State<NeuHome> {
                           fontFamily: "nunito",
                         ),
                       ),
-                      subtitle: Text('26/12/2020, 7:47 PM'),
+                      // ignore: null_aware_before_operator
+                      subtitle: Text(
+                          // ignore: null_aware_before_operator
+                          (memInfo?.length > 0 ? memInfo[0].date : '') +
+                              ', ' +
+                              // ignore: null_aware_before_operator
+                              (memInfo?.length > 0 ? memInfo[0].time : '')),
                       trailing: Icon(Icons.keyboard_arrow_right),
                       onTap: () {
                         _gotoAttendance();
@@ -1119,8 +1166,10 @@ class _NeuHomeState extends State<NeuHome> {
                 ),
               ),
               Neumorphic(
-                style:
-                    NeumorphicStyle(shape: NeumorphicShape.flat, intensity: 1,),
+                style: NeumorphicStyle(
+                  shape: NeumorphicShape.flat,
+                  intensity: 1,
+                ),
                 child: Container(
                   color: Color(0xFFe6ebf2),
                   width: MediaQuery.of(context).size.width / 2.2,
@@ -1227,4 +1276,14 @@ class _NeuHomeState extends State<NeuHome> {
     super.dispose();
     _verificationNotifier.close();
   }
+}
+
+class UserInfo {
+  int id;
+  String name;
+  String date;
+  String time;
+  String utlimg;
+
+  UserInfo(this.id, this.name, this.date, this.time, this.utlimg);
 }
