@@ -26,6 +26,7 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
   bool noContact = false;
 
   int locationNum = 0;
+  int count = 0;
 
   final bdref = FirebaseDatabase.instance.reference();
   var realTimeData;
@@ -64,24 +65,52 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
   Widget build(BuildContext context) {
     //realtime();
 
+
+    (count == 0)?locationNum = ModalRoute.of(context).settings.arguments:locationNum;
+    
+    
+
     List<LocationInfo> location = [
-      LocationInfo('Front Door', '', '', '',
+      LocationInfo('Front Door', '1st Floor', '', '', '',
           'https://scontent.fbkk3-3.fna.fbcdn.net/v/t1.15752-9/133693402_448213409889610_8975913812051939973_n.png?_nc_cat=104&ccb=2&_nc_sid=ae9488&_nc_eui2=AeH_LCMLAiDXQB_b6l14zTEDCpBTtLbCAekKkFO0tsIB6Y31-WCmJSOJxfPFlXcboEgLWo6kOXYbyyTZ04g-MbMn&_nc_ohc=tA46ULPiOCoAX8_nS74&_nc_ht=scontent.fbkk3-3.fna&oh=2b3feb853c4d74b4ef7d3bffabb464a6&oe=6018A53A'),
-      LocationInfo('Next Door', 'NORMAL', 'NORMAL', 'NORMAL',
-          'https://scontent.fbkk3-4.fna.fbcdn.net/v/t1.15752-9/134729772_317866069488773_361573051837134372_n.png?_nc_cat=108&ccb=2&_nc_sid=ae9488&_nc_eui2=AeGFAq-nk7o8kJsES81rIumVI5prKmqI6kEjmmsqaojqQbiRk_-s0B8OROqaS03askIVXJvSSRRFBR98a687KtGp&_nc_ohc=BY--BFejO_IAX8H3A3n&_nc_ht=scontent.fbkk3-4.fna&oh=30cd19e0f65a982a122c6c932af0e007&oe=60173ED2'),
-      LocationInfo('Back Door', 'NORMAL', 'NORMAL', 'NORMAL',
+      LocationInfo('Back Door', '1st Floor', 'NORMAL', 'NORMAL', 'NORMAL',
           'https://scontent.fbkk4-4.fna.fbcdn.net/v/t1.15752-9/135297093_194822842359070_4370813469458184717_n.png?_nc_cat=111&ccb=2&_nc_sid=ae9488&_nc_eui2=AeFLrXPz4OWvD5NOWLkAFlLmVqxUOhAAANtWrFQ6EAAA2_qGnBs3nZOGU16QcHLIFN2hBREjDHmEAmTpXgGwjN8o&_nc_ohc=E9rEcI_5KNcAX_CRB6A&_nc_ht=scontent.fbkk4-4.fna&oh=bf8dcb11e2bae0b09bc902f18bfd0975&oe=6017AF16'),
-      LocationInfo("Living Room's Window", 'NORMAL', 'NORMAL', 'NORMAL',
-          'https://scontent.fbkk4-1.fna.fbcdn.net/v/t1.15752-9/135567816_2537981849827505_6685207942632704171_n.png?_nc_cat=107&ccb=2&_nc_sid=ae9488&_nc_eui2=AeFWyIMFVVita72aM1iCweizU-ywuZ5wgh9T7LC5nnCCH45TJgdspyIAAEvTz0UbTiay3ELmO0ew4vnUeHtQ5wS9&_nc_ohc=6ajbyD8PGbQAX94lvnK&_nc_ht=scontent.fbkk4-1.fna&oh=e080f254ee76fc2b0cbf3968ec34b1d4&oe=60177735'),
-      LocationInfo("Kitchen's Window", 'NORMAL', 'NORMAL', 'NORMAL',
+      LocationInfo(
+          "Living room's Window",
+          '1st Floor',
+          'NORMAL',
+          'NORMAL',
+          'NORMAL',
+          'https://scontent.fbkk3-4.fna.fbcdn.net/v/t1.15752-9/135493366_411994136701926_1765697095807000138_n.png?_nc_cat=108&ccb=2&_nc_sid=ae9488&_nc_eui2=AeGMN69Y8KmVD9kkNJMAvNO4maCoBRTqV_WZoKgFFOpX9RchLC3kT3pHWwPpk1JxO55h5CZ90rCWkwEbCERlB06I&_nc_ohc=r4wBhppsVJ4AX8JAS7B&_nc_ht=scontent.fbkk3-4.fna&oh=95b08d8fda06c61b4aa9018fc69492e6&oe=6016865B'),
+      LocationInfo(
+          "Kitchen's Window",
+          '1st Floor',
+          'NORMAL',
+          'NORMAL',
+          'NORMAL',
           'https://scontent.fbkk4-4.fna.fbcdn.net/v/t1.15752-9/134474047_401091994533191_2891419308019061032_n.png?_nc_cat=111&ccb=2&_nc_sid=ae9488&_nc_eui2=AeGOfgU68vwVVkdGhgPpgEt0MV8h05OKe58xXyHTk4p7n_673oIYK2QOHLSvMTFH7C3URy4OWRC74mIdloQYjv3R&_nc_ohc=Bpp9Kbm1QhQAX_Krbv2&_nc_ht=scontent.fbkk4-4.fna&oh=af493785cbafbda8a145d05d94407889&oe=60157121'),
-      LocationInfo("Stair's Window", 'NORMAL', 'NORMAL', 'NORMAL',
+      LocationInfo("Stair's Window", '2nd Floor', 'NORMAL', 'NORMAL', 'NORMAL',
           'https://scontent.fbkk3-3.fna.fbcdn.net/v/t1.15752-9/135347267_1026331314527037_5232366427455365012_n.png?_nc_cat=104&ccb=2&_nc_sid=ae9488&_nc_eui2=AeGAkqhbA_NJ0dvr46TlHJLP5mc-GZSzRd_mZz4ZlLNF30qJ4msO2CreaoMnGY_Ym9L_OIA_X9PiAEzC2wa0GogX&_nc_ohc=WM4zHHQb0y8AX_4sqnd&_nc_ht=scontent.fbkk3-3.fna&oh=06526d28967063ff10cff8fac2dc61f8&oe=6018BAEF'),
-      LocationInfo("PAT Bedroom's Window", 'NORMAL', 'NORMAL', 'NORMAL',
+      LocationInfo(
+          "Pat Bedroom's Window",
+          '2nd Floor',
+          'NORMAL',
+          'NORMAL',
+          'NORMAL',
           'https://scontent.fbkk3-4.fna.fbcdn.net/v/t1.15752-9/135218935_451625629199410_3815511025306032076_n.png?_nc_cat=108&ccb=2&_nc_sid=ae9488&_nc_eui2=AeH3tEoNuMLaZOBrCdyjc5wHlxV5q2EOFDiXFXmrYQ4UOAL9PDHtFLyucp30jeDjEOR_Gf_KzdeoJ2TGxFLsGfrA&_nc_ohc=7HJCCymCjG4AX9Dqja5&_nc_ht=scontent.fbkk3-4.fna&oh=a8ac6df080525cce1e7cb2c06e508c52&oe=60159FFD'),
-      LocationInfo("Taem Bedroom's Window", 'NORMAL', 'NORMAL', 'NORMAL',
+      LocationInfo(
+          "Taem Bedroom's Window",
+          '2nd Floor',
+          'NORMAL',
+          'NORMAL',
+          'NORMAL',
           'https://scontent.fbkk4-3.fna.fbcdn.net/v/t1.15752-9/134376058_2478421079120183_9048098443268557538_n.png?_nc_cat=100&ccb=2&_nc_sid=ae9488&_nc_eui2=AeFkFfEnXSiL1S_gpWG8DY1_Go59DUgm8lcajn0NSCbyV8nyU3VAhsNB9uYyyBe1ptiCLqM9AY_gkATekD3YgTMd&_nc_ohc=QvRI9K7IJ3YAX8cK1qg&_nc_ht=scontent.fbkk4-3.fna&oh=291b1eaeedbdee206fec85a3179fa42a&oe=6016FD87'),
-      LocationInfo("Taeng&TAR Room's Window", 'NORMAL', 'NORMAL', 'NORMAL',
+      LocationInfo(
+          "Taeng&Tar Room's Window",
+          '2nd Floor',
+          'NORMAL',
+          'NORMAL',
+          'NORMAL',
           'https://scontent.fbkk4-4.fna.fbcdn.net/v/t1.15752-9/134642100_239282994407159_6083245002180057512_n.png?_nc_cat=111&ccb=2&_nc_sid=ae9488&_nc_eui2=AeF73jW8j37DdCTbK9zzuxRKESCuCPqBrVoRIK4I-oGtWvOF7LfUKNFBVUPaZL2ovD86S00Ynu4WIDmzAOMs6ibt&_nc_ohc=6s3wDjeuJoEAX9tmSIu&_nc_ht=scontent.fbkk4-4.fna&oh=f0daae0d692bc122be78f67398af2d9e&oe=601627A1'),
     ];
 
@@ -108,30 +137,49 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
               NeumorphicButton(
                 style: NeumorphicStyle(
                     shape: NeumorphicShape.flat, color: Color(0xFFe6ebf2)),
-                child: Icon(Icons.arrow_back_ios_rounded),
+                child: Icon(Icons.arrow_back_ios_rounded,
+                    color: Colors.black.withOpacity(0.5)),
                 padding: EdgeInsets.all(10),
                 onPressed: () {
+                  count++;
                   (locationNum <= 0)
                       ? locationNum = location.length - 1
                       : locationNum = locationNum - 1;
                   setState(() {});
                 },
               ),
-              Text(
-                location[locationNum].location,
-                style: TextStyle(
-                  color: themeColors,
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "nunito",
-                ),
+              Column(
+                children: [
+                  Text(
+                    location[locationNum].location,
+                    style: TextStyle(
+                      color: themeColors,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "nunito",
+                    ),
+                  ),
+                  Text(
+                    location[locationNum].floor,
+                    style: TextStyle(
+                      color: themeColors,
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "nunito",
+                    ),
+                  ),
+                ],
               ),
               NeumorphicButton(
                 style: NeumorphicStyle(
                     shape: NeumorphicShape.flat, color: Color(0xFFe6ebf2)),
-                child: Icon(Icons.arrow_forward_ios_rounded),
+                child: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: Colors.black.withOpacity(0.5),
+                ),
                 padding: EdgeInsets.all(10),
                 onPressed: () {
+                  count++;
                   (locationNum >= location.length - 1)
                       ? locationNum = 0
                       : locationNum = locationNum + 1;
@@ -181,14 +229,20 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
                           child: Icon(
                             Icons.directions_walk_rounded,
                             size: 30,
-                            color: themeColors,
+                            color:
+                                (location[locationNum].motionStatus == 'NORMAL')
+                                    ? themeColors
+                                    : Colors.redAccent[700],
                           ),
                         ),
                       ),
                       title: Text(
                         'Motion Sensor',
                         style: TextStyle(
-                          color: themeColors,
+                          color:
+                              (location[locationNum].motionStatus == 'NORMAL')
+                                  ? themeColors
+                                  : Colors.redAccent[700],
 
                           //letterSpacing: 1,
                           fontSize: 15.0,
@@ -199,9 +253,11 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
                       // ignore: null_aware_before_operator
                       subtitle: Text(location[locationNum].motionStatus),
                       trailing: Icon(
-                          (location[locationNum].motionStatus == 'NORMAL')
-                              ? null
-                              : Icons.warning_amber_rounded),
+                        (location[locationNum].motionStatus == 'NORMAL')
+                            ? null
+                            : Icons.warning_amber_rounded,
+                        color: Colors.redAccent[700],
+                      ),
                       onTap: () {
                         // _gotoAttendance();
                       },
@@ -242,14 +298,20 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
                           child: Icon(
                             Icons.sensor_door,
                             size: 30,
-                            color: themeColors,
+                            color: (location[locationNum].contactStatus ==
+                                    'NORMAL')
+                                ? themeColors
+                                : Colors.redAccent[700],
                           ),
                         ),
                       ),
                       title: Text(
                         'Contact Sensor',
                         style: TextStyle(
-                          color: themeColors,
+                          color:
+                              (location[locationNum].contactStatus == 'NORMAL')
+                                  ? themeColors
+                                  : Colors.redAccent[700],
 
                           //letterSpacing: 1,
                           fontSize: 15.0,
@@ -260,9 +322,11 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
                       // ignore: null_aware_before_operator
                       subtitle: Text(location[locationNum].contactStatus),
                       trailing: Icon(
-                          (location[locationNum].contactStatus == 'NORMAL')
-                              ? null
-                              : Icons.warning_amber_rounded),
+                        (location[locationNum].contactStatus == 'NORMAL')
+                            ? null
+                            : Icons.warning_amber_rounded,
+                        color: Colors.redAccent[700],
+                      ),
                       onTap: () {
                         // _gotoAttendance();
                       },
@@ -303,14 +367,20 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
                           child: Icon(
                             Icons.vibration_rounded,
                             size: 30,
-                            color: themeColors,
+                            color: (location[locationNum].vibrationStatus ==
+                                    'NORMAL')
+                                ? themeColors
+                                : Colors.redAccent[700],
                           ),
                         ),
                       ),
                       title: Text(
                         'Vibration Sensor',
                         style: TextStyle(
-                          color: themeColors,
+                          color: (location[locationNum].vibrationStatus ==
+                                  'NORMAL')
+                              ? themeColors
+                              : Colors.redAccent[700],
 
                           //letterSpacing: 1,
                           fontSize: 15.0,
@@ -321,9 +391,11 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
                       // ignore: null_aware_before_operator
                       subtitle: Text(location[locationNum].vibrationStatus),
                       trailing: Icon(
-                          (location[locationNum].vibrationStatus == 'NORMAL')
-                              ? null
-                              : Icons.warning_amber_rounded,color: Colors.yellow[700],),
+                        (location[locationNum].vibrationStatus == 'NORMAL')
+                            ? null
+                            : Icons.warning_amber_rounded,
+                        color: Colors.redAccent[700],
+                      ),
                       onTap: () {
                         // _gotoAttendance();
                       },
@@ -428,13 +500,14 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
 
 class LocationInfo {
   String location;
+  String floor;
   String motionStatus;
   String vibrationStatus;
   String contactStatus;
   String imgUrl;
 
-  LocationInfo(this.location, this.motionStatus, this.vibrationStatus,
-      this.contactStatus, this.imgUrl);
+  LocationInfo(this.location, this.floor, this.motionStatus,
+      this.vibrationStatus, this.contactStatus, this.imgUrl);
 }
 
 // Widget _imgeCircle(String url) {

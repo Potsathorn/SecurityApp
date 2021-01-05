@@ -35,7 +35,7 @@ class _NeuHomeState extends State<NeuHome> {
   }
 
   void _gotoIntrusion() {
-    Navigator.pushNamed(context, "/showIntrusion_page");
+    Navigator.pushNamed(context, "/showIntrusionfirst_page");
   }
 
   void _gotoAttendance() {

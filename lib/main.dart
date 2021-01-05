@@ -3,6 +3,7 @@ import 'package:Security/constants.dart';
 import 'package:Security/screens/Alarm.dart';
 import 'package:Security/screens/Attendance.dart';
 import 'package:Security/screens/Home.dart';
+import 'package:Security/screens/IntrusionPlan.dart';
 import 'package:Security/screens/IntrusionShow.dart';
 import 'package:Security/screens/Lightning.dart';
 import 'package:Security/screens/MyHomePage.dart';
@@ -74,6 +75,7 @@ class MyApp extends StatelessWidget {
           '/showHome_page': (context) => HomePage(),
           '/showAttendance_page': (context) => AttendancePage(title: 'Attendance Last Access '),
           '/showIntrusion_page': (context) => IntrusionShowPage(),
+          '/showIntrusionfirst_page': (context) => IntrusionFirstPage(),
           '/showCamera_page': (context) => Home(
                 channel: IOWebSocketChannel.connect('ws://35.240.225.236:65080'),
               ),
