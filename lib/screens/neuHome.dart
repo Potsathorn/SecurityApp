@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:intl/intl.dart';
+import 'package:time/time.dart';
 
 import 'package:Security/screens/NeuScene.dart';
 import 'package:Security/widgets/IconWithText.dart';
@@ -64,6 +66,8 @@ class _NeuHomeState extends State<NeuHome> {
   List<String> outMembers = [];
   List<Map> listMembers = [];
   var membersAccess;
+
+  String timerUnlock = "";
 
   bool noMotion = false;
   bool noVibration = false;
@@ -318,9 +322,11 @@ class _NeuHomeState extends State<NeuHome> {
       setState(() {
         this.isAuthenticated = isValid;
         isLocked = false;
-        bdref
-            .child('Remote Locking')
-            .update({'Door': (isLocked) ? 'Lock' : 'Unlock'});
+        bdref.child('Remote Locking').update({
+          'Door': (isLocked) ? 'Lock' : 'Unlock',
+          'Last Unlocked': timerUnlock,
+          'Unlocked By': 'Application',
+        });
       });
     }
   }
@@ -348,6 +354,10 @@ class _NeuHomeState extends State<NeuHome> {
   Widget build(BuildContext context) {
     realtime();
     readData();
+    var now = DateTime.now();
+
+    //print(DateFormat('hh:mm aaa').format(now));
+    timerUnlock = DateFormat('hh:mm aaa').format(now);
 
     // bool isDoorLock() {
     //   // readData();
@@ -625,12 +635,15 @@ class _NeuHomeState extends State<NeuHome> {
                 child: Column(
                   children: [
                     ListTile(
-                      leading:  CircleAvatar(
+                      leading: CircleAvatar(
                         radius: 30.0,
                         backgroundColor: Colors.white,
                         backgroundImage: new NetworkImage(
-                            // ignore: null_aware_before_operator
-                            (memInfo?.length > 0 ? memInfo[0].utlimg : 'https://lh5.ggpht.com/_S0f-AWxKVdM/S5TpU6kRmUI/AAAAAAAAL4Y/wrjx3_23kw4/s72-c/d_silhouette%5B2%5D.jpg?imgmax=800'),),
+                          // ignore: null_aware_before_operator
+                          (memInfo?.length > 0
+                              ? memInfo[0].utlimg
+                              : 'https://lh5.ggpht.com/_S0f-AWxKVdM/S5TpU6kRmUI/AAAAAAAAL4Y/wrjx3_23kw4/s72-c/d_silhouette%5B2%5D.jpg?imgmax=800'),
+                        ),
                       ),
                       title: Text(
                         // ignore: null_aware_before_operator
@@ -883,6 +896,8 @@ class _NeuHomeState extends State<NeuHome> {
                               ),
                               onChanged: (value) {
                                 (isLocked) ? isAuthenticated = false : null;
+                                print(isLocked);
+
                                 (isLocked && !isAuthenticated)
                                     ? _showLockScreen(
                                         context,
@@ -898,10 +913,9 @@ class _NeuHomeState extends State<NeuHome> {
                                     : setState(() {
                                         isLocked = value;
                                         bdref.child('Remote Locking').update({
-                                          'Door': (isLocked) ? 'Lock' : 'Unlock'
+                                          'Door':
+                                              (isLocked) ? 'Lock' : 'Unlock',
                                         });
-
-                                        // ignore: unnecessary_statements
                                       });
                               },
                             ),

@@ -34,6 +34,7 @@ dependencies:
   passcode_screen:
   flutter_neumorphic:
   flutter_icons:
+  time:
   #syncfusion_flutter_gauges:
   carousel_slider:
 

@@ -112,7 +112,7 @@ class CircleImg extends StatelessWidget {
                 oppositeShadowLightSource: false,
                 lightSource: LightSource.bottomLeft,
                 boxShape: NeumorphicBoxShape.circle()),
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.all(11),
             child: GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, "/showCamera_page");
