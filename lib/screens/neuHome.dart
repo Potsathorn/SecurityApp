@@ -1,12 +1,5 @@
 import 'dart:async';
 import 'package:intl/intl.dart';
-import 'package:time/time.dart';
-
-import 'package:Security/screens/NeuScene.dart';
-import 'package:Security/widgets/IconWithText.dart';
-import 'package:Security/widgets/NeuRectButton.dart';
-import 'package:Security/widgets/ProfileGreeting.dart';
-import 'package:Security/widgets/neuCircleimg.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -148,6 +141,26 @@ class _NeuHomeState extends State<NeuHome> {
       (value == 'Normal') ? noContact = true : noContact = false;
       //print(value);
     });
+
+    bdref.child('Scene').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value['Scene'];
+
+      // (value == 'Normal') ? noContact = true : noContact = false;
+      if (value == "I'm Home") {
+        groupScene = "I'm Home";
+      } else if (value == "I'm Leave") {
+        groupScene = "I'm Leave";
+      } else if (value == "Good Morning") {
+        groupScene = "Good Morning";
+      } else {
+        groupScene = "Good Night";
+      }
+
+      //print(value);
+    });
+
     bdref.child('Members Access').onValue.listen((event) {
       memInfo.clear();
       listMembers.clear();
@@ -463,6 +476,9 @@ class _NeuHomeState extends State<NeuHome> {
                         context.bloc<SceneCubit>().scenetoggle(value);
                         setState(() {
                           groupScene = value;
+                          bdref.child('Scene').update({
+                            'Scene': groupScene,
+                          });
                         });
                       },
                       child: Container(
@@ -491,6 +507,9 @@ class _NeuHomeState extends State<NeuHome> {
                         context.bloc<SceneCubit>().scenetoggle(value);
                         setState(() {
                           groupScene = value;
+                          bdref.child('Scene').update({
+                            'Scene': groupScene,
+                          });
                         });
                       },
                       child: Container(
@@ -516,15 +535,18 @@ class _NeuHomeState extends State<NeuHome> {
                       groupValue: groupScene,
                       style:
                           NeumorphicRadioStyle(shape: NeumorphicShape.convex),
-                      value: "Watch Over",
+                      value: "Good Morning",
                       onChanged: (value) {
                         context.bloc<SceneCubit>().scenetoggle(value);
                         setState(() {
                           groupScene = value;
+                          bdref.child('Scene').update({
+                            'Scene': groupScene,
+                          });
                         });
                       },
                       child: Container(
-                          color: (groupScene == 'Watch Over')
+                          color: (groupScene == 'Good Morning')
                               ? (!isActived)
                                   ? themeColor
                                   : Color(0xFFd51a00)
@@ -533,8 +555,8 @@ class _NeuHomeState extends State<NeuHome> {
                           width: 40,
                           child: Center(
                               child: Icon(
-                            FontAwesome.eye,
-                            color: (groupScene == 'Watch Over')
+                            FontAwesome.sun_o,
+                            color: (groupScene == 'Good Morning')
                                 ? Colors.white
                                 : Colors.black.withOpacity(.5),
                           ))),
@@ -551,6 +573,10 @@ class _NeuHomeState extends State<NeuHome> {
                         context.bloc<SceneCubit>().scenetoggle(value);
                         setState(() {
                           groupScene = value;
+                         
+                          bdref.child('Scene').update({
+                            'Scene': groupScene,
+                          });
                         });
                       },
                       child: Container(
@@ -589,7 +615,7 @@ class _NeuHomeState extends State<NeuHome> {
                                       )),
                                   Text(state, //trow Excep debug
                                       style: TextStyle(
-                                        fontSize: 20.0,
+                                        fontSize: 17.0,
                                         color: (!isActived)
                                             ? themeColor
                                             : Color(0xFFd51a00),

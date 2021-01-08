@@ -158,15 +158,17 @@ class _RemoteLockingPageState extends State<RemoteLockingPage> {
             Neumorphic(
               padding: EdgeInsets.all(20),
               style: NeumorphicStyle(
-                  depth: 2,
+                  depth: 5,
+                  //intensity: 1,
                   color: Color(0xFFe6ebf2),
                   shape: NeumorphicShape.flat,
-                  oppositeShadowLightSource: false,
+                  oppositeShadowLightSource: true,
                   lightSource: LightSource.bottomLeft,
                   boxShape: NeumorphicBoxShape.circle()),
               child: Neumorphic(
                 style: NeumorphicStyle(
                     depth: 2,
+                   
                     color: (isLocked)?themeColors:Color(0xFFe6ebf2),
                     shape: NeumorphicShape.flat,
                     oppositeShadowLightSource: false,
