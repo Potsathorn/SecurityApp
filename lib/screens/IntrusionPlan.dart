@@ -32,11 +32,20 @@ class _IntrusionFirstPageState extends State<IntrusionFirstPage> {
   // String statusContact = "";
 
   int locationNum = 0;
+  bool isActived = false;
 
   final bdref = FirebaseDatabase.instance.reference();
   var realTimeData;
 
   void realtime() {
+    bdref.child('Sound Alarm').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value['Alert'];
+
+      (value == 'Active') ? isActived = true : isActived = false;
+      // print(value);
+    });
     bdref.child('Intrusion Detection').onValue.listen((event) {
       var snapshot = event.snapshot;
 
@@ -81,7 +90,7 @@ class _IntrusionFirstPageState extends State<IntrusionFirstPage> {
                   arguments: idx);
             },
             style: NeumorphicStyle(
-                shape: NeumorphicShape.flat,
+                shape: NeumorphicShape.convex,
                 color: themeColors,
                 boxShape: NeumorphicBoxShape.circle()),
             padding: EdgeInsets.all(3),
@@ -113,7 +122,7 @@ class _IntrusionFirstPageState extends State<IntrusionFirstPage> {
     return Scaffold(
         backgroundColor: Color(0xFFe6ebf2),
         appBar: AppBar(
-          backgroundColor: themeColors,
+          backgroundColor:  themeColors,
           title: Center(
             child: Text('INTRUSION DETECTION'),
           ),
@@ -125,8 +134,8 @@ class _IntrusionFirstPageState extends State<IntrusionFirstPage> {
               decoration: new BoxDecoration(
                   image: new DecorationImage(
                       fit: BoxFit.fill,
-                      image: new NetworkImage(
-                          'https://scontent.fbkk3-4.fna.fbcdn.net/v/t1.15752-9/134463412_164832594977349_1878361311245644207_n.png?_nc_cat=105&ccb=2&_nc_sid=ae9488&_nc_eui2=AeGdHyUlcju94R-8seyZDQjxa03xA5XggxRrTfEDleCDFPIgi4QYCMIAnj3nH-twNxY5WhH8DuX2M8Jt0ZJKSQyL&_nc_ohc=jL3DBXXKd0EAX_xSEi1&_nc_ht=scontent.fbkk3-4.fna&oh=464e77e288e2675cc802f0f83063fd6b&oe=6017A9E3')))),
+                      image: new AssetImage(
+                          'images/pn.png')))),
           _positionIcon(null, 43, 85, null, 7),
           _positionIcon(130, 43, null, null, 6),
           _positionIcon(75, 227, null, null, 5),
@@ -233,5 +242,5 @@ class LocationInfo {
 //       decoration: new BoxDecoration(
 //           shape: BoxShape.circle,
 //           image: new DecorationImage(
-//               fit: BoxFit.fill, image: new NetworkImage(url))));
+//               fit: BoxFit.fill, image: new AssetImage(url))));
 // }

@@ -13,6 +13,7 @@ class AttendancePage extends StatefulWidget {
 
 class _AttendancePageState extends State<AttendancePage> {
   Color themeColors = Color(0xFF1565c0);
+  bool isActived = false;
 
   @override
   void initState() {
@@ -26,6 +27,7 @@ class _AttendancePageState extends State<AttendancePage> {
 
   @override
   Widget build(BuildContext context) {
+    themeColors=Colors.blue[800];
     print(memInfo.length);
 
     memInfo.sort((b, a) {
@@ -34,15 +36,14 @@ class _AttendancePageState extends State<AttendancePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Center(child: Text(widget.title)),
         backgroundColor: themeColors,
       ),
       body: _getBodyWidget(),
     );
   }
 
-  List<String> inMembers = [];
-  List<String> outMembers = [];
+  
   List<Map> listMembers = [];
   List<UserInfo> memInfo = [];
   List<UserInfo> reversedMemInfo = [];
@@ -51,6 +52,14 @@ class _AttendancePageState extends State<AttendancePage> {
   var realTimeData;
 
   void realtime() {
+    bdref.child('Sound Alarm').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value['Alert'];
+
+      (value == 'Active') ? isActived = true : isActived = false;
+      // print(value);
+    });
     bdref.child('Members Access').onValue.listen((event) {
       memInfo.clear();
       listMembers.clear();
@@ -64,13 +73,16 @@ class _AttendancePageState extends State<AttendancePage> {
         i.forEach((key, value) {
           String _genURL() {
             if (value['Name'] == 'Taem Potsathorn') {
-              return "https://cdn3.iconfinder.com/data/icons/business-round-flat-vol-1-1/36/user_account_profile_avatar_person_businessman_old-512.png";
+              return "images/taem.png";
             } else if (value['Name'] == 'Taeng Jidapa') {
-              return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQVtMhWm3H7Vb8N07Tbb4V-ifx-bV9ncfyEQ&usqp=CAU";
+              return "images/taeng.png";
             } else if (value['Name'] == 'Tar Chanita') {
-              return "https://icons-for-free.com/iconfiles/png/512/avatar+contact+people+profile+profile+photo+user+icon-1320086030365969618.png";
-            } else {
-              return "https://lh5.ggpht.com/_S0f-AWxKVdM/S5TpU6kRmUI/AAAAAAAAL4Y/wrjx3_23kw4/s72-c/d_silhouette%5B2%5D.jpg?imgmax=800";
+              return "images/ta.png";
+            } else if (value['Name'] == 'Pat Supat') {
+              return "images/supat.png";
+            }
+            else{
+              return "images/def.png";
             }
           }
 
@@ -165,7 +177,7 @@ class _AttendancePageState extends State<AttendancePage> {
                 child: CircleAvatar(
                   radius: 20,
                   backgroundColor: Colors.white,
-                  backgroundImage: new NetworkImage(memInfo[index].utlimg),
+                  backgroundImage: new AssetImage(memInfo[index].utlimg),
                 ),
               ),
               SizedBox(

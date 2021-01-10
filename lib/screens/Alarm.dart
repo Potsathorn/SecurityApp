@@ -16,7 +16,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
   @override
   void initState() {
     super.initState();
-    realtime();
+    //realtime();
   }
 
   bool isActive = false;
@@ -24,6 +24,11 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
 
   final bdref = FirebaseDatabase.instance.reference();
   var realTimeData;
+
+  List<Map> listHistory = [];
+  List<AlarmHistory> alarmInfo = [];
+  List<AlarmHistory> inverseAlarmInfo = [];
+  var membersAccess;
 
   void realtime() {
     bdref.child('Sound Alarm').onValue.listen((event) {
@@ -34,13 +39,79 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
       (value == 'Active') ? isActive = true : isActive = false;
       //print(value);
       setState(() {});
+      
+      
     });
+
+    bdref.child('Alarm History').onValue.listen((event) {
+      alarmInfo.clear();
+     listHistory.clear();
+
+      var snapshot = event.snapshot;
+      var members = snapshot.value;
+
+     listHistory.add(members);
+
+      for (var i in listHistory) {
+        i.forEach((key, value) {
+          
+
+          alarmInfo.add(AlarmHistory(value['ID'], value['Type'], value['Date'],
+              value['Time'], value['Location'] ));
+        });
+      }
+
+      
+    });
+    
   }
 
   Color themeColors = Color(0xFF1565c0);
   @override
   Widget build(BuildContext context) {
+   
     realtime();
+    alarmInfo.sort((b, a) {
+      return a.id.compareTo(b.id);
+    });
+
+    TableRow _tableRow(String type,String locat,String date,String time){
+      return TableRow(children: [
+                  Text(
+                    type,
+                    style: TextStyle(
+                        color: Colors.black.withOpacity(.6),
+                        fontFamily: "nunito",
+                        // fontWeight: FontWeight.bold,
+                        fontSize: 15),
+                  ),
+                  Text(
+                    locat,
+                    style: TextStyle(
+                        color: Colors.black.withOpacity(.6),
+                        fontFamily: "nunito",
+                        //fontWeight: FontWeight.bold,
+                        fontSize: 15),
+                  ),
+                  Text(
+                    time,
+                    style: TextStyle(
+                        color: Colors.black.withOpacity(.6),
+                        fontFamily: "nunito",
+                        //fontWeight: FontWeight.bold,
+                        fontSize: 15),
+                  ),
+                  Text(
+                   date,
+                    style: TextStyle(
+                        color: Colors.black.withOpacity(.6),
+                        fontFamily: "nunito",
+
+                        //fontWeight: FontWeight.bold,
+                        fontSize: 15),
+                  ),
+                ]);
+    }
     return Scaffold(
       backgroundColor: Color(0xFFe6ebf2),
       appBar: AppBar(
@@ -62,26 +133,21 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
               icon: (isActive)
                   ? Icons.notifications_active
                   : Icons.notifications_off,
-              iconColors: (isActive) ? Colors.redAccent[700] : Color(0xFFe6ebf2),
+              iconColors: (isActive) ? Colors.redAccent[700] : themeColors,
             ),
           ),
           SizedBox(
             height: 10.0,
           ),
-          NeumorphicText(
+          Text(
             (isActive) ? "ACTIVE" : "INACTIVE",
-            textStyle: NeumorphicTextStyle(
-                // color: themeColors,
+            style: TextStyle(
+                 color: (isActive)? Colors.redAccent[700]: themeColors,
 
                 fontFamily: "nunito",
                 fontWeight: FontWeight.bold,
                 fontSize: 28),
-            style: NeumorphicStyle(
-              depth: 3,
-              intensity: 1,
-              shape: NeumorphicShape.flat,
-              color: (isActive)? Colors.redAccent[700]: themeColors,
-            ),
+            
           ),
           SizedBox(
             height: 10.0,
@@ -132,7 +198,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
               children: [
                 TableRow(children: [
                   Text(
-                    'Type',
+                    "Type",
                     style: TextStyle(
                         color: Colors.black.withOpacity(.6),
                         fontFamily: "nunito",
@@ -140,7 +206,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
                         fontSize: 15),
                   ),
                   Text(
-                    'Location',
+                    "Location",
                     style: TextStyle(
                         color: Colors.black.withOpacity(.6),
                         fontFamily: "nunito",
@@ -148,7 +214,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
                         fontSize: 15),
                   ),
                   Text(
-                    'Time',
+                    "Time",
                     style: TextStyle(
                         color: Colors.black.withOpacity(.6),
                         fontFamily: "nunito",
@@ -156,83 +222,22 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
                         fontSize: 15),
                   ),
                   Text(
-                    'Date',
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(.6),
-                        fontFamily: "nunito",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                ]),
-                TableRow(children: [
-                  Text(
-                    'Motion',
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(.6),
-                        fontFamily: "nunito",
-                        // fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                  Text(
-                    'Back Door',
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(.6),
-                        fontFamily: "nunito",
-                        //fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                  Text(
-                    '10:52 AM',
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(.6),
-                        fontFamily: "nunito",
-                        //fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                  Text(
-                    '4 Sep. 2020',
+                   "Date",
                     style: TextStyle(
                         color: Colors.black.withOpacity(.6),
                         fontFamily: "nunito",
 
-                        //fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.bold,
                         fontSize: 15),
                   ),
                 ]),
-                TableRow(children: [
-                  Text(
-                    'Vibration',
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(.6),
-                        fontFamily: "nunito",
-                        // fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                  Text(
-                    'Windows1',
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(.6),
-                        fontFamily: "nunito",
-                        //fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                  Text(
-                    '11:23 AM',
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(.6),
-                        fontFamily: "nunito",
-                        //fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                  Text(
-                    '5 Sep. 2020',
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(.6),
-                        fontFamily: "nunito",
-                        //fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                ]),
+
+
+                for (var i in alarmInfo)
+                  _tableRow(i.type, i.locat, i.date, i.time)
+                
+                
+                
               ],
             ),
           )
@@ -240,4 +245,15 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
       ),
     );
   }
+}
+
+
+class AlarmHistory {
+  int id;
+  String type;
+  String date;
+  String time;
+  String locat;
+
+  AlarmHistory(this.id, this.type, this.date, this.time, this.locat);
 }

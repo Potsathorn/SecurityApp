@@ -25,6 +25,8 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
   bool noVibration = false;
   bool noContact = false;
 
+  bool isActived = false;
+
   int locationNum = 0;
   int count = 0;
 
@@ -40,6 +42,15 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
       (value == 'Normal') ? noMotion = true : noMotion = false;
       //print(value);
       setState(() {});
+    });
+
+    bdref.child('Sound Alarm').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value['Alert'];
+
+      (value == 'Active') ? isActived = true : isActived = false;
+      // print(value);
     });
 
     bdref.child('Intrusion Detection').onValue.listen((event) {
@@ -72,46 +83,46 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
 
     List<LocationInfo> location = [
       LocationInfo('Front Door', '1st Floor', '', '', '',
-          'https://scontent.fbkk3-3.fna.fbcdn.net/v/t1.15752-9/133693402_448213409889610_8975913812051939973_n.png?_nc_cat=104&ccb=2&_nc_sid=ae9488&_nc_eui2=AeH_LCMLAiDXQB_b6l14zTEDCpBTtLbCAekKkFO0tsIB6Y31-WCmJSOJxfPFlXcboEgLWo6kOXYbyyTZ04g-MbMn&_nc_ohc=tA46ULPiOCoAX8_nS74&_nc_ht=scontent.fbkk3-3.fna&oh=2b3feb853c4d74b4ef7d3bffabb464a6&oe=6018A53A'),
+          'images/fd.png'),
       LocationInfo('Back Door', '1st Floor', 'NORMAL', 'NORMAL', 'NORMAL',
-          'https://scontent.fbkk4-4.fna.fbcdn.net/v/t1.15752-9/135297093_194822842359070_4370813469458184717_n.png?_nc_cat=111&ccb=2&_nc_sid=ae9488&_nc_eui2=AeFLrXPz4OWvD5NOWLkAFlLmVqxUOhAAANtWrFQ6EAAA2_qGnBs3nZOGU16QcHLIFN2hBREjDHmEAmTpXgGwjN8o&_nc_ohc=E9rEcI_5KNcAX_CRB6A&_nc_ht=scontent.fbkk4-4.fna&oh=bf8dcb11e2bae0b09bc902f18bfd0975&oe=6017AF16'),
+          'images/bd.png'),
       LocationInfo(
           "Living room's Window",
           '1st Floor',
           'NORMAL',
           'NORMAL',
           'NORMAL',
-          'https://scontent.fbkk3-4.fna.fbcdn.net/v/t1.15752-9/135493366_411994136701926_1765697095807000138_n.png?_nc_cat=108&ccb=2&_nc_sid=ae9488&_nc_eui2=AeGMN69Y8KmVD9kkNJMAvNO4maCoBRTqV_WZoKgFFOpX9RchLC3kT3pHWwPpk1JxO55h5CZ90rCWkwEbCERlB06I&_nc_ohc=r4wBhppsVJ4AX8JAS7B&_nc_ht=scontent.fbkk3-4.fna&oh=95b08d8fda06c61b4aa9018fc69492e6&oe=6016865B'),
+          'images/living.png'),
       LocationInfo(
           "Kitchen's Window",
           '1st Floor',
           'NORMAL',
           'NORMAL',
           'NORMAL',
-          'https://scontent.fbkk4-4.fna.fbcdn.net/v/t1.15752-9/134474047_401091994533191_2891419308019061032_n.png?_nc_cat=111&ccb=2&_nc_sid=ae9488&_nc_eui2=AeGOfgU68vwVVkdGhgPpgEt0MV8h05OKe58xXyHTk4p7n_673oIYK2QOHLSvMTFH7C3URy4OWRC74mIdloQYjv3R&_nc_ohc=Bpp9Kbm1QhQAX_Krbv2&_nc_ht=scontent.fbkk4-4.fna&oh=af493785cbafbda8a145d05d94407889&oe=60157121'),
+          'images/kitchen.png'),
       LocationInfo("Stair's Window", '2nd Floor', 'NORMAL', 'NORMAL', 'NORMAL',
-          'https://scontent.fbkk3-3.fna.fbcdn.net/v/t1.15752-9/135347267_1026331314527037_5232366427455365012_n.png?_nc_cat=104&ccb=2&_nc_sid=ae9488&_nc_eui2=AeGAkqhbA_NJ0dvr46TlHJLP5mc-GZSzRd_mZz4ZlLNF30qJ4msO2CreaoMnGY_Ym9L_OIA_X9PiAEzC2wa0GogX&_nc_ohc=WM4zHHQb0y8AX_4sqnd&_nc_ht=scontent.fbkk3-3.fna&oh=06526d28967063ff10cff8fac2dc61f8&oe=6018BAEF'),
+          'images/stair.png'),
       LocationInfo(
           "Pat Bedroom's Window",
           '2nd Floor',
           'NORMAL',
           'NORMAL',
           'NORMAL',
-          'https://scontent.fbkk3-4.fna.fbcdn.net/v/t1.15752-9/135218935_451625629199410_3815511025306032076_n.png?_nc_cat=108&ccb=2&_nc_sid=ae9488&_nc_eui2=AeH3tEoNuMLaZOBrCdyjc5wHlxV5q2EOFDiXFXmrYQ4UOAL9PDHtFLyucp30jeDjEOR_Gf_KzdeoJ2TGxFLsGfrA&_nc_ohc=7HJCCymCjG4AX9Dqja5&_nc_ht=scontent.fbkk3-4.fna&oh=a8ac6df080525cce1e7cb2c06e508c52&oe=60159FFD'),
+          'images/pat.png'),
       LocationInfo(
           "Taem Bedroom's Window",
           '2nd Floor',
           'NORMAL',
           'NORMAL',
           'NORMAL',
-          'https://scontent.fbkk4-3.fna.fbcdn.net/v/t1.15752-9/134376058_2478421079120183_9048098443268557538_n.png?_nc_cat=100&ccb=2&_nc_sid=ae9488&_nc_eui2=AeFkFfEnXSiL1S_gpWG8DY1_Go59DUgm8lcajn0NSCbyV8nyU3VAhsNB9uYyyBe1ptiCLqM9AY_gkATekD3YgTMd&_nc_ohc=QvRI9K7IJ3YAX8cK1qg&_nc_ht=scontent.fbkk4-3.fna&oh=291b1eaeedbdee206fec85a3179fa42a&oe=6016FD87'),
+          'images/tmrm.png'),
       LocationInfo(
           "Taeng&Tar Room's Window",
           '2nd Floor',
           'NORMAL',
           'NORMAL',
           'NORMAL',
-          'https://scontent.fbkk4-4.fna.fbcdn.net/v/t1.15752-9/134642100_239282994407159_6083245002180057512_n.png?_nc_cat=111&ccb=2&_nc_sid=ae9488&_nc_eui2=AeF73jW8j37DdCTbK9zzuxRKESCuCPqBrVoRIK4I-oGtWvOF7LfUKNFBVUPaZL2ovD86S00Ynu4WIDmzAOMs6ibt&_nc_ohc=6s3wDjeuJoEAX9tmSIu&_nc_ht=scontent.fbkk4-4.fna&oh=f0daae0d692bc122be78f67398af2d9e&oe=601627A1'),
+          'images/tng.png'),
     ];
 
     location[0].motionStatus = (noMotion) ? 'NORMAL' : 'DETECTED';
@@ -121,7 +132,7 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
     return Scaffold(
       backgroundColor: Color(0xFFe6ebf2),
       appBar: AppBar(
-        backgroundColor: themeColors,
+        backgroundColor:  themeColors,
         title: Center(
           child: Text('INTRUSION DETECTION'),
         ),

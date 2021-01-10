@@ -80,7 +80,7 @@ class CircleImg extends StatelessWidget {
                                       shape: BoxShape.circle,
                                       image: new DecorationImage(
                                           fit: BoxFit.fill,
-                                          image: new NetworkImage(imgurl))))
+                                          image: new AssetImage(imgurl))))
 
                               // Text(
                               //   "20°C",

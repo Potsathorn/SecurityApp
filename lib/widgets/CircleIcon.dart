@@ -71,17 +71,9 @@ class CircleIcon extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          NeumorphicIcon(
-                            icon,
+                          Icon(icon,
                             size: 200,
-                            style: NeumorphicStyle(
-                              depth: 3,
-                              intensity: 1,
-                              color: iconColors,
-                              shape: NeumorphicShape.convex,
-                              oppositeShadowLightSource: false,
-                            ),
-                          ),
+                            color: iconColors,)
 
                           // Text(
                           //   "20°C",

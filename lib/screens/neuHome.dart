@@ -10,6 +10,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:Security/widgets/circle.dart';
 import 'package:Security/widgets/keyboard.dart';
 import 'package:Security/screens/PassCode.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../SceneCubit.dart';
 import 'PassCode.dart';
@@ -21,6 +22,17 @@ class NeuHome extends StatefulWidget {
 
 class _NeuHomeState extends State<NeuHome> {
   String groupScene;
+
+  Future<Null> checkPreference() async {
+    try {
+      FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+      String token = await firebaseMessaging.getToken();
+      print('token===> $token');
+    } on Exception catch (_) {
+      print('never reached');
+    }
+  }
+
   final StreamController<bool> _verificationNotifier =
       StreamController<bool>.broadcast();
   bool isAuthenticated = false;
@@ -174,13 +186,16 @@ class _NeuHomeState extends State<NeuHome> {
         i.forEach((key, value) {
           String _genURL() {
             if (value['Name'] == 'Taem Potsathorn') {
-              return "https://cdn3.iconfinder.com/data/icons/business-round-flat-vol-1-1/36/user_account_profile_avatar_person_businessman_old-512.png";
+              return "images/taem.png";
             } else if (value['Name'] == 'Taeng Jidapa') {
-              return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQVtMhWm3H7Vb8N07Tbb4V-ifx-bV9ncfyEQ&usqp=CAU";
+              return "images/taeng.png";
             } else if (value['Name'] == 'Tar Chanita') {
-              return "https://icons-for-free.com/iconfiles/png/512/avatar+contact+people+profile+profile+photo+user+icon-1320086030365969618.png";
-            } else {
-              return "https://lh5.ggpht.com/_S0f-AWxKVdM/S5TpU6kRmUI/AAAAAAAAL4Y/wrjx3_23kw4/s72-c/d_silhouette%5B2%5D.jpg?imgmax=800";
+              return "images/ta.png";
+            } else if (value['Name'] == 'Pat Supat') {
+              return "images/supat.png";
+            }
+            else{
+              return "images/def.png";
             }
           }
 
@@ -329,7 +344,7 @@ class _NeuHomeState extends State<NeuHome> {
   }
 
   _onPasscodeEntered(String enteredPasscode) {
-    bool isValid = '123456' == enteredPasscode;
+    bool isValid = '080925' == enteredPasscode;
     _verificationNotifier.add(isValid);
     if (isValid) {
       setState(() {
@@ -367,6 +382,10 @@ class _NeuHomeState extends State<NeuHome> {
   Widget build(BuildContext context) {
     realtime();
     readData();
+    //checkPreference();
+    (isActived)
+        ? themeColor = Colors.redAccent[700]
+        : themeColor = Colors.blue[800];
     var now = DateTime.now();
 
     //print(DateFormat('hh:mm aaa').format(now));
@@ -409,6 +428,9 @@ class _NeuHomeState extends State<NeuHome> {
       groupScene = "I'm Home";
     } else {}
 
+    // FirebaseMessaging fcm  =  FirebaseMessaging();
+    // print(fcm.getToken());
+
     return Scaffold(
       backgroundColor: Color(0xFFe6ebf2),
       body: Column(
@@ -443,8 +465,8 @@ class _NeuHomeState extends State<NeuHome> {
                         decoration: new BoxDecoration(
                           image: new DecorationImage(
                               fit: BoxFit.fill,
-                              image: new NetworkImage(
-                                  "https://lh5.ggpht.com/_S0f-AWxKVdM/S5TpU6kRmUI/AAAAAAAAL4Y/wrjx3_23kw4/s72-c/d_silhouette%5B2%5D.jpg?imgmax=800")),
+                              image: new AssetImage(
+                                  "images/taem.png")),
                           borderRadius: BorderRadius.all(
                             Radius.circular(8),
                           ),
@@ -473,12 +495,14 @@ class _NeuHomeState extends State<NeuHome> {
                           NeumorphicRadioStyle(shape: NeumorphicShape.convex),
                       value: "I'm Home",
                       onChanged: (value) {
-                        context.bloc<SceneCubit>().scenetoggle(value);
+                        //context.bloc<SceneCubit>().scenetoggle(value);
                         setState(() {
                           groupScene = value;
-                          bdref.child('Scene').update({
-                            'Scene': groupScene,
-                          });
+                          (groupScene != "I'm Home")
+                              ? null
+                              : bdref.child('Scene').update({
+                                  'Scene': groupScene,
+                                });
                         });
                       },
                       child: Container(
@@ -489,14 +513,14 @@ class _NeuHomeState extends State<NeuHome> {
                           width: 40,
                           child: Center(
                               child: Icon(
-                            SimpleLineIcons.login,
+                            SimpleLineIcons.home,
                             color: (groupScene == "I'm Home")
                                 ? Colors.white
                                 : Colors.black.withOpacity(.5),
                           ))),
                     ),
                     SizedBox(
-                      width: 5.0,
+                      width: 7.0,
                     ),
                     NeumorphicRadio(
                       groupValue: groupScene,
@@ -504,12 +528,14 @@ class _NeuHomeState extends State<NeuHome> {
                           NeumorphicRadioStyle(shape: NeumorphicShape.convex),
                       value: "I'm Leave",
                       onChanged: (value) {
-                        context.bloc<SceneCubit>().scenetoggle(value);
+                        //context.bloc<SceneCubit>().scenetoggle(value);
                         setState(() {
                           groupScene = value;
-                          bdref.child('Scene').update({
-                            'Scene': groupScene,
-                          });
+                          (groupScene != "I'm Leave")
+                              ? null
+                              : bdref.child('Scene').update({
+                                  'Scene': groupScene,
+                                });
                         });
                       },
                       child: Container(
@@ -520,13 +546,32 @@ class _NeuHomeState extends State<NeuHome> {
                               : Color(0xFFe6ebf2),
                           height: 40,
                           width: 40,
-                          child: Center(
+                          child: Stack(children: [
+                            Positioned(
+                              left: 2,
+                              top: 4,
+
                               child: Icon(
-                            SimpleLineIcons.logout,
-                            color: (groupScene == "I'm Leave")
-                                ? Colors.white
-                                : Colors.black.withOpacity(.5),
-                          ))),
+                                 SimpleLineIcons.home,
+                                color: (groupScene == "I'm Leave")
+                                    ? Colors.white
+                                    : Colors.black.withOpacity(.5),
+                                size: 22,
+                              ),
+                            ),
+                            Positioned(
+                              right: 1,
+                              bottom :1,
+
+                              child: Icon(
+                                Icons.directions_walk_rounded,
+                                color: (groupScene == "I'm Leave")
+                                    ? Colors.white
+                                    : Colors.black.withOpacity(.5),
+                               // size: 20,
+                              ),
+                            ),
+                          ])),
                     ),
                     SizedBox(
                       width: 5.0,
@@ -537,12 +582,14 @@ class _NeuHomeState extends State<NeuHome> {
                           NeumorphicRadioStyle(shape: NeumorphicShape.convex),
                       value: "Good Morning",
                       onChanged: (value) {
-                        context.bloc<SceneCubit>().scenetoggle(value);
+                        //context.bloc<SceneCubit>().scenetoggle(value);
                         setState(() {
                           groupScene = value;
-                          bdref.child('Scene').update({
-                            'Scene': groupScene,
-                          });
+                          (groupScene != "Good Morning")
+                              ? null
+                              : bdref.child('Scene').update({
+                                  'Scene': groupScene,
+                                });
                         });
                       },
                       child: Container(
@@ -570,13 +617,15 @@ class _NeuHomeState extends State<NeuHome> {
                           NeumorphicRadioStyle(shape: NeumorphicShape.convex),
                       value: "Good Night",
                       onChanged: (value) {
-                        context.bloc<SceneCubit>().scenetoggle(value);
+                        //context.bloc<SceneCubit>().scenetoggle(value);
                         setState(() {
                           groupScene = value;
-                         
-                          bdref.child('Scene').update({
-                            'Scene': groupScene,
-                          });
+
+                          (groupScene != "Good Night")
+                              ? null
+                              : bdref.child('Scene').update({
+                                  'Scene': groupScene,
+                                });
                         });
                       },
                       child: Container(
@@ -602,28 +651,24 @@ class _NeuHomeState extends State<NeuHome> {
                         color: Color(0xFFe6ebf2),
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(3, 6, 3, 3),
-                          child: BlocBuilder<SceneCubit, String>(
-                            builder: (context, state) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text("Scene",
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                        color: Colors.black.withOpacity(.5),
-                                        fontWeight: FontWeight.bold,
-                                      )),
-                                  Text(state, //trow Excep debug
-                                      style: TextStyle(
-                                        fontSize: 17.0,
-                                        color: (!isActived)
-                                            ? themeColor
-                                            : Color(0xFFd51a00),
-                                        fontWeight: FontWeight.bold,
-                                      )),
-                                ],
-                              );
-                            },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text("Scene",
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    color: Colors.black.withOpacity(.5),
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                              Text(groupScene, //trow Excep debug
+                                  style: TextStyle(
+                                    fontSize: 17.0,
+                                    color: (!isActived)
+                                        ? themeColor
+                                        : Color(0xFFd51a00),
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                            ],
                           ),
                         ),
                       )
@@ -664,11 +709,11 @@ class _NeuHomeState extends State<NeuHome> {
                       leading: CircleAvatar(
                         radius: 30.0,
                         backgroundColor: Colors.white,
-                        backgroundImage: new NetworkImage(
+                        backgroundImage: new AssetImage(
                           // ignore: null_aware_before_operator
                           (memInfo?.length > 0
                               ? memInfo[0].utlimg
-                              : 'https://lh5.ggpht.com/_S0f-AWxKVdM/S5TpU6kRmUI/AAAAAAAAL4Y/wrjx3_23kw4/s72-c/d_silhouette%5B2%5D.jpg?imgmax=800'),
+                              : "images/def.png"),
                         ),
                       ),
                       title: Text(
@@ -726,7 +771,7 @@ class _NeuHomeState extends State<NeuHome> {
                               Icons.policy,
                               color: (statusSecurity == 'Undetected')
                                   ? themeColor
-                                  : Colors.redAccent[700],
+                                  : Colors.indigo[900],
                               size: 35,
                             ),
                           ],
@@ -765,7 +810,7 @@ class _NeuHomeState extends State<NeuHome> {
                           style: TextStyle(
                             color: (statusSecurity == 'Undetected')
                                 ? themeColor
-                                : Colors.redAccent[700],
+                                : Colors.indigo[900],
                             //letterSpacing: 1,
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold,
@@ -784,7 +829,7 @@ class _NeuHomeState extends State<NeuHome> {
                           iconSecurity,
                           color: (statusSecurity == 'Undetected')
                               ? themeColor
-                              : Colors.redAccent[700],
+                              : Colors.indigo[900],
                           size: 100,
                         ),
                       ),

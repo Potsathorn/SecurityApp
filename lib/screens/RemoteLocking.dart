@@ -108,7 +108,7 @@ class _RemoteLockingPageState extends State<RemoteLockingPage> {
   }
 
   _onPasscodeEntered(String enteredPasscode) {
-    bool isValid = '123456' == enteredPasscode;
+    bool isValid = '080925' == enteredPasscode;
     _verificationNotifier.add(isValid);
     if (isValid) {
       setState(() {
@@ -207,24 +207,8 @@ class _RemoteLockingPageState extends State<RemoteLockingPage> {
                 top: 80,
                 right: 1,
                 bottom: null,
-                child: NeumorphicIcon(
-                  // onPressed: () {
-                  //   // Navigator.pushNamed(context, '/showIntrusion_page',
-                  //   //     arguments: idx);
-                  // },
-                  (isLocked) ? Icons.lock_outlined : Icons.lock_open_rounded,
-                  size: 60,
-                  style: NeumorphicStyle(
-                    shape: NeumorphicShape.flat,
-                    color: themeColors,
-                  ),
-                  //padding: EdgeInsets.all(3),
-                  // child: Icon(
-                  //   Icons.verified_user_outlined,
-                  //   size: 30,
-                  //   color: themeColors,
-                  // ),
-                ))
+                child: Icon((isLocked) ? Icons.lock_outlined : Icons.lock_open_rounded,
+                  size: 60,color: themeColors,))
           ]),
           SizedBox(
             height: 20.0,
