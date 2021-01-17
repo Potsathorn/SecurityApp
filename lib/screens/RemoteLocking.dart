@@ -5,6 +5,7 @@ import 'package:Security/widgets/keyboard.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:intl/intl.dart';
 
@@ -27,6 +28,8 @@ class _RemoteLockingPageState extends State<RemoteLockingPage> {
     super.initState();
     realtime();
   }
+
+  
 
   bool isLocked = false;
   String last = "";
@@ -133,6 +136,10 @@ class _RemoteLockingPageState extends State<RemoteLockingPage> {
 
   @override
   Widget build(BuildContext context) {
+//     SystemChrome.setPreferredOrientations([
+//    DeviceOrientation.portraitDown,
+//    DeviceOrientation.portraitUp,
+// ]);
     realtime();
     Color themeColors = Color(0xFF1565c0);
     var now = DateTime.now();

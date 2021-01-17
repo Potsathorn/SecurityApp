@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:Security/widgets/CircleImg.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -20,6 +21,7 @@ class _IntrusionFirstPageState extends State<IntrusionFirstPage> {
     super.initState();
     realtime();
   }
+  
 
   bool noMotion = false;
   bool noVibration = false;
@@ -77,6 +79,10 @@ class _IntrusionFirstPageState extends State<IntrusionFirstPage> {
 
   @override
   Widget build(BuildContext context) {
+//     SystemChrome.setPreferredOrientations([
+//    DeviceOrientation.portraitDown,
+//    DeviceOrientation.portraitUp,
+// ]);
     Widget _positionIcon(
         double left, double top, double right, double bottom, int idx) {
       return Positioned(

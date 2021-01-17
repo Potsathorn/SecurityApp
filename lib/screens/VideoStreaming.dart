@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gesture_zoom_box/gesture_zoom_box.dart';
@@ -21,6 +22,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  Color themeColors = Color(0xFF1565c0);
   final double videoWidth = 640;
   final double videoHeight = 480;
 
@@ -35,6 +37,7 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    
     super.initState();
     isLandscape = false;
 
@@ -44,12 +47,25 @@ class _HomeState extends State<Home> {
 
   @override
   void dispose() {
+  //   SystemChrome.setPreferredOrientations([
+  //   // DeviceOrientation.landscapeRight,
+  //   // DeviceOrientation.landscapeLeft,
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown,
+  // ]);
     widget.channel.sink.close();
     super.dispose();
   }
 
+  
+
+
   @override
   Widget build(BuildContext context) {
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.landscapeLeft,
+    //   DeviceOrientation.landscapeRight,
+    // ]);
     void _gotoLockink() {
       Navigator.pushNamed(context, "/showLocking_page");
     }
@@ -61,8 +77,20 @@ class _HomeState extends State<Home> {
     void _gotoAlarm() {
       Navigator.pushNamed(context, "/showAlarm_page");
     }
+
     return Scaffold(
+      backgroundColor: Color(0xFFe6ebf2),
+        appBar: AppBar(
+          backgroundColor:  themeColors,
+          title: Center(
+            child: Text('INTRUSION DETECTION'),
+          ),
+        ),
       body: OrientationBuilder(builder: (context, orientation) {
+    //     SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.landscapeLeft,
+    //   DeviceOrientation.landscapeRight,
+    // ]);
         var screenWidth = MediaQuery.of(context).size.width;
         var screenHeight = MediaQuery.of(context).size.height;
 
@@ -83,6 +111,7 @@ class _HomeState extends State<Home> {
         return Container(
           color: Colors.black,
           child: StreamBuilder(
+            
             stream: widget.channel.stream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
@@ -124,7 +153,7 @@ class _HomeState extends State<Home> {
                                     height: 16,
                                   ),
                                   Text(
-                                    'ESP32\'s cam',
+                                    'Video Streaming',
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w300),
@@ -141,7 +170,13 @@ class _HomeState extends State<Home> {
                                 ],
                               ),
                               alignment: Alignment.topCenter,
-                            ))
+                            )),
+                            Positioned(
+                              bottom: 1,
+                              child: Container(
+                                child: Text('hello'),
+                              ),
+                            )
                           ],
                         ),
                         Expanded(
@@ -184,7 +219,6 @@ class _HomeState extends State<Home> {
                                     ),
                                     onPressed: _gotoAlarm,
                                   ),
-                                  
                                 ],
                               ),
                             ),

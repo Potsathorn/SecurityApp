@@ -4,6 +4,7 @@ import 'package:Security/widgets/circle.dart';
 import 'package:Security/widgets/keyboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'PassCode.dart';
 
@@ -105,7 +106,11 @@ class _FirstPageState extends State<FirstPage> {
 
   @override
   Widget build(BuildContext context) {
-    imageCache.clear();
+//     SystemChrome.setPreferredOrientations([
+//    DeviceOrientation.portraitDown,
+//    DeviceOrientation.portraitUp,
+// ]);
+//     imageCache.clear();
    (this.isAuthenticated) ? Future.delayed(
       Duration(milliseconds: 500),
       () {

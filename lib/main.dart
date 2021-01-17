@@ -78,7 +78,7 @@ class MyApp extends StatelessWidget {
     '/showIntrusion_page': (context) => IntrusionShowPage(),
     '/showIntrusionfirst_page': (context) => IntrusionFirstPage(),
     '/showCamera_page': (context) => Home(
-          channel: IOWebSocketChannel.connect('ws://35.240.225.236:65080'),
+          channel: IOWebSocketChannel.connect('ws://34.87.169.81:65080'),
         ),
     '/showLocking_page': (context) => RemoteLockingPage(),
     '/showLightning_page': (context) => LightningControl(),

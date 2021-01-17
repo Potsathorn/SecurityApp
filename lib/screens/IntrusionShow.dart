@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:Security/widgets/CircleImg.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -75,6 +76,10 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
   @override
   Widget build(BuildContext context) {
     //realtime();
+//     SystemChrome.setPreferredOrientations([
+//    DeviceOrientation.portraitDown,
+//    DeviceOrientation.portraitUp,
+// ]);
 
 
     (count == 0)?locationNum = ModalRoute.of(context).settings.arguments:locationNum;
