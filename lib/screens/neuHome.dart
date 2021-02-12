@@ -44,7 +44,6 @@ class _NeuHomeState extends State<NeuHome> {
     //   DeviceOrientation.landscapeRight,
     // ]);
     Navigator.pushNamed(context, "/showCamera_page");
-    
   }
 
   void _gotoIntrusion() {
@@ -83,6 +82,7 @@ class _NeuHomeState extends State<NeuHome> {
   bool noMotion = false;
   bool noVibration = false;
   bool noContact = false;
+  bool isEnglish = true;
 
   String statusSecurity = 'Loading...';
   String statusSecurityDes = 'Loading...';
@@ -157,6 +157,15 @@ class _NeuHomeState extends State<NeuHome> {
       String value = snapshot.value['Contact'];
 
       (value == 'Normal') ? noContact = true : noContact = false;
+      //print(value);
+    });
+
+    bdref.child('Languages').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value;
+
+      (value == 'English') ? isEnglish = true : isEnglish = false;
       //print(value);
     });
 
@@ -256,25 +265,25 @@ class _NeuHomeState extends State<NeuHome> {
       // }
 
       if (noContact && noVibration && noMotion) {
-        statusSecurityDes = 'No intrusion was detected';
+        statusSecurityDes = (isEnglish)?'No intrusion was detected':'ไม่พบการบุกรุก';
         iconSecurity = Icons.verified_user_outlined;
-        statusSecurity = 'Undetected';
+        statusSecurity = (isEnglish)?'Undetected':'เหตุการณ์ปรกติ';
       } else if (!noMotion && noContact && noVibration) {
-        statusSecurityDes = 'Motion Sensor';
+        statusSecurityDes = (isEnglish)?'Motion Sensor':'เซนเซอร์ตรวจจับความเคลื่อนไหว';
         iconSecurity = Icons.directions_walk_rounded;
-        statusSecurity = 'Motion was detected';
+        statusSecurity = (isEnglish)?'Motion was detected':'ตรวจพบความเคลื่อนไหว';
       } else if (noMotion && noContact && !noVibration) {
-        statusSecurityDes = 'Vibration Sensor';
+        statusSecurityDes = (isEnglish)?'Vibration Sensor':"เซนเซอร์ตรวจจับการสั่นสะเทือน";
         iconSecurity = Icons.vibration_rounded;
-        statusSecurity = 'Vibration was detected';
+        statusSecurity = (isEnglish)?'Vibration was detected':"ตรวจพบการทุบกระจก";
       } else if (noMotion && !noContact && noVibration) {
-        statusSecurityDes = 'Contact Sensor';
+        statusSecurityDes = (isEnglish)?'Contact Sensor':"เซนเซอร์ตรวจจับการเปิดประตู";
         iconSecurity = Icons.sensor_door;
-        statusSecurity = 'Contact was detected';
+        statusSecurity = (isEnglish)?'Contact was detected':"ขณะนี้ประตูเปิดอยู่";
       } else {
-        statusSecurityDes = 'Intrusion was detected';
+        statusSecurityDes = (isEnglish)?'Intrusion was detected':"ตรวจพบการบุกรุก";
         iconSecurity = Icons.warning_amber_rounded;
-        statusSecurity = 'Detected';
+        statusSecurity = (isEnglish)?'Detected':"เหตุการณ์ไม่ปรกติ";
       }
 
       // membersAccess = realTimeData['Members Access'];
@@ -400,6 +409,36 @@ class _NeuHomeState extends State<NeuHome> {
     //print(DateFormat('hh:mm aaa').format(now));
     timerUnlock = DateFormat('hh:mm aaa').format(now);
 
+    String groupSceneTH(){
+      if(groupScene=="I'm Home"){
+        groupScene="มีคนอยู่บ้าน";
+      }
+      else if(groupScene=="I'm Leave"){
+        groupScene="ไม่มีคนอยู่บ้าน";
+      }
+      else if(groupScene=="Good Morning"){
+        groupScene="อรุณสวัสดิ์";
+      }
+      else{
+        groupScene="ราตรีสวัสดิ์";
+      }
+      return groupScene;
+    }
+
+    String nameTH(String thName){
+      if (thName == 'Taem Potsathorn') {
+              return "แต้ม พสธร";
+            } else if (thName == 'Taeng Jidapa') {
+              return "แตง จิดาภา";
+            } else if (thName == 'Tar Chanita') {
+              return "ต้า ชนิตา";
+            } else if (thName == 'Pat Supat') {
+              return "ภัทร์ สุภัทร์";
+            } else {
+              return "";
+            }
+    }
+
     // bool isDoorLock() {
     //   // readData();
 
@@ -440,922 +479,926 @@ class _NeuHomeState extends State<NeuHome> {
     // FirebaseMessaging fcm  =  FirebaseMessaging();
     // print(fcm.getToken());
 
-    return  Scaffold(
-        backgroundColor: Color(0xFFe6ebf2),
-        body:  Column(
-    children: [
-      Container(
-          child: Center(
-            child: Column(
-              children: [
-                SizedBox(
-        height: 40.0,
+    return Scaffold(
+       resizeToAvoidBottomPadding: false,
+      backgroundColor: Color(0xFFe6ebf2),
+      body: SingleChildScrollView(
+              child: Column(
+          children: [
+            Container(
+              child: Center(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 40.0,
+                    ),
+                    ListTile(
+                      title: Text(
+                        (isEnglish)?'Welcome Home!':'ยินดีต้อนรับกลับบ้านค่ะ',
+                        style: TextStyle(
+                          color: themeColor,
+                         // letterSpacing: 1.5,
+                          fontSize: 25.0,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "nunito",
+                        ),
+                      ),
+                      subtitle: Text(
+                        (isEnglish)?'Taem Potsathorn':'คุณพสธร ดวงแก้วเจริญ',
+                        style: TextStyle(
+                          fontWeight: (!isEnglish)?FontWeight.bold:null,
+                          fontSize: 19.0,
+                        ),
+                      ),
+                      trailing: Container(
+                          width: 50.0,
+                          height: 50.0,
+                          decoration: new BoxDecoration(
+                            image: new DecorationImage(
+                                fit: BoxFit.fill,
+                                image: new AssetImage("images/taem.png")),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8),
+                            ),
+                            shape: BoxShape.rectangle,
+                          )),
+                    ),
+                  ],
                 ),
-                ListTile(
-        title: Text(
-          'Welcome Home!',
-          style: TextStyle(
-            color: themeColor,
-            letterSpacing: 1.5,
-            fontSize: 25.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: "nunito",
-          ),
-        ),
-        subtitle: Text(
-          'Taem Potsathorn',
-          style: TextStyle(
-            fontSize: 20.0,
-          ),
-        ),
-        trailing: Container(
-            width: 50.0,
-            height: 50.0,
-            decoration: new BoxDecoration(
-              image: new DecorationImage(
-                  fit: BoxFit.fill,
-                  image: new AssetImage("images/taem.png")),
-              borderRadius: BorderRadius.all(
-                Radius.circular(8),
               ),
-              shape: BoxShape.rectangle,
-            )),
+            ),
+            SizedBox(
+              height: 3.0,
+            ),
+            Neumorphic(
+              style: NeumorphicStyle(shape: NeumorphicShape.flat, intensity: 1),
+              child: Container(
+                color: Color(0xFFe6ebf2),
+                width: MediaQuery.of(context).size.width - 20,
+                child: ListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      NeumorphicRadio(
+                        groupValue: groupScene,
+                        style:
+                            NeumorphicRadioStyle(shape: NeumorphicShape.convex),
+                        value: "I'm Home",
+                        onChanged: (value) {
+                          //context.bloc<SceneCubit>().scenetoggle(value);
+                          setState(() {
+                            groupScene = value;
+                            (groupScene != "I'm Home")
+                                ? null
+                                : bdref.child('Scene').update({
+                                    'Scene': groupScene,
+                                  });
+                          });
+                        },
+                        child: Container(
+                            color: (groupScene == "I'm Home")
+                                ? ((!isActived) ? themeColor : Color(0xFFd51a00))
+                                : Color(0xFFe6ebf2),
+                            height: 40,
+                            width: 40,
+                            child: Center(
+                                child: Icon(
+                              SimpleLineIcons.home,
+                              color: (groupScene == "I'm Home")
+                                  ? Colors.white
+                                  : Colors.black.withOpacity(.5),
+                            ))),
+                      ),
+                      SizedBox(
+                        width: 7.0,
+                      ),
+                      NeumorphicRadio(
+                        groupValue: groupScene,
+                        style:
+                            NeumorphicRadioStyle(shape: NeumorphicShape.convex),
+                        value: "I'm Leave",
+                        onChanged: (value) {
+                          //context.bloc<SceneCubit>().scenetoggle(value);
+                          setState(() {
+                            groupScene = value;
+                            (groupScene != "I'm Leave")
+                                ? null
+                                : bdref.child('Scene').update({
+                                    'Scene': groupScene,
+                                  });
+                          });
+                        },
+                        child: Container(
+                            color: (groupScene == "I'm Leave")
+                                ? (!isActived)
+                                    ? themeColor
+                                    : Color(0xFFd51a00)
+                                : Color(0xFFe6ebf2),
+                            height: 40,
+                            width: 40,
+                            child: Stack(children: [
+                              Positioned(
+                                left: 2,
+                                top: 4,
+                                child: Icon(
+                                  SimpleLineIcons.home,
+                                  color: (groupScene == "I'm Leave")
+                                      ? Colors.white
+                                      : Colors.black.withOpacity(.5),
+                                  size: 22,
+                                ),
+                              ),
+                              Positioned(
+                                right: 1,
+                                bottom: 1,
+                                child: Icon(
+                                  Icons.directions_walk_rounded,
+                                  color: (groupScene == "I'm Leave")
+                                      ? Colors.white
+                                      : Colors.black.withOpacity(.5),
+                                  // size: 20,
+                                ),
+                              ),
+                            ])),
+                      ),
+                      SizedBox(
+                        width: 5.0,
+                      ),
+                      NeumorphicRadio(
+                        groupValue: groupScene,
+                        style:
+                            NeumorphicRadioStyle(shape: NeumorphicShape.convex),
+                        value: "Good Morning",
+                        onChanged: (value) {
+                          //context.bloc<SceneCubit>().scenetoggle(value);
+                          setState(() {
+                            groupScene = value;
+                            (groupScene != "Good Morning")
+                                ? null
+                                : bdref.child('Scene').update({
+                                    'Scene': groupScene,
+                                  });
+                          });
+                        },
+                        child: Container(
+                            color: (groupScene == 'Good Morning')
+                                ? (!isActived)
+                                    ? themeColor
+                                    : Color(0xFFd51a00)
+                                : Color(0xFFe6ebf2),
+                            height: 40,
+                            width: 40,
+                            child: Center(
+                                child: Icon(
+                              FontAwesome.sun_o,
+                              color: (groupScene == 'Good Morning')
+                                  ? Colors.white
+                                  : Colors.black.withOpacity(.5),
+                            ))),
+                      ),
+                      SizedBox(
+                        width: 5.0,
+                      ),
+                      NeumorphicRadio(
+                        groupValue: groupScene,
+                        style:
+                            NeumorphicRadioStyle(shape: NeumorphicShape.convex),
+                        value: "Good Night",
+                        onChanged: (value) {
+                          //context.bloc<SceneCubit>().scenetoggle(value);
+                          setState(() {
+                            groupScene = value;
+
+                            (groupScene != "Good Night")
+                                ? null
+                                : bdref.child('Scene').update({
+                                    'Scene': groupScene,
+                                  });
+                          });
+                        },
+                        child: Container(
+                            color: (groupScene == 'Good Night')
+                                ? (!isActived)
+                                    ? themeColor
+                                    : Color(0xFFd51a00)
+                                : Color(0xFFe6ebf2),
+                            height: 40,
+                            width: 40,
+                            child: Center(
+                                child: Icon(
+                              FontAwesome.moon_o,
+                              color: (groupScene == 'Good Night')
+                                  ? Colors.white
+                                  : Colors.black.withOpacity(.5),
+                            ))),
+                      ),
+                    ],
+                  ),
+                  trailing: (groupScene != null)
+                      ? Container(
+                          color: Color(0xFFe6ebf2),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(3, 6, 3, 3),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text((isEnglish)?"Scene":"โหมด",
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      color: Colors.black.withOpacity(.5),
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                                Text((isEnglish)?groupScene:groupSceneTH(), //trow Excep debug
+                                    style: TextStyle(
+                                      fontSize: 17.0,
+                                      color: (!isActived)
+                                          ? themeColor
+                                          : Color(0xFFd51a00),
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                              ],
+                            ),
+                          ),
+                        )
+                      : Text(''),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  (isEnglish)?'  Members Last Access':'  สมาชิกที่เข้าบ้านล่าสุด',
+                  style: TextStyle(
+                    color: Colors.black.withOpacity(.5),
+                    letterSpacing: (isEnglish)?1:0,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "nunito",
+                  ),
                 ),
               ],
             ),
-          ),
-      ),
-      SizedBox(
-          height: 3.0,
-      ),
-      Neumorphic(
-          style: NeumorphicStyle(shape: NeumorphicShape.flat, intensity: 1),
-          child: Container(
-            color: Color(0xFFe6ebf2),
-            width: MediaQuery.of(context).size.width - 20,
-            child: ListTile(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-        NeumorphicRadio(
-          groupValue: groupScene,
-          style:
-              NeumorphicRadioStyle(shape: NeumorphicShape.convex),
-          value: "I'm Home",
-          onChanged: (value) {
-            //context.bloc<SceneCubit>().scenetoggle(value);
-            setState(() {
-              groupScene = value;
-              (groupScene != "I'm Home")
-                  ? null
-                  : bdref.child('Scene').update({
-                      'Scene': groupScene,
-                    });
-            });
-          },
-          child: Container(
-              color: (groupScene == "I'm Home")
-                  ? ((!isActived) ? themeColor : Color(0xFFd51a00))
-                  : Color(0xFFe6ebf2),
-              height: 40,
-              width: 40,
-              child: Center(
-                  child: Icon(
-                SimpleLineIcons.home,
-                color: (groupScene == "I'm Home")
-                    ? Colors.white
-                    : Colors.black.withOpacity(.5),
-              ))),
-        ),
-        SizedBox(
-          width: 7.0,
-        ),
-        NeumorphicRadio(
-          groupValue: groupScene,
-          style:
-              NeumorphicRadioStyle(shape: NeumorphicShape.convex),
-          value: "I'm Leave",
-          onChanged: (value) {
-            //context.bloc<SceneCubit>().scenetoggle(value);
-            setState(() {
-              groupScene = value;
-              (groupScene != "I'm Leave")
-                  ? null
-                  : bdref.child('Scene').update({
-                      'Scene': groupScene,
-                    });
-            });
-          },
-          child: Container(
-              color: (groupScene == "I'm Leave")
-                  ? (!isActived)
-                      ? themeColor
-                      : Color(0xFFd51a00)
-                  : Color(0xFFe6ebf2),
-              height: 40,
-              width: 40,
-              child: Stack(children: [
-                Positioned(
-                  left: 2,
-                  top: 4,
-                  child: Icon(
-                    SimpleLineIcons.home,
-                    color: (groupScene == "I'm Leave")
-                        ? Colors.white
-                        : Colors.black.withOpacity(.5),
-                    size: 22,
+            SizedBox(
+              height: 5.0,
+            ),
+            Neumorphic(
+                style: NeumorphicStyle(shape: NeumorphicShape.flat, intensity: 1),
+                child: Container(
+                  color: Color(0xFFe6ebf2),
+                  width: MediaQuery.of(context).size.width - 20,
+                  // height: 50.0,
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: CircleAvatar(
+                          radius: 30.0,
+                          backgroundColor: Colors.white,
+                          backgroundImage: new AssetImage(
+                            // ignore: null_aware_before_operator
+                            (memInfo?.length > 0
+                                ? memInfo[0].utlimg
+                                : "images/def.png"),
+                          ),
+                        ),
+                        title: Text(
+                          // ignore: null_aware_before_operator
+                          (memInfo?.length > 0 ? (isEnglish)? memInfo[0].name:nameTH(memInfo[0].name) : 'loading...'),
+                          style: TextStyle(
+                            color: themeColor,
+
+                            //letterSpacing: 1,
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "nunito",
+                          ),
+                        ),
+                        // ignore: null_aware_before_operator
+                        subtitle: Text(
+                            // ignore: null_aware_before_operator
+                            (memInfo?.length > 0 ? memInfo[0].date : 'loading...') +
+                                ', ' +
+                                // ignore: null_aware_before_operator
+                                (memInfo?.length > 0 ? memInfo[0].time : '')),
+                        trailing: Icon(Icons.keyboard_arrow_right),
+                        onTap: () {
+                          _gotoAttendance();
+                        },
+                      ),
+                    ],
+                  ),
+                )),
+            SizedBox(
+              height: 20.0,
+            ),
+            GestureDetector(
+              onTap: () => _gotoIntrusion(),
+              child: Neumorphic(
+                style: NeumorphicStyle(
+                    // boxShape: NeumorphicBoxShape.circle(),
+                    shape: NeumorphicShape.flat,
+                    intensity: 1),
+                child: Container(
+                  color: Color(0xFFe6ebf2),
+                  width: MediaQuery.of(context).size.width - 20,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 7,
+                      ),
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Icon(
+                                Icons.policy,
+                                color:
+                                    (!isActived) ? themeColor : Color(0xFFd51a00),
+                                size: 35,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                (isEnglish)? 'Intrusion Detection':'ระบบตรวจจับการบุกรุก',
+                                style: TextStyle(
+                                  color: (!isActived) ? themeColor : Color(0xFFd51a00),
+                                  letterSpacing: (isEnglish)?1:0,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "nunito",
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 5.0,
+                          ),
+                          Text(
+                            statusSecurityDes,
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(.5),
+                              letterSpacing: (isEnglish)?1:0,
+                              fontSize: 15.0,
+                              fontFamily: "nunito",
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5.0,
+                          ),
+                          Text(
+                            statusSecurity,
+                            style: TextStyle(
+                              color:
+                                  (!isActived) ? themeColor : Color(0xFFd51a00),
+                              //letterSpacing: 1,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "nunito",
+                            ),
+                          ),
+                        ],
+                      ),
+                      Neumorphic(
+                        style: NeumorphicStyle(shape: NeumorphicShape.convex),
+                        child: Container(
+                          height: 120,
+                          width: 120,
+                          color: Color(0xFFe6ebf2),
+                          child: Icon(
+                            iconSecurity,
+                            color: (!isActived) ? themeColor : Color(0xFFd51a00),
+                            size: 100,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Positioned(
-                  right: 1,
-                  bottom: 1,
-                  child: Icon(
-                    Icons.directions_walk_rounded,
-                    color: (groupScene == "I'm Leave")
-                        ? Colors.white
-                        : Colors.black.withOpacity(.5),
-                    // size: 20,
+              ),
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  (isEnglish)?'  Security System Control':'  การควบคุมระบบรักษาความปลอดภัย',
+                  style: TextStyle(
+                    color: Colors.black.withOpacity(.5),
+                    letterSpacing: (isEnglish)?1:0,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "nunito",
                   ),
                 ),
-              ])),
-        ),
-        SizedBox(
-          width: 5.0,
-        ),
-        NeumorphicRadio(
-          groupValue: groupScene,
-          style:
-              NeumorphicRadioStyle(shape: NeumorphicShape.convex),
-          value: "Good Morning",
-          onChanged: (value) {
-            //context.bloc<SceneCubit>().scenetoggle(value);
-            setState(() {
-              groupScene = value;
-              (groupScene != "Good Morning")
-                  ? null
-                  : bdref.child('Scene').update({
-                      'Scene': groupScene,
-                    });
-            });
-          },
-          child: Container(
-              color: (groupScene == 'Good Morning')
-                  ? (!isActived)
-                      ? themeColor
-                      : Color(0xFFd51a00)
-                  : Color(0xFFe6ebf2),
-              height: 40,
-              width: 40,
-              child: Center(
-                  child: Icon(
-                FontAwesome.sun_o,
-                color: (groupScene == 'Good Morning')
-                    ? Colors.white
-                    : Colors.black.withOpacity(.5),
-              ))),
-        ),
-        SizedBox(
-          width: 5.0,
-        ),
-        NeumorphicRadio(
-          groupValue: groupScene,
-          style:
-              NeumorphicRadioStyle(shape: NeumorphicShape.convex),
-          value: "Good Night",
-          onChanged: (value) {
-            //context.bloc<SceneCubit>().scenetoggle(value);
-            setState(() {
-              groupScene = value;
-
-              (groupScene != "Good Night")
-                  ? null
-                  : bdref.child('Scene').update({
-                      'Scene': groupScene,
-                    });
-            });
-          },
-          child: Container(
-              color: (groupScene == 'Good Night')
-                  ? (!isActived)
-                      ? themeColor
-                      : Color(0xFFd51a00)
-                  : Color(0xFFe6ebf2),
-              height: 40,
-              width: 40,
-              child: Center(
-                  child: Icon(
-                FontAwesome.moon_o,
-                color: (groupScene == 'Good Night')
-                    ? Colors.white
-                    : Colors.black.withOpacity(.5),
-              ))),
-        ),
-                ],
-              ),
-              trailing: (groupScene != null)
-        ? Container(
-            color: Color(0xFFe6ebf2),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(3, 6, 3, 3),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text("Scene",
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.black.withOpacity(.5),
-                        fontWeight: FontWeight.bold,
-                      )),
-                  Text(groupScene, //trow Excep debug
-                      style: TextStyle(
-                        fontSize: 17.0,
-                        color: (!isActived)
-                            ? themeColor
-                            : Color(0xFFd51a00),
-                        fontWeight: FontWeight.bold,
-                      )),
-                ],
-              ),
+              ],
             ),
-          )
-        : Text(''),
+            SizedBox(
+              height: 10.0,
             ),
-          ),
-      ),
-      SizedBox(
-          height: 10.0,
-      ),
-      Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              '  Members Last Access',
-              style: TextStyle(
-                color: Colors.black.withOpacity(.5),
-                letterSpacing: 1,
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-                fontFamily: "nunito",
-              ),
-            ),
-          ],
-      ),
-      SizedBox(
-          height: 5.0,
-      ),
-      Neumorphic(
-            style: NeumorphicStyle(shape: NeumorphicShape.flat, intensity: 1),
-            child: Container(
-              color: Color(0xFFe6ebf2),
-              width: MediaQuery.of(context).size.width - 20,
-              // height: 50.0,
-              child: Column(
-                children: [
-        ListTile(
-          leading: CircleAvatar(
-            radius: 30.0,
-            backgroundColor: Colors.white,
-            backgroundImage: new AssetImage(
-              // ignore: null_aware_before_operator
-              (memInfo?.length > 0
-                  ? memInfo[0].utlimg
-                  : "images/def.png"),
-            ),
-          ),
-          title: Text(
-            // ignore: null_aware_before_operator
-            (memInfo?.length > 0 ? memInfo[0].name : ''),
-            style: TextStyle(
-              color: themeColor,
-
-              //letterSpacing: 1,
-              fontSize: 15.0,
-              fontWeight: FontWeight.bold,
-              fontFamily: "nunito",
-            ),
-          ),
-          // ignore: null_aware_before_operator
-          subtitle: Text(
-              // ignore: null_aware_before_operator
-              (memInfo?.length > 0 ? memInfo[0].date : '') +
-                  ', ' +
-                  // ignore: null_aware_before_operator
-                  (memInfo?.length > 0 ? memInfo[0].time : '')),
-          trailing: Icon(Icons.keyboard_arrow_right),
-          onTap: () {
-            _gotoAttendance();
-          },
-        ),
-                ],
-              ),
-            )),
-      SizedBox(
-          height: 20.0,
-      ),
-      GestureDetector(
-          onTap: () => _gotoIntrusion(),
-          child: Neumorphic(
-            style: NeumorphicStyle(
-                // boxShape: NeumorphicBoxShape.circle(),
-                shape: NeumorphicShape.flat,
-                intensity: 1),
-            child: Container(
-              color: Color(0xFFe6ebf2),
-              width: MediaQuery.of(context).size.width - 20,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-        SizedBox(
-          width: 7,
-        ),
-        Column(
-          children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Icon(
-                  Icons.policy,
-                  color:
-                      (!isActived) ? themeColor : Color(0xFFd51a00),
-                  size: 35,
+                Neumorphic(
+                  style:
+                      NeumorphicStyle(shape: NeumorphicShape.flat, intensity: 1),
+                  child: Container(
+                    color: Color(0xFFe6ebf2),
+                    width: MediaQuery.of(context).size.width / 2.2,
+                    height: MediaQuery.of(context).size.width / 3,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.lock_outline,
+                              color: (isLocked)
+                                  ? themeColor
+                                  : Colors.black.withOpacity(.5),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 5,
+                            ),
+                            GestureDetector(
+                              onTap: () => _gotoLockink(),
+                              child: Text(
+                                (isEnglish)?'Remote Locking':'การล็อกจากระยะไกล',
+                                style: TextStyle(
+                                  color: (isLocked)
+                                      ? themeColor
+                                      : Colors.black.withOpacity(.5),
+                                  //letterSpacing: 1,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "nunito",
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 3.0,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              (isEnglish)?'Manage your door latch':(isLocked) ?'สั่งการปลดล็อกประตู':'สั่งการล็อกประตู',
+                              style: TextStyle(
+                                color: (isLocked)
+                                    ? themeColor
+                                    : Colors.black.withOpacity(.5),
+                                fontSize: 13.0,
+                                fontFamily: "nunito",
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 13.0,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              (isLocked) ? (isEnglish)?'Lock':'ล็อก' : (isEnglish)?'Unlock':'ไม่ล็อก',
+                              style: TextStyle(
+                                color: (isLocked)
+                                    ? themeColor
+                                    : Colors.black.withOpacity(.5),
+                                //letterSpacing: 1,
+                                fontSize: 17.0,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "nunito",
+                              ),
+                            ),
+                            SizedBox(
+                              width: 13.0,
+                            ),
+                            Container(
+                              height: 20,
+                              width: 40,
+                              child: NeumorphicSwitch(
+                                value: isLocked,
+                                style: NeumorphicSwitchStyle(
+                                  activeTrackColor: (!isActived)
+                                      ? themeColor
+                                      : Color(0xFFd51a00),
+                                ),
+                                onChanged: (value) {
+                                  (isLocked) ? isAuthenticated = false : null;
+                                  print(isLocked);
+
+                                  (isLocked && !isAuthenticated)
+                                      ? _showLockScreen(
+                                          context,
+                                          opaque: false,
+                                          cancelButton: Text(
+                                            'Cancel',
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.white),
+                                            semanticsLabel: 'Cancel',
+                                          ),
+                                        )
+                                      : setState(() {
+                                          isLocked = value;
+                                          bdref.child('Remote Locking').update({
+                                            'Door':
+                                                (isLocked) ? 'Lock' : 'Unlock',
+                                          });
+                                        });
+                                },
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    //color: Colors.red,
+                  ),
+                ),
+                Neumorphic(
+                  style: NeumorphicStyle(
+                      // boxShape: NeumorphicBoxShape.circle(),
+                      shape: NeumorphicShape.flat,
+                      intensity: 1),
+                  child: Container(
+                    color: Color(0xFFe6ebf2),
+                    width: MediaQuery.of(context).size.width / 2.2,
+                    height: MediaQuery.of(context).size.width / 3,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.lightbulb_outline,
+                              color: (isOn)
+                                  ? themeColor
+                                  : Colors.black.withOpacity(.5),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 5,
+                            ),
+                            GestureDetector(
+                              onTap: () => _gotoLightnig(),
+                              child: Text(
+                                (isEnglish)?'Security Lighting':'ระบบแสงสว่างอัจฉริยะ',
+                                style: TextStyle(
+                                  color: (isOn)
+                                      ? themeColor
+                                      : Colors.black.withOpacity(.5),
+                                  //letterSpacing: 1,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "nunito",
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 3.0,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              (isEnglish)?'Manage your lights':'ควบคุมแสงสว่างของบ้าน',
+                              style: TextStyle(
+                                color: (isOn)
+                                    ? themeColor
+                                    : Colors.black.withOpacity(.5),
+                                //letterSpacing: 1,
+                                fontSize: 13.0,
+                                // fontWeight: FontWeight.bold,
+                                fontFamily: "nunito",
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 13.0,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              (isOn) ? (isEnglish)?'On':'เปิด' : (isEnglish)?'Off':'ปิด',
+                              style: TextStyle(
+                                color: (isOn)
+                                    ? themeColor
+                                    : Colors.black.withOpacity(.5),
+                                //letterSpacing: 1,
+                                fontSize: 17.0,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "nunito",
+                              ),
+                            ),
+                            SizedBox(
+                              width: 13.0,
+                            ),
+                            Container(
+                              height: 20,
+                              width: 40,
+                              child: NeumorphicSwitch(
+                                value: isOn,
+                                style: NeumorphicSwitchStyle(
+                                  activeTrackColor: (!isActived)
+                                      ? themeColor
+                                      : Color(0xFFd51a00),
+                                ),
+                                onChanged: (value) {
+                                  isOn = value;
+
+                                  bdref
+                                      .child('Security Light')
+                                      .update({'Light': (isOn) ? 'On' : 'Off'});
+                                  setState(() {});
+                                },
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    //color: Colors.red,
+                  ),
                 ),
               ],
+            ),
+            SizedBox(
+              height: 15.0,
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text(
-                  'Intrusion Detection',
-                  style: TextStyle(
-                    color: Colors.black.withOpacity(.5),
-                    letterSpacing: 1,
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "nunito",
+                Neumorphic(
+                  style: NeumorphicStyle(
+                      // boxShape: NeumorphicBoxShape.circle(),
+                      shape: NeumorphicShape.flat,
+                      intensity: 1),
+                  child: Container(
+                    color: Color(0xFFe6ebf2),
+                    width: MediaQuery.of(context).size.width / 2.2,
+                    height: MediaQuery.of(context).size.width / 3,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.notifications_active_outlined,
+                              color: (isActived)
+                                  ? themeColor
+                                  : Colors.black.withOpacity(.5),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 5,
+                            ),
+                            GestureDetector(
+                              onTap: () => _gotoAlarm(),
+                              child: Text(
+                                (isEnglish)?'Sound Alarm':'เสียงเตือนภัย',
+                                style: TextStyle(
+                                  color: (isActived)
+                                      ? themeColor
+                                      : Colors.black.withOpacity(.5),
+                                  //letterSpacing: 1,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "nunito",
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 3.0,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              (isEnglish)?'Manage your sound alarm':'ควบคุมการทำงานกริ่งเตือนภัย',
+                              style: TextStyle(
+                                color: (isActived)
+                                    ? themeColor
+                                    : Colors.black.withOpacity(.5),
+                                fontSize: 13.0,
+                                fontFamily: "nunito",
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 13.0,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              (isActived) ? (isEnglish)?'Active':'ทำงาน' : (isEnglish)?'Inactive':'ไม่ทำงาน',
+                              style: TextStyle(
+                                color: (isActived)
+                                    ? themeColor
+                                    : Colors.black.withOpacity(.5),
+                                fontSize: 17.0,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "nunito",
+                              ),
+                            ),
+                            SizedBox(
+                              width: 13.0,
+                            ),
+                            Container(
+                              height: 20,
+                              width: 40,
+                              child: NeumorphicSwitch(
+                                value: isActived,
+                                style: NeumorphicSwitchStyle(
+                                  activeTrackColor: (!isActived)
+                                      ? themeColor
+                                      : Color(0xFFd51a00),
+                                ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    isActived = value;
+                                    bdref.child('Sound Alarm').update({
+                                      'Alert': (isActived) ? 'Active' : 'Inactive'
+                                    });
+
+                                    setState(() {});
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Neumorphic(
+                  style: NeumorphicStyle(
+                    shape: NeumorphicShape.flat,
+                    intensity: 1,
+                  ),
+                  child: Container(
+                    color: Color(0xFFe6ebf2),
+                    width: MediaQuery.of(context).size.width / 2.2,
+                    height: MediaQuery.of(context).size.width / 3,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              Icons.videocam_outlined,
+                              color: themeColor,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 5,
+                            ),
+                            GestureDetector(
+                              onTap: () => _gotoCamera(),
+                              child: Text(
+                                (isEnglish)?'Video Streaming':'ระบบดูภาพเคลื่อนไหว',
+                                style: TextStyle(
+                                  color: themeColor,
+                                  //letterSpacing: 1,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "nunito",
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 3.0,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              (isEnglish)?'Monitors home activities':'ดูภาพเหตุการณ์บริเวณบ้าน',
+                              style: TextStyle(
+                                color: themeColor,
+                                //letterSpacing: 1,
+                                fontSize: 13.0,
+                                // fontWeight: FontWeight.bold,
+                                fontFamily: "nunito",
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 13.0,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              (isEnglish)?'Streaming...':'สตรีมมิ่ง...',
+                              style: TextStyle(
+                                color: themeColor,
+                                //letterSpacing: 1,
+                                fontSize: 17.0,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "nunito",
+                              ),
+                            ),
+                            SizedBox(
+                              width: 13.0,
+                            ),
+                            Icon(
+                              Icons.double_arrow_rounded,
+                              color:
+                                  (!isActived) ? themeColor : Color(0xFFd51a00),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ],
-            ),
-            SizedBox(
-              height: 5.0,
-            ),
-            Text(
-              statusSecurityDes,
-              style: TextStyle(
-                color: Colors.black.withOpacity(.5),
-                letterSpacing: 1,
-                fontSize: 15.0,
-                fontFamily: "nunito",
-              ),
-            ),
-            SizedBox(
-              height: 5.0,
-            ),
-            Text(
-              statusSecurity,
-              style: TextStyle(
-                color:
-                    (!isActived) ? themeColor : Color(0xFFd51a00),
-                //letterSpacing: 1,
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-                fontFamily: "nunito",
-              ),
-            ),
+            )
           ],
         ),
-        Neumorphic(
-          style: NeumorphicStyle(shape: NeumorphicShape.convex),
-          child: Container(
-            height: 120,
-            width: 120,
-            color: Color(0xFFe6ebf2),
-            child: Icon(
-              iconSecurity,
-              color: (!isActived) ? themeColor : Color(0xFFd51a00),
-              size: 100,
-            ),
-          ),
-        ),
-                ],
-              ),
-            ),
-          ),
       ),
-      SizedBox(
-          height: 20.0,
-      ),
-      Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              '  Security System Control',
-              style: TextStyle(
-                color: Colors.black.withOpacity(.5),
-                letterSpacing: 1,
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-                fontFamily: "nunito",
-              ),
-            ),
-          ],
-      ),
-      SizedBox(
-          height: 10.0,
-      ),
-      Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Neumorphic(
-              style:
-        NeumorphicStyle(shape: NeumorphicShape.flat, intensity: 1),
-              child: Container(
-                color: Color(0xFFe6ebf2),
-                width: MediaQuery.of(context).size.width / 2.2,
-                height: MediaQuery.of(context).size.width / 3,
-                child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 5.0,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 5,
-              ),
-              Icon(
-                Icons.lock_outline,
-                color: (isLocked)
-                    ? themeColor
-                    : Colors.black.withOpacity(.5),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 10.0,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 5,
-              ),
-              GestureDetector(
-                onTap: () => _gotoLockink(),
-                child: Text(
-                  'Remote Locking',
-                  style: TextStyle(
-                    color: (isLocked)
-                        ? themeColor
-                        : Colors.black.withOpacity(.5),
-                    //letterSpacing: 1,
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "nunito",
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 3.0,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 5,
-              ),
-              Text(
-                'Manage your door latch',
-                style: TextStyle(
-                  color: (isLocked)
-                      ? themeColor
-                      : Colors.black.withOpacity(.5),
-                  fontSize: 13.0,
-                  fontFamily: "nunito",
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 13.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Text(
-                (isLocked) ? 'Lock' : 'Unlock',
-                style: TextStyle(
-                  color: (isLocked)
-                      ? themeColor
-                      : Colors.black.withOpacity(.5),
-                  //letterSpacing: 1,
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "nunito",
-                ),
-              ),
-              SizedBox(
-                width: 13.0,
-              ),
-              Container(
-                height: 20,
-                width: 40,
-                child: NeumorphicSwitch(
-                  value: isLocked,
-                  style: NeumorphicSwitchStyle(
-                    activeTrackColor: (!isActived)
-                        ? themeColor
-                        : Color(0xFFd51a00),
-                  ),
-                  onChanged: (value) {
-                    (isLocked) ? isAuthenticated = false : null;
-                    print(isLocked);
-
-                    (isLocked && !isAuthenticated)
-                        ? _showLockScreen(
-                            context,
-                            opaque: false,
-                            cancelButton: Text(
-                              'Cancel',
-                              style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white),
-                              semanticsLabel: 'Cancel',
-                            ),
-                          )
-                        : setState(() {
-                            isLocked = value;
-                            bdref.child('Remote Locking').update({
-                              'Door':
-                                  (isLocked) ? 'Lock' : 'Unlock',
-                            });
-                          });
-                  },
-                ),
-              ),
-            ],
-          )
-        ],
-                ),
-                //color: Colors.red,
-              ),
-            ),
-            Neumorphic(
-              style: NeumorphicStyle(
-        // boxShape: NeumorphicBoxShape.circle(),
-        shape: NeumorphicShape.flat,
-        intensity: 1),
-              child: Container(
-                color: Color(0xFFe6ebf2),
-                width: MediaQuery.of(context).size.width / 2.2,
-                height: MediaQuery.of(context).size.width / 3,
-                child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 5.0,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 5,
-              ),
-              Icon(
-                Icons.lightbulb_outline,
-                color: (isOn)
-                    ? themeColor
-                    : Colors.black.withOpacity(.5),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 10.0,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 5,
-              ),
-              GestureDetector(
-                onTap: () => _gotoLightnig(),
-                child: Text(
-                  'Security Lighting',
-                  style: TextStyle(
-                    color: (isOn)
-                        ? themeColor
-                        : Colors.black.withOpacity(.5),
-                    //letterSpacing: 1,
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "nunito",
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 3.0,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 5,
-              ),
-              Text(
-                'Manage your lights',
-                style: TextStyle(
-                  color: (isOn)
-                      ? themeColor
-                      : Colors.black.withOpacity(.5),
-                  //letterSpacing: 1,
-                  fontSize: 13.0,
-                  // fontWeight: FontWeight.bold,
-                  fontFamily: "nunito",
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 13.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Text(
-                (isOn) ? 'On' : 'Off',
-                style: TextStyle(
-                  color: (isOn)
-                      ? themeColor
-                      : Colors.black.withOpacity(.5),
-                  //letterSpacing: 1,
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "nunito",
-                ),
-              ),
-              SizedBox(
-                width: 13.0,
-              ),
-              Container(
-                height: 20,
-                width: 40,
-                child: NeumorphicSwitch(
-                  value: isOn,
-                  style: NeumorphicSwitchStyle(
-                    activeTrackColor: (!isActived)
-                        ? themeColor
-                        : Color(0xFFd51a00),
-                  ),
-                  onChanged: (value) {
-                    isOn = value;
-
-                    bdref
-                        .child('Security Light')
-                        .update({'Light': (isOn) ? 'On' : 'Off'});
-                    setState(() {});
-                  },
-                ),
-              ),
-            ],
-          )
-        ],
-                ),
-                //color: Colors.red,
-              ),
-            ),
-          ],
-      ),
-      SizedBox(
-          height: 15.0,
-      ),
-      Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Neumorphic(
-              style: NeumorphicStyle(
-        // boxShape: NeumorphicBoxShape.circle(),
-        shape: NeumorphicShape.flat,
-        intensity: 1),
-              child: Container(
-                color: Color(0xFFe6ebf2),
-                width: MediaQuery.of(context).size.width / 2.2,
-                height: MediaQuery.of(context).size.width / 3,
-                child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 5.0,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 5,
-              ),
-              Icon(
-                Icons.notifications_active_outlined,
-                color: (isActived)
-                    ? themeColor
-                    : Colors.black.withOpacity(.5),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 10.0,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 5,
-              ),
-              GestureDetector(
-                onTap: () => _gotoAlarm(),
-                child: Text(
-                  'Sound Alarm',
-                  style: TextStyle(
-                    color: (isActived)
-                        ? themeColor
-                        : Colors.black.withOpacity(.5),
-                    //letterSpacing: 1,
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "nunito",
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 3.0,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 5,
-              ),
-              Text(
-                'Manage your sound alarm',
-                style: TextStyle(
-                  color: (isActived)
-                      ? themeColor
-                      : Colors.black.withOpacity(.5),
-                  fontSize: 13.0,
-                  fontFamily: "nunito",
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 13.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Text(
-                (isActived) ? 'Active' : 'Inactive',
-                style: TextStyle(
-                  color: (isActived)
-                      ? themeColor
-                      : Colors.black.withOpacity(.5),
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "nunito",
-                ),
-              ),
-              SizedBox(
-                width: 13.0,
-              ),
-              Container(
-                height: 20,
-                width: 40,
-                child: NeumorphicSwitch(
-                  value: isActived,
-                  style: NeumorphicSwitchStyle(
-                    activeTrackColor: (!isActived)
-                        ? themeColor
-                        : Color(0xFFd51a00),
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      isActived = value;
-                      bdref.child('Sound Alarm').update({
-                        'Alert': (isActived) ? 'Active' : 'Inactive'
-                      });
-
-                      setState(() {});
-                    });
-                  },
-                ),
-              ),
-            ],
-          )
-        ],
-                ),
-              ),
-            ),
-            Neumorphic(
-              style: NeumorphicStyle(
-                shape: NeumorphicShape.flat,
-                intensity: 1,
-              ),
-              child: Container(
-                color: Color(0xFFe6ebf2),
-                width: MediaQuery.of(context).size.width / 2.2,
-                height: MediaQuery.of(context).size.width / 3,
-                child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 5.0,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 5,
-              ),
-              Icon(
-                Icons.videocam_outlined,
-                color: themeColor,
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 10.0,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 5,
-              ),
-              GestureDetector(
-                onTap: () => _gotoCamera(),
-                child: Text(
-                  'Video Streaming',
-                  style: TextStyle(
-                    color: themeColor,
-                    //letterSpacing: 1,
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "nunito",
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 3.0,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 5,
-              ),
-              Text(
-                'Monitors home activities',
-                style: TextStyle(
-                  color: themeColor,
-                  //letterSpacing: 1,
-                  fontSize: 13.0,
-                  // fontWeight: FontWeight.bold,
-                  fontFamily: "nunito",
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 13.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Text(
-                'Streaming...',
-                style: TextStyle(
-                  color: themeColor,
-                  //letterSpacing: 1,
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "nunito",
-                ),
-              ),
-              SizedBox(
-                width: 13.0,
-              ),
-              Icon(
-                Icons.double_arrow_rounded,
-                color:
-                    (!isActived) ? themeColor : Color(0xFFd51a00),
-              )
-            ],
-          )
-        ],
-                ),
-              ),
-            ),
-          ],
-      )
-    ],
-          ),
-      );
+    );
   }
 
   void dispose() {

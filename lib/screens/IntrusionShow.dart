@@ -142,299 +142,301 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
           child: Text('INTRUSION DETECTION'),
         ),
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              NeumorphicButton(
-                style: NeumorphicStyle(
-                    shape: NeumorphicShape.flat, color: Color(0xFFe6ebf2)),
-                child: Icon(Icons.arrow_back_ios_rounded,
-                    color: Colors.black.withOpacity(0.5)),
-                padding: EdgeInsets.all(10),
-                onPressed: () {
-                  count++;
-                  (locationNum <= 0)
-                      ? locationNum = location.length - 1
-                      : locationNum = locationNum - 1;
-                  setState(() {});
-                },
-              ),
-              Column(
-                children: [
-                  Text(
-                    location[locationNum].location,
-                    style: TextStyle(
-                      color: themeColors,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "nunito",
-                    ),
-                  ),
-                  Text(
-                    location[locationNum].floor,
-                    style: TextStyle(
-                      color: themeColors,
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "nunito",
-                    ),
-                  ),
-                ],
-              ),
-              NeumorphicButton(
-                style: NeumorphicStyle(
-                    shape: NeumorphicShape.flat, color: Color(0xFFe6ebf2)),
-                child: Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: Colors.black.withOpacity(0.5),
+      body:  SingleChildScrollView(
+              child: Column(
+          children: [
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                NeumorphicButton(
+                  style: NeumorphicStyle(
+                      shape: NeumorphicShape.flat, color: Color(0xFFe6ebf2)),
+                  child: Icon(Icons.arrow_back_ios_rounded,
+                      color: Colors.black.withOpacity(0.5)),
+                  padding: EdgeInsets.all(10),
+                  onPressed: () {
+                    count++;
+                    (locationNum <= 0)
+                        ? locationNum = location.length - 1
+                        : locationNum = locationNum - 1;
+                    setState(() {});
+                  },
                 ),
-                padding: EdgeInsets.all(10),
-                onPressed: () {
-                  count++;
-                  (locationNum >= location.length - 1)
-                      ? locationNum = 0
-                      : locationNum = locationNum + 1;
-                  setState(() {});
-                },
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Container(
-            height: 300,
-            width: 300,
-            child: CircleImg(imgurl: location[locationNum].imgUrl),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Neumorphic(
-              style: NeumorphicStyle(
-                depth: 3,
-                shape: NeumorphicShape.flat,
-              ),
-              child: Container(
-                color: Color(0xFFe6ebf2),
-                width: MediaQuery.of(context).size.width - 50,
-
-                // height: 50.0,
-                child: Column(
+                Column(
                   children: [
-                    ListTile(
-                      leading: Neumorphic(
-                        style: NeumorphicStyle(
-                            depth: 2,
-                            color: Color(0xFFe6ebf2),
-                            shape: NeumorphicShape.flat,
-                            oppositeShadowLightSource: true),
-                        padding: EdgeInsets.all(5),
-                        child: Neumorphic(
+                    Text(
+                      location[locationNum].location,
+                      style: TextStyle(
+                        color: themeColors,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "nunito",
+                      ),
+                    ),
+                    Text(
+                      location[locationNum].floor,
+                      style: TextStyle(
+                        color: themeColors,
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "nunito",
+                      ),
+                    ),
+                  ],
+                ),
+                NeumorphicButton(
+                  style: NeumorphicStyle(
+                      shape: NeumorphicShape.flat, color: Color(0xFFe6ebf2)),
+                  child: Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    color: Colors.black.withOpacity(0.5),
+                  ),
+                  padding: EdgeInsets.all(10),
+                  onPressed: () {
+                    count++;
+                    (locationNum >= location.length - 1)
+                        ? locationNum = 0
+                        : locationNum = locationNum + 1;
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              height: 300,
+              width: 300,
+              child: CircleImg(imgurl: location[locationNum].imgUrl),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Neumorphic(
+                style: NeumorphicStyle(
+                  depth: 3,
+                  shape: NeumorphicShape.flat,
+                ),
+                child: Container(
+                  color: Color(0xFFe6ebf2),
+                  width: MediaQuery.of(context).size.width - 50,
+
+                  // height: 50.0,
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: Neumorphic(
                           style: NeumorphicStyle(
                               depth: 2,
                               color: Color(0xFFe6ebf2),
                               shape: NeumorphicShape.flat,
                               oppositeShadowLightSource: true),
                           padding: EdgeInsets.all(5),
-                          child: Icon(
-                            Icons.directions_walk_rounded,
-                            size: 30,
+                          child: Neumorphic(
+                            style: NeumorphicStyle(
+                                depth: 2,
+                                color: Color(0xFFe6ebf2),
+                                shape: NeumorphicShape.flat,
+                                oppositeShadowLightSource: true),
+                            padding: EdgeInsets.all(5),
+                            child: Icon(
+                              Icons.directions_walk_rounded,
+                              size: 30,
+                              color:
+                                  (location[locationNum].motionStatus == 'NORMAL')
+                                      ? themeColors
+                                      : Colors.redAccent[700],
+                            ),
+                          ),
+                        ),
+                        title: Text(
+                          'Motion Sensor',
+                          style: TextStyle(
                             color:
                                 (location[locationNum].motionStatus == 'NORMAL')
                                     ? themeColors
                                     : Colors.redAccent[700],
+
+                            //letterSpacing: 1,
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "nunito",
                           ),
                         ),
-                      ),
-                      title: Text(
-                        'Motion Sensor',
-                        style: TextStyle(
-                          color:
-                              (location[locationNum].motionStatus == 'NORMAL')
-                                  ? themeColors
-                                  : Colors.redAccent[700],
-
-                          //letterSpacing: 1,
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "nunito",
+                        // ignore: null_aware_before_operator
+                        subtitle: Text(location[locationNum].motionStatus),
+                        trailing: Icon(
+                          (location[locationNum].motionStatus == 'NORMAL')
+                              ? null
+                              : Icons.warning_amber_rounded,
+                          color: Colors.redAccent[700],
                         ),
+                        onTap: () {
+                          // _gotoAttendance();
+                        },
                       ),
-                      // ignore: null_aware_before_operator
-                      subtitle: Text(location[locationNum].motionStatus),
-                      trailing: Icon(
-                        (location[locationNum].motionStatus == 'NORMAL')
-                            ? null
-                            : Icons.warning_amber_rounded,
-                        color: Colors.redAccent[700],
-                      ),
-                      onTap: () {
-                        // _gotoAttendance();
-                      },
-                    ),
-                  ],
+                    ],
+                  ),
+                )),
+            SizedBox(
+              height: 12,
+            ),
+            Neumorphic(
+                style: NeumorphicStyle(
+                  depth: 3,
+                  shape: NeumorphicShape.flat,
                 ),
-              )),
-          SizedBox(
-            height: 12,
-          ),
-          Neumorphic(
-              style: NeumorphicStyle(
-                depth: 3,
-                shape: NeumorphicShape.flat,
-              ),
-              child: Container(
-                color: Color(0xFFe6ebf2),
-                width: MediaQuery.of(context).size.width - 50,
+                child: Container(
+                  color: Color(0xFFe6ebf2),
+                  width: MediaQuery.of(context).size.width - 50,
 
-                // height: 50.0,
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading: Neumorphic(
-                        style: NeumorphicStyle(
-                            depth: 2,
-                            color: Color(0xFFe6ebf2),
-                            shape: NeumorphicShape.flat,
-                            oppositeShadowLightSource: true),
-                        padding: EdgeInsets.all(5),
-                        child: Neumorphic(
+                  // height: 50.0,
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: Neumorphic(
                           style: NeumorphicStyle(
                               depth: 2,
                               color: Color(0xFFe6ebf2),
                               shape: NeumorphicShape.flat,
                               oppositeShadowLightSource: true),
                           padding: EdgeInsets.all(5),
-                          child: Icon(
-                            Icons.sensor_door,
-                            size: 30,
-                            color: (location[locationNum].contactStatus ==
-                                    'NORMAL')
-                                ? themeColors
-                                : Colors.redAccent[700],
-                          ),
-                        ),
-                      ),
-                      title: Text(
-                        'Contact Sensor',
-                        style: TextStyle(
-                          color:
-                              (location[locationNum].contactStatus == 'NORMAL')
+                          child: Neumorphic(
+                            style: NeumorphicStyle(
+                                depth: 2,
+                                color: Color(0xFFe6ebf2),
+                                shape: NeumorphicShape.flat,
+                                oppositeShadowLightSource: true),
+                            padding: EdgeInsets.all(5),
+                            child: Icon(
+                              Icons.sensor_door,
+                              size: 30,
+                              color: (location[locationNum].contactStatus ==
+                                      'NORMAL')
                                   ? themeColors
                                   : Colors.redAccent[700],
-
-                          //letterSpacing: 1,
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "nunito",
+                            ),
+                          ),
                         ),
-                      ),
-                      // ignore: null_aware_before_operator
-                      subtitle: Text(location[locationNum].contactStatus),
-                      trailing: Icon(
-                        (location[locationNum].contactStatus == 'NORMAL')
-                            ? null
-                            : Icons.warning_amber_rounded,
-                        color: Colors.redAccent[700],
-                      ),
-                      onTap: () {
-                        // _gotoAttendance();
-                      },
-                    ),
-                  ],
-                ),
-              )),
-          SizedBox(
-            height: 12,
-          ),
-          Neumorphic(
-              style: NeumorphicStyle(
-                depth: 3,
-                shape: NeumorphicShape.flat,
-              ),
-              child: Container(
-                color: Color(0xFFe6ebf2),
-                width: MediaQuery.of(context).size.width - 50,
+                        title: Text(
+                          'Contact Sensor',
+                          style: TextStyle(
+                            color:
+                                (location[locationNum].contactStatus == 'NORMAL')
+                                    ? themeColors
+                                    : Colors.redAccent[700],
 
-                // height: 50.0,
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading: Neumorphic(
-                        style: NeumorphicStyle(
-                            depth: 2,
-                            color: Color(0xFFe6ebf2),
-                            shape: NeumorphicShape.flat,
-                            oppositeShadowLightSource: true),
-                        padding: EdgeInsets.all(5),
-                        child: Neumorphic(
+                            //letterSpacing: 1,
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "nunito",
+                          ),
+                        ),
+                        // ignore: null_aware_before_operator
+                        subtitle: Text(location[locationNum].contactStatus),
+                        trailing: Icon(
+                          (location[locationNum].contactStatus == 'NORMAL')
+                              ? null
+                              : Icons.warning_amber_rounded,
+                          color: Colors.redAccent[700],
+                        ),
+                        onTap: () {
+                          // _gotoAttendance();
+                        },
+                      ),
+                    ],
+                  ),
+                )),
+            SizedBox(
+              height: 12,
+            ),
+            Neumorphic(
+                style: NeumorphicStyle(
+                  depth: 3,
+                  shape: NeumorphicShape.flat,
+                ),
+                child: Container(
+                  color: Color(0xFFe6ebf2),
+                  width: MediaQuery.of(context).size.width - 50,
+
+                  // height: 50.0,
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: Neumorphic(
                           style: NeumorphicStyle(
                               depth: 2,
                               color: Color(0xFFe6ebf2),
                               shape: NeumorphicShape.flat,
                               oppositeShadowLightSource: true),
                           padding: EdgeInsets.all(5),
-                          child: Icon(
-                            Icons.vibration_rounded,
-                            size: 30,
+                          child: Neumorphic(
+                            style: NeumorphicStyle(
+                                depth: 2,
+                                color: Color(0xFFe6ebf2),
+                                shape: NeumorphicShape.flat,
+                                oppositeShadowLightSource: true),
+                            padding: EdgeInsets.all(5),
+                            child: Icon(
+                              Icons.vibration_rounded,
+                              size: 30,
+                              color: (location[locationNum].vibrationStatus ==
+                                      'NORMAL')
+                                  ? themeColors
+                                  : Colors.redAccent[700],
+                            ),
+                          ),
+                        ),
+                        title: Text(
+                          'Vibration Sensor',
+                          style: TextStyle(
                             color: (location[locationNum].vibrationStatus ==
                                     'NORMAL')
                                 ? themeColors
                                 : Colors.redAccent[700],
+
+                            //letterSpacing: 1,
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "nunito",
                           ),
                         ),
-                      ),
-                      title: Text(
-                        'Vibration Sensor',
-                        style: TextStyle(
-                          color: (location[locationNum].vibrationStatus ==
-                                  'NORMAL')
-                              ? themeColors
-                              : Colors.redAccent[700],
-
-                          //letterSpacing: 1,
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "nunito",
+                        // ignore: null_aware_before_operator
+                        subtitle: Text(location[locationNum].vibrationStatus),
+                        trailing: Icon(
+                          (location[locationNum].vibrationStatus == 'NORMAL')
+                              ? null
+                              : Icons.warning_amber_rounded,
+                          color: Colors.redAccent[700],
                         ),
+                        onTap: () {
+                          // _gotoAttendance();
+                        },
                       ),
-                      // ignore: null_aware_before_operator
-                      subtitle: Text(location[locationNum].vibrationStatus),
-                      trailing: Icon(
-                        (location[locationNum].vibrationStatus == 'NORMAL')
-                            ? null
-                            : Icons.warning_amber_rounded,
-                        color: Colors.redAccent[700],
-                      ),
-                      onTap: () {
-                        // _gotoAttendance();
-                      },
-                    ),
-                  ],
-                ),
-              )),
+                    ],
+                  ),
+                )),
 
-          // Neumorphic(
-          //     padding: EdgeInsets.all(15),
-          //     drawSurfaceAboveChild: true,
-          //     child: Neumorphic(
-          //       //padding: EdgeInsets.all(4),
-          //       child: Container(
-          //           width: 250,
-          //           height: 250,
-          //           decoration: new BoxDecoration(
-          //               //shape: BoxShape.circle,
-          //               image: new DecorationImage(
-          //                   fit: BoxFit.fill, image: new NetworkImage("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQVtMhWm3H7Vb8N07Tbb4V-ifx-bV9ncfyEQ&usqp=CAU")))),
-          //       //margin: EdgeInsets.all(2),
-          //     ))
-        ],
+            // Neumorphic(
+            //     padding: EdgeInsets.all(15),
+            //     drawSurfaceAboveChild: true,
+            //     child: Neumorphic(
+            //       //padding: EdgeInsets.all(4),
+            //       child: Container(
+            //           width: 250,
+            //           height: 250,
+            //           decoration: new BoxDecoration(
+            //               //shape: BoxShape.circle,
+            //               image: new DecorationImage(
+            //                   fit: BoxFit.fill, image: new NetworkImage("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQVtMhWm3H7Vb8N07Tbb4V-ifx-bV9ncfyEQ&usqp=CAU")))),
+            //       //margin: EdgeInsets.all(2),
+            //     ))
+          ],
+        ),
       ),
       //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 

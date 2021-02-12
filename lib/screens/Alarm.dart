@@ -120,128 +120,130 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
           child: Text('SOUND ALARM SYSTEM'),
         ),
       ),
-      body: Column(
-        // mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          SizedBox(
-            height: 20.0,
-          ),
-          Container(
-            height: 300,
-            width: 300,
-            child: CircleIcon(
-              icon: (isActive)
-                  ? Icons.notifications_active
-                  : Icons.notifications_off,
-              iconColors: (isActive) ? Colors.redAccent[700] : themeColors,
+      body: SingleChildScrollView(
+              child: Column(
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            SizedBox(
+              height: 20.0,
             ),
-          ),
-          SizedBox(
-            height: 10.0,
-          ),
-          Text(
-            (isActive) ? "ACTIVE" : "INACTIVE",
-            style: TextStyle(
-                 color: (isActive)? Colors.redAccent[700]: themeColors,
-
-                fontFamily: "nunito",
-                fontWeight: FontWeight.bold,
-                fontSize: 28),
-            
-          ),
-          SizedBox(
-            height: 10.0,
-          ),
-          NeumorphicButton(
-              //padding: EdgeInsets.all(8),
-              style: NeumorphicStyle(
-                depth: 3,
-                intensity: 1,
-                shape: NeumorphicShape.convex,
-                color: Color(0xFFe6ebf2),
+            Container(
+              height: 300,
+              width: 300,
+              child: CircleIcon(
+                icon: (isActive)
+                    ? Icons.notifications_active
+                    : Icons.notifications_off,
+                iconColors: (isActive) ? Colors.redAccent[700] : themeColors,
               ),
-              onPressed: () {
-                isActive = !isActive;
-                bdref.child('Sound Alarm').update({
-                  'Alert': (isActive) ? 'Active' : 'Inactive',
-                });
-              },
-              child: Text(
-                (isActive) ? "Inactivate Alarm Bell" : "Activate Alarm Bell",
-                style: TextStyle(
-                    color: Colors.black.withOpacity(.6),
-                    fontFamily: "nunito",
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20),
-              )),
-          SizedBox(
-            height: 20.0,
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            color: (isActive)? Colors.redAccent[700]: themeColors,
-            child: Padding(
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            Text(
+              (isActive) ? "ACTIVE" : "INACTIVE",
+              style: TextStyle(
+                   color: (isActive)? Colors.redAccent[700]: themeColors,
+
+                  fontFamily: "nunito",
+                  fontWeight: FontWeight.bold,
+                  fontSize: 28),
+              
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            NeumorphicButton(
+                //padding: EdgeInsets.all(8),
+                style: NeumorphicStyle(
+                  depth: 3,
+                  intensity: 1,
+                  shape: NeumorphicShape.convex,
+                  color: Color(0xFFe6ebf2),
+                ),
+                onPressed: () {
+                  isActive = !isActive;
+                  bdref.child('Sound Alarm').update({
+                    'Alert': (isActive) ? 'Active' : 'Inactive',
+                  });
+                },
+                child: Text(
+                  (isActive) ? "Inactivate Alarm Bell" : "Activate Alarm Bell",
+                  style: TextStyle(
+                      color: Colors.black.withOpacity(.6),
+                      fontFamily: "nunito",
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
+                )),
+            SizedBox(
+              height: 20.0,
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              color: (isActive)? Colors.redAccent[700]: themeColors,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: Text('ALARM HISTORY',
+                      style: TextStyle(
+                          color: Colors.white.withOpacity(.8),
+                          fontFamily: "nunito",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20)),
+                ),
+              ),
+            ),
+            Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Text('ALARM HISTORY',
-                    style: TextStyle(
-                        color: Colors.white.withOpacity(.8),
-                        fontFamily: "nunito",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20)),
+              child: Table(
+                children: [
+                  TableRow(children: [
+                    Text(
+                      "Type",
+                      style: TextStyle(
+                          color: Colors.black.withOpacity(.6),
+                          fontFamily: "nunito",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
+                    ),
+                    Text(
+                      "Location",
+                      style: TextStyle(
+                          color: Colors.black.withOpacity(.6),
+                          fontFamily: "nunito",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
+                    ),
+                    Text(
+                      "Time",
+                      style: TextStyle(
+                          color: Colors.black.withOpacity(.6),
+                          fontFamily: "nunito",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
+                    ),
+                    Text(
+                     "Date",
+                      style: TextStyle(
+                          color: Colors.black.withOpacity(.6),
+                          fontFamily: "nunito",
+
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
+                    ),
+                  ]),
+
+
+                  for (var i in alarmInfo)
+                    _tableRow(i.type, i.locat, i.date, i.time)
+                  
+                  
+                  
+                ],
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Table(
-              children: [
-                TableRow(children: [
-                  Text(
-                    "Type",
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(.6),
-                        fontFamily: "nunito",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                  Text(
-                    "Location",
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(.6),
-                        fontFamily: "nunito",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                  Text(
-                    "Time",
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(.6),
-                        fontFamily: "nunito",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                  Text(
-                   "Date",
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(.6),
-                        fontFamily: "nunito",
-
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                ]),
-
-
-                for (var i in alarmInfo)
-                  _tableRow(i.type, i.locat, i.date, i.time)
-                
-                
-                
-              ],
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

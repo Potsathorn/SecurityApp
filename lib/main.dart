@@ -16,6 +16,7 @@ import 'package:Security/screens/NeuScene.dart';
 import 'package:Security/screens/neuHome.dart';
 import 'package:Security/screens/test1.dart';
 import 'package:Security/screens/testdata.dart';
+import 'package:Security/screens/testvdo.dart';
 import 'package:Security/test.dart';
 import 'package:Security/widgets/CircleIcon.dart';
 import 'package:Security/widgets/Header.dart';
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
         // home:  MyHomePage(),
         // home:  MySmartHome(),
     //home:  NeuHome(),
+    // home : TestVDO(),
     home: FirstPage(),
        // home: AttendancePage(),
         // home:  ExampleHomePage(title: 'Passcode Lock Screen '),

@@ -155,173 +155,175 @@ class _RemoteLockingPageState extends State<RemoteLockingPage> {
           child: Text('REMOTE LOCKING'),
         ),
       ),
-      body: Column(
-        // mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          SizedBox(
-            height: 50.0,
-          ),
-          Stack(children: [
-            Neumorphic(
-              padding: EdgeInsets.all(20),
-              style: NeumorphicStyle(
-                  depth: 5,
-                  //intensity: 1,
-                  color: Color(0xFFe6ebf2),
-                  shape: NeumorphicShape.flat,
-                  oppositeShadowLightSource: true,
-                  lightSource: LightSource.bottomLeft,
-                  boxShape: NeumorphicBoxShape.circle()),
-              child: Neumorphic(
+      body: SingleChildScrollView(
+              child: Column(
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            SizedBox(
+              height: 50.0,
+            ),
+            Stack(children: [
+              Neumorphic(
+                padding: EdgeInsets.all(20),
                 style: NeumorphicStyle(
-                    depth: 2,
-                   
-                    color: (isLocked)?themeColors:Color(0xFFe6ebf2),
+                    depth: 5,
+                    //intensity: 1,
+                    color: Color(0xFFe6ebf2),
                     shape: NeumorphicShape.flat,
-                    oppositeShadowLightSource: false,
+                    oppositeShadowLightSource: true,
                     lightSource: LightSource.bottomLeft,
                     boxShape: NeumorphicBoxShape.circle()),
-                padding: EdgeInsets.all(11),
-                child: GestureDetector(
-                  onTap: () {
-                    //Navigator.pushNamed(context, "/showCamera_page");
-                  },
-                  child: Neumorphic(
-                    style: NeumorphicStyle(
-                        depth: 2,
-                        color: Color(0xFFe6ebf2),
-                        shape: NeumorphicShape.convex,
-                        oppositeShadowLightSource: true,
-                        boxShape: NeumorphicBoxShape.circle()),
-                    padding: EdgeInsets.all(5),
-                    child: NeumorphicIcon(
-                      Icons.house_rounded,
-                      size: 220,
+                child: Neumorphic(
+                  style: NeumorphicStyle(
+                      depth: 2,
+                     
+                      color: (isLocked)?themeColors:Color(0xFFe6ebf2),
+                      shape: NeumorphicShape.flat,
+                      oppositeShadowLightSource: false,
+                      lightSource: LightSource.bottomLeft,
+                      boxShape: NeumorphicBoxShape.circle()),
+                  padding: EdgeInsets.all(11),
+                  child: GestureDetector(
+                    onTap: () {
+                      //Navigator.pushNamed(context, "/showCamera_page");
+                    },
+                    child: Neumorphic(
                       style: NeumorphicStyle(
-                        depth: 4,
-                        intensity: 1,
-                        color: Color(0xFFe6ebf2),
-                        shape: NeumorphicShape.flat,
-                        oppositeShadowLightSource: true,
+                          depth: 2,
+                          color: Color(0xFFe6ebf2),
+                          shape: NeumorphicShape.convex,
+                          oppositeShadowLightSource: true,
+                          boxShape: NeumorphicBoxShape.circle()),
+                      padding: EdgeInsets.all(5),
+                      child: NeumorphicIcon(
+                        Icons.house_rounded,
+                        size: 220,
+                        style: NeumorphicStyle(
+                          depth: 4,
+                          intensity: 1,
+                          color: Color(0xFFe6ebf2),
+                          shape: NeumorphicShape.flat,
+                          oppositeShadowLightSource: true,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
+              Positioned(
+                  left: 1,
+                  top: 80,
+                  right: 1,
+                  bottom: null,
+                  child: Icon((isLocked) ? Icons.lock_outlined : Icons.lock_open_rounded,
+                    size: 60,color: themeColors,))
+            ]),
+            SizedBox(
+              height: 20.0,
             ),
-            Positioned(
-                left: 1,
-                top: 80,
-                right: 1,
-                bottom: null,
-                child: Icon((isLocked) ? Icons.lock_outlined : Icons.lock_open_rounded,
-                  size: 60,color: themeColors,))
-          ]),
-          SizedBox(
-            height: 20.0,
-          ),
-          Text(
-            (isLocked) ? "DOOR LOCKED" : "DOOR UNLOCKED",
-            style: TextStyle(
-                color: themeColors,
-                fontFamily: "nunito",
-                fontWeight: FontWeight.bold,
-                fontSize: 30),
-          ),
-          SizedBox(
-            height: 60.0,
-          ),
-          NeumorphicButton(
-              //padding: EdgeInsets.all(8),
-              style: NeumorphicStyle(
-                depth: 3,
-                intensity: 1,
-                shape: NeumorphicShape.convex,
-                color: Color(0xFFe6ebf2),
-              ),
-              onPressed: () {
-                (isLocked) ? isAuthenticated = false : null;
-                
+            Text(
+              (isLocked) ? "DOOR LOCKED" : "DOOR UNLOCKED",
+              style: TextStyle(
+                  color: themeColors,
+                  fontFamily: "nunito",
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30),
+            ),
+            SizedBox(
+              height: 60.0,
+            ),
+            NeumorphicButton(
+                //padding: EdgeInsets.all(8),
+                style: NeumorphicStyle(
+                  depth: 3,
+                  intensity: 1,
+                  shape: NeumorphicShape.convex,
+                  color: Color(0xFFe6ebf2),
+                ),
+                onPressed: () {
+                  (isLocked) ? isAuthenticated = false : null;
+                  
 
-                (isLocked)
-                    ? _showLockScreen(
-                        context,
-                        opaque: false,
-                        cancelButton: Text(
-                          'Cancel',
-                          style: const TextStyle(
-                              fontSize: 16, color: Colors.white),
-                          semanticsLabel: 'Cancel',
-                        ),
-                      )
-                    : setState(() {
-                        isLocked = !isLocked;
-                        bdref.child('Remote Locking').update({
-                          'Door': (isLocked) ? 'Lock' : 'Unlock',
+                  (isLocked)
+                      ? _showLockScreen(
+                          context,
+                          opaque: false,
+                          cancelButton: Text(
+                            'Cancel',
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.white),
+                            semanticsLabel: 'Cancel',
+                          ),
+                        )
+                      : setState(() {
+                          isLocked = !isLocked;
+                          bdref.child('Remote Locking').update({
+                            'Door': (isLocked) ? 'Lock' : 'Unlock',
+                          });
                         });
-                      });
-              },
-              child: Text(
-                (isLocked) ? "Unlock Door" : "Lock Door",
-                style: TextStyle(
-                    color: Colors.black.withOpacity(.6),
-                    fontFamily: "nunito",
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20),
-              )),
-          SizedBox(
-            height: 60.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Last Unlocked",
-                      style: TextStyle(
-                          color: themeColors,
-                          fontFamily: "nunito",
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20),
-                    ),
-                    Text(last,
+                },
+                child: Text(
+                  (isLocked) ? "Unlock Door" : "Lock Door",
+                  style: TextStyle(
+                      color: Colors.black.withOpacity(.6),
+                      fontFamily: "nunito",
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
+                )),
+            SizedBox(
+              height: 60.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Last Unlocked",
                         style: TextStyle(
-                            color: Colors.black.withOpacity(.6),
+                            color: themeColors,
                             fontFamily: "nunito",
-                            //fontWeight: FontWeight.bold,
-                            fontSize: 18))
-                  ],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
+                      ),
+                      Text(last,
+                          style: TextStyle(
+                              color: Colors.black.withOpacity(.6),
+                              fontFamily: "nunito",
+                              //fontWeight: FontWeight.bold,
+                              fontSize: 18))
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Unlocked By',
-                      style: TextStyle(
-                          color: themeColors,
-                          fontFamily: "Locked Status",
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20),
-                    ),
-                    Text(by,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Unlocked By',
                         style: TextStyle(
-                            color: Colors.black.withOpacity(.6),
-                            fontFamily: "nunito",
-                            //fontWeight: FontWeight.bold,
-                            fontSize: 18))
-                  ],
-                ),
-              )
-            ],
-          ),
-        ],
+                            color: themeColors,
+                            fontFamily: "Locked Status",
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
+                      ),
+                      Text(by,
+                          style: TextStyle(
+                              color: Colors.black.withOpacity(.6),
+                              fontFamily: "nunito",
+                              //fontWeight: FontWeight.bold,
+                              fontSize: 18))
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

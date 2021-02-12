@@ -37,7 +37,6 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    
     super.initState();
     isLandscape = false;
 
@@ -47,25 +46,22 @@ class _HomeState extends State<Home> {
 
   @override
   void dispose() {
-  //   SystemChrome.setPreferredOrientations([
-  //   // DeviceOrientation.landscapeRight,
-  //   // DeviceOrientation.landscapeLeft,
-  //   DeviceOrientation.portraitUp,
-  //   DeviceOrientation.portraitDown,
-  // ]);
+    SystemChrome.setPreferredOrientations([
+      // DeviceOrientation.landscapeRight,
+      // DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     widget.channel.sink.close();
     super.dispose();
   }
 
-  
-
-
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.landscapeLeft,
-    //   DeviceOrientation.landscapeRight,
-    // ]);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     void _gotoLockink() {
       Navigator.pushNamed(context, "/showLocking_page");
     }
@@ -80,17 +76,17 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       backgroundColor: Color(0xFFe6ebf2),
-        appBar: AppBar(
-          backgroundColor:  themeColors,
-          title: Center(
-            child: Text('INTRUSION DETECTION'),
-          ),
+      appBar: AppBar(
+        backgroundColor: themeColors,
+        title: Center(
+          child: Text('Video Streaming'),
         ),
+      ),
       body: OrientationBuilder(builder: (context, orientation) {
-    //     SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.landscapeLeft,
-    //   DeviceOrientation.landscapeRight,
-    // ]);
+        //     SystemChrome.setPreferredOrientations([
+        //   DeviceOrientation.landscapeLeft,
+        //   DeviceOrientation.landscapeRight,
+        // ]);
         var screenWidth = MediaQuery.of(context).size.width;
         var screenHeight = MediaQuery.of(context).size.height;
 
@@ -108,130 +104,120 @@ class _HomeState extends State<Home> {
           newVideoSizeWidth = videoWidth * newVideoSizeHeight / videoHeight;
         }
 
-        return Container(
-          color: Colors.black,
-          child: StreamBuilder(
-            
-            stream: widget.channel.stream,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                );
-              } else {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        SizedBox(
-                          height: isLandscape ? 0 : 30,
-                        ),
-                        Stack(
-                          children: <Widget>[
-                            RepaintBoundary(
-                              key: _globalKey,
-                              child: GestureZoomBox(
-                                maxScale: 5.0,
-                                doubleTapScale: 2.0,
-                                duration: Duration(milliseconds: 200),
-                                child: Image.memory(
-                                  snapshot.data,
-                                  gaplessPlayback: true,
-                                  width: newVideoSizeWidth,
-                                  height: newVideoSizeHeight,
+        return Stack(overflow: Overflow.visible, children: [
+          Container(
+            color: Color(0xFFe6ebf2),
+            child: StreamBuilder(
+              stream: widget.channel.stream,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  );
+                } else {
+                  return Center(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(
+                            height: isLandscape ? 0 : 30,
+                          ),
+                          Stack(
+                            overflow: Overflow.visible,
+                            children: <Widget>[
+                              RepaintBoundary(
+                                key: _globalKey,
+                                child: GestureZoomBox(
+                                  maxScale: 5.0,
+                                  doubleTapScale: 2.0,
+                                  duration: Duration(milliseconds: 200),
+                                  child: Image.memory(
+                                    snapshot.data,
+                                    gaplessPlayback: true,
+                                    width: newVideoSizeWidth,
+                                    height: newVideoSizeHeight,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Positioned.fill(
-                                child: Align(
-                              child: Column(
-                                children: <Widget>[
-                                  SizedBox(
-                                    height: 16,
-                                  ),
-                                  Text(
-                                    'Video Streaming',
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w300),
-                                  ),
-                                  SizedBox(
-                                    height: 4,
-                                  ),
-                                  Text(
-                                    'Live | $_timeString',
+                              Positioned.fill(
+                                  child: Align(
+                                child: Column(
+                                  children: <Widget>[
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                    Text(
+                                      'Video Streaming',
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                    SizedBox(
+                                      height: 4,
+                                    ),
+                                    Text(
+                                      'Live | $_timeString',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ],
+                                ),
+                                alignment: Alignment.topCenter,
+                              )),
+                              Positioned(
+                                bottom: 1,
+                                left: -3,
+                                child: Container(
+                                  child: Text(
+                                    'helldo',
                                     style: TextStyle(
                                         fontSize: 12,
-                                        fontWeight: FontWeight.w300),
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.white),
                                   ),
-                                ],
-                              ),
-                              alignment: Alignment.topCenter,
-                            )),
-                            Positioned(
-                              bottom: 1,
-                              child: Container(
-                                child: Text('hello'),
-                              ),
-                            )
-                          ],
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            color: Colors.black,
-                            width: MediaQuery.of(context).size.width,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.photo_camera,
-                                      size: 24,
-                                    ),
-                                    onPressed: takeScreenShot,
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.lock_open,
-                                      size: 24,
-                                    ),
-                                    onPressed: _gotoLockink,
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.lightbulb_outline,
-                                      size: 24,
-                                    ),
-                                    onPressed: _gotoLightnig,
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.notifications_active,
-                                      size: 24,
-                                    ),
-                                    onPressed: _gotoAlarm,
-                                  ),
-                                ],
-                              ),
-                            ),
+                                ),
+                              )
+                            ],
                           ),
-                        )
-                      ],
+                        ],
+                      ),
                     ),
-                  ],
-                );
-              }
-            },
+                  );
+                }
+              },
+            ),
           ),
-        );
+          Positioned(
+            top: 1,
+            left: 5,
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Last Unlocked",
+                        style: TextStyle(
+                            color: themeColors,
+                            fontFamily: "nunito",
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
+                      ),
+                      Text("last",
+                          style: TextStyle(
+                              color: Colors.black.withOpacity(.6),
+                              fontFamily: "nunito",
+                              //fontWeight: FontWeight.bold,
+                              fontSize: 18))
+                    ],
+                  ),
+            ),
+          )
+        ]);
       }),
       floatingActionButton: _getFab(),
     );
