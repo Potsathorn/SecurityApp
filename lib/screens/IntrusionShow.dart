@@ -25,6 +25,7 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
   bool noMotion = false;
   bool noVibration = false;
   bool noContact = false;
+  bool isEnglish = true;
 
   bool isActived = false;
 
@@ -52,6 +53,14 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
 
       (value == 'Active') ? isActived = true : isActived = false;
       // print(value);
+    });
+    bdref.child('Languages').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value;
+
+      (value == 'English') ? isEnglish = true : isEnglish = false;
+      //print(value);
     });
 
     bdref.child('Intrusion Detection').onValue.listen((event) {
@@ -81,69 +90,102 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
 //    DeviceOrientation.portraitUp,
 // ]);
 
-
-    (count == 0)?locationNum = ModalRoute.of(context).settings.arguments:locationNum;
-    
-    
+    (count == 0)
+        ? locationNum = ModalRoute.of(context).settings.arguments
+        : locationNum;
 
     List<LocationInfo> location = [
-      LocationInfo('Front Door', '1st Floor', '', '', '',
+      LocationInfo(
+          (isEnglish) ? 'Front Door' : 'ประตูหน้าบ้าน',
+          (isEnglish) ? '1st Floor' : 'ชั้น 1',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
           'images/fd.png'),
-      LocationInfo('Back Door', '1st Floor', 'NORMAL', 'NORMAL', 'NORMAL',
+      LocationInfo(
+          (isEnglish) ? 'Back Door' : 'ประตูหลังบ้าน',
+          (isEnglish) ? '1st Floor' : 'ชั้น 1',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
           'images/bd.png'),
       LocationInfo(
-          "Living room's Window",
-          '1st Floor',
-          'NORMAL',
-          'NORMAL',
-          'NORMAL',
+          (isEnglish) ? "Living room's Window" : 'หน้าต่างห้องนั่งเล่น',
+          (isEnglish) ? '1st Floor' : 'ชั้น 1',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
           'images/living.png'),
       LocationInfo(
-          "Kitchen's Window",
-          '1st Floor',
-          'NORMAL',
-          'NORMAL',
-          'NORMAL',
+          (isEnglish) ? "Kitchen's Window" : "หน้าต่างห้องครัว",
+          (isEnglish) ? '1st Floor' : 'ชั้น 1',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
           'images/kitchen.png'),
-      LocationInfo("Stair's Window", '2nd Floor', 'NORMAL', 'NORMAL', 'NORMAL',
+      LocationInfo(
+          (isEnglish) ? "Stair's Window" : "หน้าต่างบันได",
+          (isEnglish) ? '2st Floor' : 'ชั้น 2',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
           'images/stair.png'),
       LocationInfo(
-          "Pat Bedroom's Window",
-          '2nd Floor',
-          'NORMAL',
-          'NORMAL',
-          'NORMAL',
+          (isEnglish) ? "Pat Bedroom's Window" : "หน้าต่างห้องคุณสุภัทร์",
+          (isEnglish) ? '2st Floor' : 'ชั้น 2',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
           'images/pat.png'),
       LocationInfo(
-          "Taem Bedroom's Window",
-          '2nd Floor',
-          'NORMAL',
-          'NORMAL',
-          'NORMAL',
+          (isEnglish) ? "Taem Bedroom's Window" : 'หน้าต่างห้องแต้ม',
+          (isEnglish) ? '2st Floor' : 'ชั้น 2',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
           'images/tmrm.png'),
       LocationInfo(
-          "Taeng&Tar Room's Window",
-          '2nd Floor',
-          'NORMAL',
-          'NORMAL',
-          'NORMAL',
+          (isEnglish) ? "Taeng&Tar Room's Window" : "หน้าต่างห้องแตงและต้า",
+          (isEnglish) ? '2st Floor' : 'ชั้น 2',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
+          (isEnglish) ? 'NORMAL' : 'ปรกติ',
           'images/tng.png'),
     ];
 
-    location[0].motionStatus = (noMotion) ? 'NORMAL' : 'DETECTED';
-    location[0].vibrationStatus = (noVibration) ? 'NORMAL' : 'DETECTED';
-    location[0].contactStatus = (noContact) ? 'NORMAL' : 'DETECTED';
+    location[0].motionStatus = (noMotion)
+        ? (isEnglish)
+            ? 'NORMAL'
+            : 'ปรกติ'
+        : (isEnglish)
+            ? 'DETECTED'
+            : 'ตรวจพบความเคลื่อนไหว';
+    location[0].vibrationStatus = (noVibration)
+        ? (isEnglish)
+            ? 'NORMAL'
+            : 'ปรกติ'
+        : (isEnglish)
+            ? 'DETECTED'
+            : 'ตรวจพบการทุบกระจก';
+    location[0].contactStatus = (noContact)
+        ? (isEnglish)
+            ? 'NORMAL'
+            : 'ปรกติ'
+        : (isEnglish)
+            ? 'DETECTED'
+            : 'ตรวจพบการเปิดประตู';
 
     return Scaffold(
       backgroundColor: Color(0xFFe6ebf2),
       appBar: AppBar(
-        backgroundColor:  themeColors,
+        backgroundColor: themeColors,
         title: Center(
-          child: Text('INTRUSION DETECTION'),
+          child: Text(
+              (isEnglish) ? 'INTRUSION DETECTION' : 'ระบบตรวจจับการบุกรุก'),
         ),
       ),
-      body:  SingleChildScrollView(
-              child: Column(
+      body: SingleChildScrollView(
+        child: Column(
           children: [
             SizedBox(
               height: 10,
@@ -246,23 +288,29 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
                             child: Icon(
                               Icons.directions_walk_rounded,
                               size: 30,
-                              color:
-                                  (location[locationNum].motionStatus == 'NORMAL')
-                                      ? themeColors
-                                      : Colors.redAccent[700],
+                              color: (location[locationNum].motionStatus ==
+                                          'NORMAL' ||
+                                      location[locationNum].motionStatus ==
+                                          'ปรกติ')
+                                  ? themeColors
+                                  : Colors.redAccent[700],
                             ),
                           ),
                         ),
                         title: Text(
-                          'Motion Sensor',
+                          (isEnglish)
+                              ? 'Motion Sensor'
+                              : 'เซนเซอร์ตรวจจับความเคลื่อนไหว',
                           style: TextStyle(
-                            color:
-                                (location[locationNum].motionStatus == 'NORMAL')
-                                    ? themeColors
-                                    : Colors.redAccent[700],
+                            color: (location[locationNum].motionStatus ==
+                                        'NORMAL' ||
+                                    location[locationNum].motionStatus ==
+                                        'ปรกติ')
+                                ? themeColors
+                                : Colors.redAccent[700],
 
                             //letterSpacing: 1,
-                            fontSize: 15.0,
+                            fontSize: (isEnglish) ? 15.0 : 12,
                             fontWeight: FontWeight.bold,
                             fontFamily: "nunito",
                           ),
@@ -270,7 +318,8 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
                         // ignore: null_aware_before_operator
                         subtitle: Text(location[locationNum].motionStatus),
                         trailing: Icon(
-                          (location[locationNum].motionStatus == 'NORMAL')
+                          (location[locationNum].motionStatus == 'NORMAL' ||
+                                  location[locationNum].motionStatus == 'ปรกติ')
                               ? null
                               : Icons.warning_amber_rounded,
                           color: Colors.redAccent[700],
@@ -316,22 +365,28 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
                               Icons.sensor_door,
                               size: 30,
                               color: (location[locationNum].contactStatus ==
-                                      'NORMAL')
+                                          'NORMAL' ||
+                                      location[locationNum].contactStatus ==
+                                          'ปรกติ')
                                   ? themeColors
                                   : Colors.redAccent[700],
                             ),
                           ),
                         ),
                         title: Text(
-                          'Contact Sensor',
+                          (isEnglish)
+                              ? 'Contact Sensor'
+                              : "เซนเซอร์ตรวจจับการเปิดประตู",
                           style: TextStyle(
-                            color:
-                                (location[locationNum].contactStatus == 'NORMAL')
-                                    ? themeColors
-                                    : Colors.redAccent[700],
+                            color: (location[locationNum].contactStatus ==
+                                        'NORMAL' ||
+                                    location[locationNum].contactStatus ==
+                                        'ปรกติ')
+                                ? themeColors
+                                : Colors.redAccent[700],
 
                             //letterSpacing: 1,
-                            fontSize: 15.0,
+                            fontSize: (isEnglish) ? 15.0 : 12,
                             fontWeight: FontWeight.bold,
                             fontFamily: "nunito",
                           ),
@@ -339,7 +394,9 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
                         // ignore: null_aware_before_operator
                         subtitle: Text(location[locationNum].contactStatus),
                         trailing: Icon(
-                          (location[locationNum].contactStatus == 'NORMAL')
+                          (location[locationNum].contactStatus == 'NORMAL' ||
+                                  location[locationNum].contactStatus ==
+                                      'ปรกติ')
                               ? null
                               : Icons.warning_amber_rounded,
                           color: Colors.redAccent[700],
@@ -385,22 +442,28 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
                               Icons.vibration_rounded,
                               size: 30,
                               color: (location[locationNum].vibrationStatus ==
-                                      'NORMAL')
+                                          'NORMAL' ||
+                                      location[locationNum].vibrationStatus ==
+                                          'ปรกติ')
                                   ? themeColors
                                   : Colors.redAccent[700],
                             ),
                           ),
                         ),
                         title: Text(
-                          'Vibration Sensor',
+                          (isEnglish)
+                              ? 'Vibration Sensor'
+                              : "เซนเซอร์ตรวจจับการสั่นสะเทือน",
                           style: TextStyle(
                             color: (location[locationNum].vibrationStatus ==
-                                    'NORMAL')
+                                        'NORMAL' ||
+                                    location[locationNum].vibrationStatus ==
+                                        'ปรกติ')
                                 ? themeColors
                                 : Colors.redAccent[700],
 
                             //letterSpacing: 1,
-                            fontSize: 15.0,
+                            fontSize: (isEnglish) ? 15.0 : 12,
                             fontWeight: FontWeight.bold,
                             fontFamily: "nunito",
                           ),
@@ -408,7 +471,9 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
                         // ignore: null_aware_before_operator
                         subtitle: Text(location[locationNum].vibrationStatus),
                         trailing: Icon(
-                          (location[locationNum].vibrationStatus == 'NORMAL')
+                          (location[locationNum].vibrationStatus == 'NORMAL' ||
+                                  location[locationNum].vibrationStatus ==
+                                      'ปรกติ')
                               ? null
                               : Icons.warning_amber_rounded,
                           color: Colors.redAccent[700],
@@ -420,98 +485,9 @@ class _IntrusionShowPageState extends State<IntrusionShowPage> {
                     ],
                   ),
                 )),
-
-            // Neumorphic(
-            //     padding: EdgeInsets.all(15),
-            //     drawSurfaceAboveChild: true,
-            //     child: Neumorphic(
-            //       //padding: EdgeInsets.all(4),
-            //       child: Container(
-            //           width: 250,
-            //           height: 250,
-            //           decoration: new BoxDecoration(
-            //               //shape: BoxShape.circle,
-            //               image: new DecorationImage(
-            //                   fit: BoxFit.fill, image: new NetworkImage("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQVtMhWm3H7Vb8N07Tbb4V-ifx-bV9ncfyEQ&usqp=CAU")))),
-            //       //margin: EdgeInsets.all(2),
-            //     ))
           ],
         ),
       ),
-      //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-      // Stack(
-      //   overflow: Overflow.visible,
-      //   children: [
-      //     Container(
-      //         width: MediaQuery.of(context).size.width,
-      //         height: MediaQuery.of(context).size.height / 3,
-      //         decoration: new BoxDecoration(
-      //             image: new DecorationImage(
-      //                 fit: BoxFit.fill,
-      //                 image: new NetworkImage(
-      //                     'https://www.everest.co.uk/globalassets/everest/windows/1_upvc-casement.jpg')))),
-      //     Positioned(
-      //         top: 5,
-      //         right: 5,
-      //         child: Icon(
-      //           Icons.videocam,
-      //           size: 40,
-      //           color: Colors.black,
-      //         )),
-      //     Positioned(
-
-      //       bottom: -35,
-      //       right: 10,
-
-      //       child: Row(
-      //         mainAxisAlignment: MainAxisAlignment.end,
-      //         children: [
-      //           _imgeCircle(
-      //               'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTEthKqazQTT9z0aVJSRgKZM1B9wFVpICB0og&usqp=CAU'),
-      //         ],
-      //       ),
-      //     )
-      //   ],
-      // ),
-      // Padding(
-      //   padding: const EdgeInsets.fromLTRB(5, 50, 0, 30),
-      //   child: Row(
-      //     mainAxisAlignment: MainAxisAlignment.start,
-      //     children: [
-      //       Text("Window1 (Chanita's Bedroom)",
-      //           style: Theme.of(context).textTheme.headline5),
-      //     ],
-      //   ),
-      // ),
-      // Expanded(
-      //   flex: 1,
-      //   child: Column(
-      //   //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //     children: [
-      //       ListTile(
-
-      //         leading: _imgeCircle(
-      //             'https://static.vecteezy.com/system/resources/thumbnails/000/352/807/small/Health__2861_29.jpg'),
-      //         title: Text('Motion Detection'),
-      //         subtitle: Text('NORMAL'),
-      //       ),
-      //       ListTile(
-      //         leading: _imgeCircle(
-      //             'https://png.pngtree.com/png-clipart/20190619/original/pngtree-vector-door-icon-png-image_3989612.jpg'),
-      //         title: Text('Contact Detection'),
-      //         subtitle: Text('NORMAL'),
-      //       ),
-      //       ListTile(
-      //         leading: _imgeCircle(
-      //             'https://cdn.iconscout.com/icon/premium/png-256-thumb/breaking-glass-1500093-1270804.png'),
-      //         title: Text('Vibration Detection'),
-      //         subtitle: Text('Detected !'),
-      //         trailing: Icon(Icons.warning),
-      // //       ),
-      //     ],
-      //   ),
-      //)
     );
   }
 }
@@ -527,13 +503,3 @@ class LocationInfo {
   LocationInfo(this.location, this.floor, this.motionStatus,
       this.vibrationStatus, this.contactStatus, this.imgUrl);
 }
-
-// Widget _imgeCircle(String url) {
-//   return Container(
-//       width: 60.0,
-//       height: 60.0,
-//       decoration: new BoxDecoration(
-//           shape: BoxShape.circle,
-//           image: new DecorationImage(
-//               fit: BoxFit.fill, image: new NetworkImage(url))));
-// }

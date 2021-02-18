@@ -36,11 +36,14 @@ class _LightningControlState extends State<LightningControl> {
   bool wc2 = false;
   bool stairs = false;
 
+  bool securityLight = false;
+
   bool allLight = false;
   bool firstFloor = false;
   bool secondFloor = false;
+  bool isEnglish = true;
 
-  int n = 0;
+ 
 
   IconData iconSecurity = Icons.verified_user_outlined;
 
@@ -59,7 +62,7 @@ class _LightningControlState extends State<LightningControl> {
 
       String value = snapshot.value['Light'];
 
-      (value == 'On') ? allLight = true : allLight = false;
+      (value == 'On') ? securityLight = true : securityLight = false;
       //print(value);
       setState(() {});
     });
@@ -114,6 +117,15 @@ class _LightningControlState extends State<LightningControl> {
       (value == 'On') ? patRM = true : patRM = false;
       //print(value);
     });
+    bdref.child('Languages').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value;
+
+      (value == 'English') ? isEnglish = true : isEnglish = false;
+      //print(value);
+    });
+
     bdref.child('Security Light').onValue.listen((event) {
       var snapshot = event.snapshot;
 
@@ -151,6 +163,7 @@ class _LightningControlState extends State<LightningControl> {
       ttRM = true;
       wc2 = true;
       stairs = true;
+      securityLight = true;
     } else {
       livingRM1 = false;
       livingRM2 = false;
@@ -161,6 +174,7 @@ class _LightningControlState extends State<LightningControl> {
       ttRM = false;
       wc2 = false;
       stairs = false;
+      securityLight = false;
     }
   }
 
@@ -212,10 +226,27 @@ class _LightningControlState extends State<LightningControl> {
     }
   }
 
+  String _securityLight() {
+    if (!securityLight) {
+      //livingRM1 = true;
+      //livingRM2 = true;
+      //wc1 = true;
+      //kitchen = true;
+      return (isEnglish)?'images/lt.png':'images/flthnos.png';
+    } else {
+      //livingRM1 = false;
+      //livingRM2 = false;
+      //wc1 = false;
+      //kitchen = false;
+      return (isEnglish)?'images/sl.png':'images/flth.png';
+    }
+   
+  }
+
   void _updateData() {
     bdref.child('Security Light').update({
       "Kitchen": (kitchen)? "On":"Off",
-      "Light": (allLight)? "On":"Off",
+      "Light": (securityLight)? "On":"Off",
       "LivingRM": (livingRM1)? "On":"Off",
       "LivingRM2": (livingRM2)? "On":"Off",
       "PatRM": (patRM)? "On":"Off",
@@ -262,7 +293,7 @@ class _LightningControlState extends State<LightningControl> {
           bottom: bottom,
           child: NeumorphicButton(
             onPressed: () {
-              n++;
+        
               if (name == "livingRM1") {
                 livingRM1 = !livingRM1;
                 status = !livingRM1;
@@ -314,24 +345,14 @@ class _LightningControlState extends State<LightningControl> {
           ));
     }
 
-    if (noContact && noVibration && noMotion) {
-      iconSecurity = Icons.verified_user_outlined;
-    } else if (!noMotion && noContact && noVibration) {
-      iconSecurity = Icons.directions_walk_rounded;
-    } else if (noMotion && noContact && !noVibration) {
-      iconSecurity = Icons.vibration_rounded;
-    } else if (noMotion && !noContact && noVibration) {
-      iconSecurity = Icons.sensor_door;
-    } else {
-      iconSecurity = Icons.warning_amber_rounded;
-    }
+  
     //realtime();
 
     // statusMotion = (noMotion) ? 'NORMAL' : 'DETECTED';
     // statusContact = (noVibration) ? 'NORMAL' : 'DETECTED';
     // statusVibration = (noContact) ? 'NORMAL' : 'DETECTED';
 
-    (n!=0)?(livingRM1 &&
+   (livingRM1 &&
       livingRM2 &&
       wc1&&
       kitchen &&
@@ -339,7 +360,8 @@ class _LightningControlState extends State<LightningControl> {
       taemRM &&
       ttRM &&
       wc2 &&
-      stairs) ? allLight = true : allLight=false:_allLight();
+      stairs &&
+      securityLight) ? allLight = true : allLight=false;
 
       (livingRM1 &&
       livingRM2 &&
@@ -358,7 +380,7 @@ class _LightningControlState extends State<LightningControl> {
         appBar: AppBar(
           backgroundColor: themeColors,
           title: Center(
-            child: Text('SECURITY LIGHTING'),
+            child: Text((isEnglish)?'SECURITY LIGHTING':'ระบบแสงสว่างอัจฉริยะ'),
           ),
         ),
         body: Stack(overflow: Overflow.visible, children: [
@@ -369,7 +391,7 @@ class _LightningControlState extends State<LightningControl> {
                   image: new DecorationImage(
                       fit: BoxFit.fill,
                       image: new AssetImage(
-                          'images/lt.png')))),
+                          _securityLight())))),
           _positionIcon(null, 85, 85, null, "ttRM"),
           _positionIcon(130, 85, null, null, "taemRM"),
           _positionIcon(75, 160, null, null, "patRM"),
@@ -391,7 +413,7 @@ class _LightningControlState extends State<LightningControl> {
                 children: [
                   NeumorphicButton(
                     onPressed: () {
-                      n++;
+                
                       firstFloor = !firstFloor;
                       _firstFloor();
                       setState(() {});
@@ -404,7 +426,7 @@ class _LightningControlState extends State<LightningControl> {
 
                         //shadowDarkColor: Colors.yellow[700],
                         shape: NeumorphicShape.convex,
-                        color: (firstFloor) ? Colors.yellow[700] : Color(0xFFe6ebf2),
+                        color: (firstFloor) ? themeColors : Color(0xFFe6ebf2),
                         //boxShape: NeumorphicBoxShape.circle()
                         ),
                     padding: EdgeInsets.all(10),
@@ -417,7 +439,59 @@ class _LightningControlState extends State<LightningControl> {
                   ),
                   NeumorphicButton(
                     onPressed: () {
-                      n++;
+              
+                      secondFloor = !secondFloor;
+                      _secondFloor();
+                      setState(() {});
+                      _updateData();
+                      // Navigator.pushNamed(context, '/showIntrusion_page',
+                      //     arguments: idx);
+                    },
+                    style: NeumorphicStyle(
+                        depth: 5,
+
+                        //shadowDarkColor: Colors.yellow[700],
+                        shape: NeumorphicShape.convex,
+                        color: (secondFloor) ?themeColors : Color(0xFFe6ebf2),
+                        //boxShape: NeumorphicBoxShape.circle()
+                        ),
+                    padding: EdgeInsets.all(10),
+                    child: Icon(
+                     Icons.looks_two_outlined,
+                      size: 40,
+                      color:
+                          (secondFloor) ? Colors.white : Colors.black.withOpacity(.5),
+                    ),
+                  ),
+                  NeumorphicButton(
+                    onPressed: () {
+         
+                      securityLight = !securityLight;
+                      _securityLight();
+                      setState(() {});
+                      _updateData();
+                      // Navigator.pushNamed(context, '/showIntrusion_page',
+                      //     arguments: idx);
+                    },
+                    style: NeumorphicStyle(
+                        depth: 5,
+
+                        //shadowDarkColor: Colors.yellow[700],
+                        shape: NeumorphicShape.convex,
+                        color: (securityLight) ? themeColors : Color(0xFFe6ebf2),
+                        //boxShape: NeumorphicBoxShape.circle()
+                        ),
+                    padding: EdgeInsets.all(10),
+                    child: Icon(
+                      Icons.security_outlined,
+                      size: 40,
+                      color:
+                          (securityLight) ? Colors.white : Colors.black.withOpacity(.5),
+                    ),
+                  ),
+                  NeumorphicButton(
+                    onPressed: () {
+             
                       allLight = !allLight;
                       _allLight();
                       setState(() {});
@@ -441,32 +515,8 @@ class _LightningControlState extends State<LightningControl> {
                           (allLight) ? Colors.white : Colors.black.withOpacity(.5),
                     ),
                   ),
-                  NeumorphicButton(
-                    onPressed: () {
-                      n++;
-                      secondFloor = !secondFloor;
-                      _secondFloor();
-                      setState(() {});
-                      _updateData();
-                      // Navigator.pushNamed(context, '/showIntrusion_page',
-                      //     arguments: idx);
-                    },
-                    style: NeumorphicStyle(
-                        depth: 5,
-
-                        //shadowDarkColor: Colors.yellow[700],
-                        shape: NeumorphicShape.convex,
-                        color: (secondFloor) ? Colors.yellow[700] : Color(0xFFe6ebf2),
-                        //boxShape: NeumorphicBoxShape.circle()
-                        ),
-                    padding: EdgeInsets.all(10),
-                    child: Icon(
-                     Icons.looks_two_outlined,
-                      size: 40,
-                      color:
-                          (secondFloor) ? Colors.white : Colors.black.withOpacity(.5),
-                    ),
-                  ),
+                  
+                  
                   
                 ],
               ))

@@ -87,6 +87,10 @@ flutter:
     - images/lt.png
     - images/pn.png
     - images/def.png
+    - images/floorTH.png
+    - images/sl.png
+    - images/flth.png
+    - images/flthnos.png
 
 
   #   - images/a_dot_ham.jpeg

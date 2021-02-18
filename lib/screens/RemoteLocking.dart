@@ -35,6 +35,7 @@ class _RemoteLockingPageState extends State<RemoteLockingPage> {
   String last = "";
   String by = "";
   String timerUnlock = "";
+  bool isEnglish = true;
 
   final bdref = FirebaseDatabase.instance.reference();
   var realTimeData;
@@ -56,6 +57,15 @@ class _RemoteLockingPageState extends State<RemoteLockingPage> {
       String value = snapshot.value['Unlocked By'];
 
       by = value;
+      //print(value);
+    });
+
+    bdref.child('Languages').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value;
+
+      (value == 'English') ? isEnglish = true : isEnglish = false;
       //print(value);
     });
 
@@ -89,16 +99,16 @@ class _RemoteLockingPageState extends State<RemoteLockingPage> {
             var keyboardUIConfig2 = keyboardUIConfig;
             var passcodeScreen = PasscodeScreen(
               title: Text(
-                'Enter App Passcode',
+                (isEnglish)?'Enter App Passcode':"ป้อนรหัสผ่าน",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontSize: 28),
               ),
               passwordEnteredCallback: _onPasscodeEntered,
               cancelButton: cancelButton,
               deleteButton: Text(
-                'Delete',
+                (isEnglish)?'Delete':"ลบ",
                 style: const TextStyle(fontSize: 16, color: Colors.white),
-                semanticsLabel: 'Delete',
+                semanticsLabel:  (isEnglish)?'Delete':"ลบ",
               ),
               shouldTriggerVerification: _verificationNotifier.stream,
               backgroundColor: Colors.black.withOpacity(0.8),
@@ -118,7 +128,7 @@ class _RemoteLockingPageState extends State<RemoteLockingPage> {
         this.isAuthenticated = true;
         isLocked = false;
         last = timerUnlock;
-        by = "Application";
+        by = (isEnglish)?"Application":"แอปพลิเคชัน";
         bdref.child('Remote Locking').update({
           'Door': (isLocked) ? 'Lock' : 'Unlock',
           'Last Unlocked': timerUnlock,
@@ -145,14 +155,14 @@ class _RemoteLockingPageState extends State<RemoteLockingPage> {
     var now = DateTime.now();
 
     //print(DateFormat('hh:mm aaa').format(now));
-    timerUnlock = DateFormat('hh:mm aaa').format(now);
+    timerUnlock = DateFormat('hh:mm').format(now);
 
     return Scaffold(
       backgroundColor: Color(0xFFe6ebf2),
       appBar: AppBar(
         backgroundColor: themeColors,
         title: Center(
-          child: Text('REMOTE LOCKING'),
+          child: Text((isEnglish)?'REMOTE LOCKING':'ระบบล็อกจากระยะไกล'),
         ),
       ),
       body: SingleChildScrollView(
@@ -222,7 +232,7 @@ class _RemoteLockingPageState extends State<RemoteLockingPage> {
               height: 20.0,
             ),
             Text(
-              (isLocked) ? "DOOR LOCKED" : "DOOR UNLOCKED",
+              (isLocked) ? (isEnglish)?"DOOR LOCKED":"ประตูล็อก" : (isEnglish)?"DOOR UNLOCKED":"ประตูไม่ล็อก",
               style: TextStyle(
                   color: themeColors,
                   fontFamily: "nunito",
@@ -249,10 +259,10 @@ class _RemoteLockingPageState extends State<RemoteLockingPage> {
                           context,
                           opaque: false,
                           cancelButton: Text(
-                            'Cancel',
+                            (isEnglish)?'Cancel':"ยกเลิก",
                             style: const TextStyle(
                                 fontSize: 16, color: Colors.white),
-                            semanticsLabel: 'Cancel',
+                            semanticsLabel: (isEnglish)?'Cancel':"ยกเลิก",
                           ),
                         )
                       : setState(() {
@@ -263,7 +273,7 @@ class _RemoteLockingPageState extends State<RemoteLockingPage> {
                         });
                 },
                 child: Text(
-                  (isLocked) ? "Unlock Door" : "Lock Door",
+                  (isLocked) ? (isEnglish)?"Unlock Door":"ปลดล็อกประตู" : (isEnglish)?"Lock Door":"ล็อกประตู",
                   style: TextStyle(
                       color: Colors.black.withOpacity(.6),
                       fontFamily: "nunito",
@@ -282,7 +292,7 @@ class _RemoteLockingPageState extends State<RemoteLockingPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Last Unlocked",
+                        (isEnglish)?"Last Unlocked":"ล็อกครั้งล่าสุด",
                         style: TextStyle(
                             color: themeColors,
                             fontFamily: "nunito",
@@ -304,10 +314,10 @@ class _RemoteLockingPageState extends State<RemoteLockingPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Unlocked By',
+                        (isEnglish)?'Unlocked By':"วิธีปลดล็อก",
                         style: TextStyle(
                             color: themeColors,
-                            fontFamily: "Locked Status",
+                           
                             fontWeight: FontWeight.bold,
                             fontSize: 20),
                       ),

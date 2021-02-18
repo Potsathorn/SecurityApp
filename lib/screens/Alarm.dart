@@ -21,6 +21,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
 
   bool isActive = false;
   String timerUnlock = "";
+  bool  isEnglish = true;
 
   final bdref = FirebaseDatabase.instance.reference();
   var realTimeData;
@@ -42,6 +43,15 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
       
       
     });
+    bdref.child('Languages').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value;
+
+      (value == 'English') ? isEnglish = true : isEnglish = false;
+      //print(value);
+    });
+
 
     bdref.child('Alarm History').onValue.listen((event) {
       alarmInfo.clear();
@@ -74,6 +84,35 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
     alarmInfo.sort((b, a) {
       return a.id.compareTo(b.id);
     });
+
+    String typeTH(String tTH){
+      if(tTH=="Contact"){
+        return "งัดประตู";
+      }
+      else if(tTH=="Motion"){
+        return "ความเคลื่อนไหว";
+      }
+      else{
+        return "ทุบกระจก";
+      }
+
+    }
+
+    String locatTH(String lTH){
+      if(lTH=="Front Door"){
+        return "ประตูหน้า";
+      }
+      else if(lTH=="Back Door"){
+        return "ประตูหลัง";
+      }
+      else if(lTH=="Kitchen"){
+        return "ห้องครัว";
+      }
+      else{
+        return "ห้องนั่งเล่น";
+      }
+
+    }
 
     TableRow _tableRow(String type,String locat,String date,String time){
       return TableRow(children: [
@@ -117,7 +156,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
       appBar: AppBar(
         backgroundColor: (isActive)? Colors.redAccent[700]: themeColors,
         title: Center(
-          child: Text('SOUND ALARM SYSTEM'),
+          child: Text((isEnglish)?'SOUND ALARM SYSTEM':"ระบบเสียงเตือนภัย"),
         ),
       ),
       body: SingleChildScrollView(
@@ -141,7 +180,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
               height: 10.0,
             ),
             Text(
-              (isActive) ? "ACTIVE" : "INACTIVE",
+              (isActive) ? (isEnglish)?"ACTIVE":"ทำงาน" : (isEnglish)?"INACTIVE":"ไม่ทำงาน",
               style: TextStyle(
                    color: (isActive)? Colors.redAccent[700]: themeColors,
 
@@ -168,7 +207,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
                   });
                 },
                 child: Text(
-                  (isActive) ? "Inactivate Alarm Bell" : "Activate Alarm Bell",
+                  (isActive) ? (isEnglish)?"Inactivate Alarm Bell":"หยุดการทำงาน" : (isEnglish)?"Activate Alarm Bell":"สั่งการทำงาน",
                   style: TextStyle(
                       color: Colors.black.withOpacity(.6),
                       fontFamily: "nunito",
@@ -184,7 +223,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Center(
-                  child: Text('ALARM HISTORY',
+                  child: Text((isEnglish)?'ALARM HISTORY':"ประวัติการเตือนภัย",
                       style: TextStyle(
                           color: Colors.white.withOpacity(.8),
                           fontFamily: "nunito",
@@ -199,7 +238,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
                 children: [
                   TableRow(children: [
                     Text(
-                      "Type",
+                      (isEnglish)?"Type":"ประเภท",
                       style: TextStyle(
                           color: Colors.black.withOpacity(.6),
                           fontFamily: "nunito",
@@ -207,7 +246,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
                           fontSize: 15),
                     ),
                     Text(
-                      "Location",
+                      (isEnglish)?"Location":"ตำแหน่ง",
                       style: TextStyle(
                           color: Colors.black.withOpacity(.6),
                           fontFamily: "nunito",
@@ -215,7 +254,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
                           fontSize: 15),
                     ),
                     Text(
-                      "Time",
+                      (isEnglish)?"Time":"เวลา",
                       style: TextStyle(
                           color: Colors.black.withOpacity(.6),
                           fontFamily: "nunito",
@@ -223,7 +262,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
                           fontSize: 15),
                     ),
                     Text(
-                     "Date",
+                     (isEnglish)?"Date":"วันที่",
                       style: TextStyle(
                           color: Colors.black.withOpacity(.6),
                           fontFamily: "nunito",
@@ -235,7 +274,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
 
 
                   for (var i in alarmInfo)
-                    _tableRow(i.type, i.locat, i.date, i.time)
+                    _tableRow((isEnglish)?i.type:typeTH(i.type), (isEnglish)?i.locat:locatTH(i.locat), i.date, i.time)
                   
                   
                   

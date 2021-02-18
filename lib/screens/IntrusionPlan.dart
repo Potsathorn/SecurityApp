@@ -26,6 +26,7 @@ class _IntrusionFirstPageState extends State<IntrusionFirstPage> {
   bool noMotion = false;
   bool noVibration = false;
   bool noContact = false;
+  bool isEnglish = true;
 
   IconData iconSecurity = Icons.verified_user_outlined;
 
@@ -64,6 +65,14 @@ class _IntrusionFirstPageState extends State<IntrusionFirstPage> {
       String value = snapshot.value['Vibration'];
 
       (value == 'Normal') ? noVibration = true : noVibration = false;
+      //print(value);
+    });
+    bdref.child('Languages').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value;
+
+      (value == 'English') ? isEnglish = true : isEnglish = false;
       //print(value);
     });
 
@@ -130,7 +139,7 @@ class _IntrusionFirstPageState extends State<IntrusionFirstPage> {
         appBar: AppBar(
           backgroundColor:  themeColors,
           title: Center(
-            child: Text('INTRUSION DETECTION'),
+            child: Text((isEnglish)?'INTRUSION DETECTION':'ระบบตรวจจับการบุกรุก'),
           ),
         ),
         body: Stack(overflow: Overflow.visible, children: [
@@ -141,7 +150,7 @@ class _IntrusionFirstPageState extends State<IntrusionFirstPage> {
                   image: new DecorationImage(
                       fit: BoxFit.fill,
                       image: new AssetImage(
-                          'images/pn.png')))),
+                          (isEnglish)?'images/pn.png':'images/floorTH.png')))),
           _positionIcon(null, 43, 85, null, 7),
           _positionIcon(130, 43, null, null, 6),
           _positionIcon(75, 227, null, null, 5),

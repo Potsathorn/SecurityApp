@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Security/widgets/SideBar.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -336,16 +337,16 @@ class _NeuHomeState extends State<NeuHome> {
             var keyboardUIConfig2 = keyboardUIConfig;
             var passcodeScreen = PasscodeScreen(
               title: Text(
-                'Enter App Passcode',
+                (isEnglish)?'Enter App Passcode':"ป้อนรหัสผ่าน",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontSize: 28),
               ),
               passwordEnteredCallback: _onPasscodeEntered,
               cancelButton: cancelButton,
               deleteButton: Text(
-                'Delete',
+                (isEnglish)?'Delete':"ลบ",
                 style: const TextStyle(fontSize: 16, color: Colors.white),
-                semanticsLabel: 'Delete',
+                semanticsLabel:(isEnglish)?'Delete':"ลบ",
               ),
               shouldTriggerVerification: _verificationNotifier.stream,
               backgroundColor: Colors.black.withOpacity(0.8),
@@ -476,11 +477,13 @@ class _NeuHomeState extends State<NeuHome> {
       groupScene = "I'm Home";
     } else {}
 
-    // FirebaseMessaging fcm  =  FirebaseMessaging();
-    // print(fcm.getToken());
+    FirebaseMessaging fcm  =  FirebaseMessaging();
+   // print(fcm.getToken());
+   //checkPreference();
 
     return Scaffold(
-       resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomPadding: false,
+      endDrawer: InkWellDrawer(),
       backgroundColor: Color(0xFFe6ebf2),
       body: SingleChildScrollView(
               child: Column(
@@ -493,6 +496,7 @@ class _NeuHomeState extends State<NeuHome> {
                       height: 40.0,
                     ),
                     ListTile(
+                      
                       title: Text(
                         (isEnglish)?'Welcome Home!':'ยินดีต้อนรับกลับบ้านค่ะ',
                         style: TextStyle(
@@ -510,18 +514,26 @@ class _NeuHomeState extends State<NeuHome> {
                           fontSize: 19.0,
                         ),
                       ),
-                      trailing: Container(
-                          width: 50.0,
-                          height: 50.0,
-                          decoration: new BoxDecoration(
-                            image: new DecorationImage(
-                                fit: BoxFit.fill,
-                                image: new AssetImage("images/taem.png")),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(8),
-                            ),
-                            shape: BoxShape.rectangle,
-                          )),
+                      trailing: Builder(
+                        builder: (cntx) =>GestureDetector(
+                          onTap: (){
+                            
+                            Scaffold.of(cntx).openEndDrawer();
+                          },
+                              child: Container(
+                              width: 50.0,
+                              height: 50.0,
+                              decoration: new BoxDecoration(
+                                image: new DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: new AssetImage("images/taem.png")),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                                shape: BoxShape.rectangle,
+                              )),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -944,7 +956,7 @@ class _NeuHomeState extends State<NeuHome> {
                             GestureDetector(
                               onTap: () => _gotoLockink(),
                               child: Text(
-                                (isEnglish)?'Remote Locking':'การล็อกจากระยะไกล',
+                                (isEnglish)?'Remote Locking':'ระบบล็อกจากระยะไกล',
                                 style: TextStyle(
                                   color: (isLocked)
                                       ? themeColor
@@ -1018,11 +1030,11 @@ class _NeuHomeState extends State<NeuHome> {
                                           context,
                                           opaque: false,
                                           cancelButton: Text(
-                                            'Cancel',
+                                            (isEnglish)?'Cancel':"ยกเลิก",
                                             style: const TextStyle(
                                                 fontSize: 16,
                                                 color: Colors.white),
-                                            semanticsLabel: 'Cancel',
+                                            semanticsLabel: (isEnglish)?'Cancel':"ยกเลิก",
                                           ),
                                         )
                                       : setState(() {
@@ -1212,7 +1224,7 @@ class _NeuHomeState extends State<NeuHome> {
                             GestureDetector(
                               onTap: () => _gotoAlarm(),
                               child: Text(
-                                (isEnglish)?'Sound Alarm':'เสียงเตือนภัย',
+                                (isEnglish)?'Sound Alarm':'ระบบเสียงเตือนภัย',
                                 style: TextStyle(
                                   color: (isActived)
                                       ? themeColor

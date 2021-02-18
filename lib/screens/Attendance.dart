@@ -123,10 +123,12 @@ class _AttendancePageState extends State<AttendancePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text(widget.title)),
+        title: Center(child: Text((isEnglish)?widget.title:'ประวัติการเข้าบ้าน')),
         backgroundColor: themeColors,
         actions: [
           PopupMenuButton(
+            
+
               onSelected: (selectedValue) {
                 print(selectedValue);
                 selectFilter = selectedValue;
@@ -138,10 +140,11 @@ class _AttendancePageState extends State<AttendancePage> {
               itemBuilder: (BuildContext ctx) => [
                     for (int i = 0; i < labelFilter.length; i++)
                       PopupMenuItem(
+                        height: 10,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(labelFilter[i]),
+                              Text((isEnglish)?labelFilter[i]:labelFilterTH[i]),
                               Icon(
                                 (selectFilter == labelFilter[i])
                                     ? Icons.check_circle_outline_rounded
@@ -161,6 +164,7 @@ class _AttendancePageState extends State<AttendancePage> {
   List<Map> listMembers = [];
   List<UserInfo> memInfo = [];
   List<UserInfo> toShowList = [];
+  bool isEnglish = true;
 
   String selectFilter = "All";
   
@@ -177,6 +181,14 @@ class _AttendancePageState extends State<AttendancePage> {
 
       (value == 'Active') ? isActived = true : isActived = false;
       // print(value);
+    });
+    bdref.child('Languages').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value;
+
+      (value == 'English') ? isEnglish = true : isEnglish = false;
+      //print(value);
     });
     bdref.child('Members Access').onValue.listen((event) {
       memInfo.clear();
@@ -237,15 +249,15 @@ class _AttendancePageState extends State<AttendancePage> {
     return [
       FlatButton(
         padding: EdgeInsets.all(0),
-        child: _getTitleItemWidget('Name', 500),
+        child: _getTitleItemWidget((isEnglish)?'Name':"ชื่อ", 500),
         onPressed: () {},
       ),
       FlatButton(
         padding: EdgeInsets.all(0),
-        child: _getTitleItemWidget('Date', 95),
+        child: _getTitleItemWidget((isEnglish)?'Date':'วันที่', 95),
         onPressed: () {},
       ),
-      _getTitleItemWidget('Time', 100),
+      _getTitleItemWidget((isEnglish)?'Time':'เวลา', 100),
     ];
   }
 
@@ -281,6 +293,19 @@ class _AttendancePageState extends State<AttendancePage> {
   }
 
   Widget _generateFirstColumnRow(BuildContext context, int index) {
+    String nameTH(String thName){
+      if (thName == 'Taem Potsathorn') {
+              return "แต้ม พสธร";
+            } else if (thName == 'Taeng Jidapa') {
+              return "แตง จิดาภา";
+            } else if (thName == 'Tar Chanita') {
+              return "ต้า ชนิตา";
+            } else if (thName == 'Pat Supat') {
+              return "ภัทร์ สุภัทร์";
+            } else {
+              return "";
+            }
+    }
     return Container(
       color: Color(0xFFe6ebf2),
       child: Neumorphic(
@@ -302,7 +327,7 @@ class _AttendancePageState extends State<AttendancePage> {
                 width: 5,
               ),
               Text(
-                toShowList[index].name,
+                (isEnglish)?toShowList[index].name:nameTH(toShowList[index].name),
                 style: TextStyle(
                   color: themeColors,
                   fontSize: 14.0,
