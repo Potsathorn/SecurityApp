@@ -35,6 +35,7 @@ class _LightningControlState extends State<LightningControl> {
   bool ttRM = false;
   bool wc2 = false;
   bool stairs = false;
+  bool  isOnControl = false;
 
   bool securityLight = false;
 
@@ -124,6 +125,15 @@ class _LightningControlState extends State<LightningControl> {
 
       (value == 'English') ? isEnglish = true : isEnglish = false;
       //print(value);
+    });
+
+     bdref.child('Security Light').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value['LightControl'];
+
+      (value == 'On') ? isOnControl = true : isOnControl = false;
+      
     });
 
     bdref.child('Security Light').onValue.listen((event) {
@@ -246,7 +256,7 @@ class _LightningControlState extends State<LightningControl> {
   void _updateData() {
     bdref.child('Security Light').update({
       "Kitchen": (kitchen)? "On":"Off",
-      "Light": (securityLight)? "On":"Off",
+      "Light": (isOnControl)? "Off":"On",
       "LivingRM": (livingRM1)? "On":"Off",
       "LivingRM2": (livingRM2)? "On":"Off",
       "PatRM": (patRM)? "On":"Off",

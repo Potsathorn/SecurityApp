@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gesture_zoom_box/gesture_zoom_box.dart';
@@ -22,6 +24,79 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  bool isEnglish = true;
+  bool isOn = false;
+  bool isActived = false;
+  bool isLocked = false;
+  bool isOnControl = false;
+  bool isActiveControl = false;
+  bool isLockControl = true ;
+
+  final bdref = FirebaseDatabase.instance.reference();
+  var realTimeData;
+
+  void realtime() {
+    bdref.child('Languages').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value;
+
+      (value == 'English') ? isEnglish = true : isEnglish = false;
+      //print(value);
+      setState(() {});
+    });
+
+    bdref.child('Security Light').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value['LightControl'];
+
+      (value == 'On') ? isOnControl = true : isOnControl = false;
+    });
+
+    bdref.child('Rlock').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value;
+
+      (value == 'Lock') ? isLockControl = true : isLockControl = false;
+      
+    });
+
+    bdref.child('Security Light').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value['Light'];
+
+      (value == 'On') ? isOn = true : isOn = false;
+      //print(value);
+    });
+    bdref.child('Remote Locking').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value['Door'];
+
+      (value == 'Lock') ? isLocked = true : isLocked = false;
+    });
+
+    bdref.child('Sound Alarm').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value['AlertControl'];
+
+      (value == 'Active') ? isActiveControl = true : isActiveControl = false;
+    });
+
+    bdref.child('Sound Alarm').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value['Alert'];
+
+      (value == 'Active') ? isActived = true : isActived = false;
+      // print(value);
+    });
+  }
+
   Color themeColors = Color(0xFF1565c0);
   final double videoWidth = 640;
   final double videoHeight = 480;
@@ -39,6 +114,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     isLandscape = false;
+    realtime();
 
     _timeString = _formatDateTime(DateTime.now());
     Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
@@ -76,12 +152,6 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       backgroundColor: Color(0xFFe6ebf2),
-      appBar: AppBar(
-        backgroundColor: themeColors,
-        title: Center(
-          child: Text('Video Streaming'),
-        ),
-      ),
       body: OrientationBuilder(builder: (context, orientation) {
         //     SystemChrome.setPreferredOrientations([
         //   DeviceOrientation.landscapeLeft,
@@ -167,19 +237,6 @@ class _HomeState extends State<Home> {
                                 ),
                                 alignment: Alignment.topCenter,
                               )),
-                              Positioned(
-                                bottom: 1,
-                                left: -3,
-                                child: Container(
-                                  child: Text(
-                                    'helldo',
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w300,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              )
                             ],
                           ),
                         ],
@@ -192,34 +249,186 @@ class _HomeState extends State<Home> {
           ),
           Positioned(
             top: 1,
-            left: 5,
+            left: 10,
             child: Container(
+              width: MediaQuery.of(context).size.height / 2.5,
+              //   color: Colors.redAccent,
               height: MediaQuery.of(context).size.height,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 40.0,
+                  ),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Last Unlocked",
+                        (isEnglish) ? "Video Streaming" : "วิดีโอสตรีมมิ่ง",
                         style: TextStyle(
                             color: themeColors,
                             fontFamily: "nunito",
                             fontWeight: FontWeight.bold,
-                            fontSize: 20),
+                            fontSize: (isEnglish) ? 20 : 20),
                       ),
-                      Text("last",
-                          style: TextStyle(
-                              color: Colors.black.withOpacity(.6),
-                              fontFamily: "nunito",
-                              //fontWeight: FontWeight.bold,
-                              fontSize: 18))
                     ],
                   ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(1),
+                    color: Colors.red,
+                    child: Text((isEnglish) ? "Live" : "ถ่ายทอดสด",
+                        style: TextStyle(
+                            color: Colors.black.withOpacity(.6),
+                            fontFamily: "nunito",
+                            //fontWeight: FontWeight.bold,
+                            fontSize: 15)),
+                  ),
+                  Text(
+                    "$_timeString",
+                    style: TextStyle(
+                        color: Colors.black.withOpacity(.5),
+                        // fontWeight: FontWeight.bold,
+                        fontSize: 17),
+                  ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Text(
+                    ((isEnglish) ? "Camera : " : "กล้อง"),
+                    style: TextStyle(
+                        color: themeColors,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17),
+                  ),
+                  Text(
+                    "ESP32-CAM #1",
+                    style: TextStyle(
+                        color: Colors.black.withOpacity(.5),
+                        // fontWeight: FontWeight.bold,
+                        fontSize: 17),
+                  ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Text(
+                    (isEnglish) ? "Location : " : "ตำแหน่ง",
+                    style: TextStyle(
+                        color: themeColors,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17),
+                  ),
+                  Text(
+                    (isEnglish) ? "Front Yard" : "หน้าบ้าน",
+                    style: TextStyle(
+                        color: Colors.black.withOpacity(.5),
+                        // fontWeight: FontWeight.bold,
+                        fontSize: 17),
+                  ),
+                  SizedBox(
+                    height: (isEnglish) ? 40 : 30,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      NeumorphicButton(
+                        onPressed: () {
+                          isOn = !isOn;
+                          bdref.child('Security Light').update(
+                              {'LightControl': (isOnControl) ? 'Off' : 'On'});
+                          setState(() {});
+
+                          // Navigator.pushNamed(context, '/showIntrusion_page',
+                          //     arguments: idx);
+                        },
+                        style: NeumorphicStyle(
+                          depth: 5,
+
+                          //shadowDarkColor: Colors.yellow[700],
+                          shape: NeumorphicShape.convex,
+                          color: (isOn) ? themeColors : Color(0xFFe6ebf2),
+                          //boxShape: NeumorphicBoxShape.circle()
+                        ),
+                        padding: EdgeInsets.all(8),
+                        child: Icon(
+                          Icons.lightbulb_outline,
+                          color: (isOn)
+                              ? Colors.white
+                              : Colors.black.withOpacity(.5),
+                        ),
+                      ),
+                      NeumorphicButton(
+                        onPressed: () {
+                          isLocked = !isLocked;
+                          bdref.update({
+                            'Rlock': (isLockControl) ? 'Unlock' : 'Lock',
+                          });
+                          setState(() {});
+
+                          // Navigator.pushNamed(context, '/showIntrusion_page',
+                          //     arguments: idx);
+                        },
+                        style: NeumorphicStyle(
+                          depth: 5,
+
+                          //shadowDarkColor: Colors.yellow[700],
+                          shape: NeumorphicShape.convex,
+                          color: (isLocked) ? themeColors : Color(0xFFe6ebf2),
+                          //boxShape: NeumorphicBoxShape.circle()
+                        ),
+                        padding: EdgeInsets.all(8),
+                        child: Icon(
+                          Icons.lock_outline_rounded,
+                          color: (isLocked)
+                              ? Colors.white
+                              : Colors.black.withOpacity(.5),
+                        ),
+                      ),
+                      NeumorphicButton(
+                        onPressed: () {
+                          isActived = !isActived;
+                          bdref.child('Sound Alarm').update({
+                            'AlertControl':
+                                (isActiveControl) ? 'Inactive' : 'Active'
+                          });
+
+                          setState(() {});
+
+                          // Navigator.pushNamed(context, '/showIntrusion_page',
+                          //     arguments: idx);
+                        },
+                        style: NeumorphicStyle(
+                          depth: 5,
+
+                          //shadowDarkColor: Colors.yellow[700],
+                          shape: NeumorphicShape.convex,
+                          color: (isActived) ? themeColors : Color(0xFFe6ebf2),
+                          //boxShape: NeumorphicBoxShape.circle()
+                        ),
+                        padding: EdgeInsets.all(8),
+                        child: Icon(
+                          Icons.notifications_on_outlined,
+                          color: (isActived)
+                              ? Colors.white
+                              : Colors.black.withOpacity(.5),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           )
         ]);
       }),
-      floatingActionButton: _getFab(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: takeScreenShot,
+        child: Icon(Icons.photo_camera),
+        backgroundColor: themeColors,
+      ),
     );
   }
 
@@ -232,7 +441,13 @@ class _HomeState extends State<Home> {
     final res = await _imageSaver.saveImage(imageBytes: pngBytes);
 
     Fluttertoast.showToast(
-        msg: res ? "ScreenShot Saved" : "ScreenShot Failure!",
+        msg: res
+            ? (isEnglish)
+                ? "ScreenShot Saved"
+                : "การบันทึกภาพสำเร็จ"
+            : (isEnglish)
+                ? "ScreenShot Failure!"
+                : "การบันทึกภาพล้มเหลว",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
@@ -242,7 +457,7 @@ class _HomeState extends State<Home> {
   }
 
   String _formatDateTime(DateTime dateTime) {
-    return DateFormat('MM/dd hh:mm:ss aaa').format(dateTime);
+    return DateFormat('hh:mm:ss aaa').format(dateTime);
   }
 
   void _getTime() {

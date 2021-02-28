@@ -116,9 +116,9 @@ class _InkWellDrawerState extends State<InkWellDrawer> {
               ),
             ),
             CustomListTile(
-                Icons.upload_outlined, (isEnglish)?'Version':'เวอร์ชัน', () => {}, Text('1.0.0      ')),
+                Icons.upload_outlined, (isEnglish)?'Version':'เวอร์ชัน', () => {}, Text('1.0.0    ')),
             CustomListTile(
-                Icons.exit_to_app_rounded, (isEnglish)?'Exit App':'ออกจากแอป', () => {SystemNavigator.pop()}, Text('')),
+                Icons.exit_to_app_rounded, (isEnglish)?'Exit':'ออกจากแอป', () => {SystemNavigator.pop()}, Text('')),
             
           ],
         ),

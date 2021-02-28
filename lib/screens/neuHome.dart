@@ -85,6 +85,10 @@ class _NeuHomeState extends State<NeuHome> {
   bool noContact = false;
   bool isEnglish = true;
 
+  bool isOnControl = true;
+  bool isActiveControl = true;
+  bool isLockControl = true;
+
   String statusSecurity = 'Loading...';
   String statusSecurityDes = 'Loading...';
   IconData iconSecurity = Icons.verified_user_outlined;
@@ -115,6 +119,34 @@ class _NeuHomeState extends State<NeuHome> {
 
       (value == 'On') ? isOn = true : isOn = false;
       setState(() {});
+    });
+
+
+    bdref.child('Security Light').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value['LightControl'];
+
+      (value == 'On') ? isOnControl = true : isOnControl = false;
+      
+    });
+
+    bdref.child('Rlock').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value;
+
+      (value == 'Lock') ? isLockControl = true : isLockControl = false;
+      
+    });
+
+    bdref.child('Sound Alarm').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value['AlertControl'];
+
+      (value == 'Active') ? isActiveControl = true : isActiveControl = false;
+      
     });
 
     bdref.child('Remote Locking').onValue.listen((event) {
@@ -235,6 +267,16 @@ class _NeuHomeState extends State<NeuHome> {
       (realTimeData['Security Light']['Light'] == 'On')
           ? isOn = true
           : isOn = false;
+
+      (realTimeData['Security Light']['LightControl'] == 'On')
+          ? isOnControl = true
+          : isOnControl = false;
+      (realTimeData['Rlock'] == 'Lock')
+          ? isLockControl = true
+          : isLockControl = false;
+      (realTimeData['Sound Alarm']['AlertControl'] == 'Active')
+          ? isActiveControl = true
+          : isActiveControl = false;
       (realTimeData['Remote Locking']['Door'] == 'Lock')
           ? isLocked = true
           : isLocked = false;
@@ -266,25 +308,33 @@ class _NeuHomeState extends State<NeuHome> {
       // }
 
       if (noContact && noVibration && noMotion) {
-        statusSecurityDes = (isEnglish)?'No intrusion was detected':'ไม่พบการบุกรุก';
+        statusSecurityDes =
+            (isEnglish) ? 'No intrusion was detected' : 'ไม่พบการบุกรุก';
         iconSecurity = Icons.verified_user_outlined;
-        statusSecurity = (isEnglish)?'Undetected':'เหตุการณ์ปรกติ';
+        statusSecurity = (isEnglish) ? 'Undetected' : 'เหตุการณ์ปรกติ';
       } else if (!noMotion && noContact && noVibration) {
-        statusSecurityDes = (isEnglish)?'Motion Sensor':'เซนเซอร์ตรวจจับความเคลื่อนไหว';
+        statusSecurityDes =
+            (isEnglish) ? 'Motion Sensor' : 'เซนเซอร์ตรวจจับความเคลื่อนไหว';
         iconSecurity = Icons.directions_walk_rounded;
-        statusSecurity = (isEnglish)?'Motion was detected':'ตรวจพบความเคลื่อนไหว';
+        statusSecurity =
+            (isEnglish) ? 'Motion was detected' : 'ตรวจพบความเคลื่อนไหว';
       } else if (noMotion && noContact && !noVibration) {
-        statusSecurityDes = (isEnglish)?'Vibration Sensor':"เซนเซอร์ตรวจจับการสั่นสะเทือน";
+        statusSecurityDes =
+            (isEnglish) ? 'Vibration Sensor' : "เซนเซอร์ตรวจจับการสั่นสะเทือน";
         iconSecurity = Icons.vibration_rounded;
-        statusSecurity = (isEnglish)?'Vibration was detected':"ตรวจพบการทุบกระจก";
+        statusSecurity =
+            (isEnglish) ? 'Vibration was detected' : "ตรวจพบการทุบกระจก";
       } else if (noMotion && !noContact && noVibration) {
-        statusSecurityDes = (isEnglish)?'Contact Sensor':"เซนเซอร์ตรวจจับการเปิดประตู";
+        statusSecurityDes =
+            (isEnglish) ? 'Contact Sensor' : "เซนเซอร์ตรวจจับการเปิดประตู";
         iconSecurity = Icons.sensor_door;
-        statusSecurity = (isEnglish)?'Contact was detected':"ขณะนี้ประตูเปิดอยู่";
+        statusSecurity =
+            (isEnglish) ? 'Contact was detected' : "ขณะนี้ประตูเปิดอยู่";
       } else {
-        statusSecurityDes = (isEnglish)?'Intrusion was detected':"ตรวจพบการบุกรุก";
+        statusSecurityDes =
+            (isEnglish) ? 'Intrusion was detected' : "ตรวจพบการบุกรุก";
         iconSecurity = Icons.warning_amber_rounded;
-        statusSecurity = (isEnglish)?'Detected':"เหตุการณ์ไม่ปรกติ";
+        statusSecurity = (isEnglish) ? 'Detected' : "เหตุการณ์ไม่ปรกติ";
       }
 
       // membersAccess = realTimeData['Members Access'];
@@ -337,16 +387,16 @@ class _NeuHomeState extends State<NeuHome> {
             var keyboardUIConfig2 = keyboardUIConfig;
             var passcodeScreen = PasscodeScreen(
               title: Text(
-                (isEnglish)?'Enter App Passcode':"ป้อนรหัสผ่าน",
+                (isEnglish) ? 'Enter App Passcode' : "ป้อนรหัสผ่าน",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontSize: 28),
               ),
               passwordEnteredCallback: _onPasscodeEntered,
               cancelButton: cancelButton,
               deleteButton: Text(
-                (isEnglish)?'Delete':"ลบ",
+                (isEnglish) ? 'Delete' : "ลบ",
                 style: const TextStyle(fontSize: 16, color: Colors.white),
-                semanticsLabel:(isEnglish)?'Delete':"ลบ",
+                semanticsLabel: (isEnglish) ? 'Delete' : "ลบ",
               ),
               shouldTriggerVerification: _verificationNotifier.stream,
               backgroundColor: Colors.black.withOpacity(0.8),
@@ -410,34 +460,33 @@ class _NeuHomeState extends State<NeuHome> {
     //print(DateFormat('hh:mm aaa').format(now));
     timerUnlock = DateFormat('hh:mm aaa').format(now);
 
-    String groupSceneTH(){
-      if(groupScene=="I'm Home"){
-        groupScene="มีคนอยู่บ้าน";
-      }
-      else if(groupScene=="I'm Leave"){
-        groupScene="ไม่มีคนอยู่บ้าน";
-      }
-      else if(groupScene=="Good Morning"){
-        groupScene="อรุณสวัสดิ์";
-      }
-      else{
-        groupScene="ราตรีสวัสดิ์";
+    String groupSceneTH() {
+      if (groupScene == "I'm Home" || groupScene =="มีคนอยู่บ้าน") {
+        groupScene = "มีคนอยู่บ้าน";
+      } else if (groupScene == "I'm Leave"|| groupScene =="ไม่มีคนอยู่บ้าน") {
+        groupScene = "ไม่มีคนอยู่บ้าน";
+      } else if (groupScene == "Good Morning"|| groupScene =="อรุณสวัสดิ์") {
+        groupScene = "อรุณสวัสดิ์";
+      } else if (groupScene == "Good Night"|| groupScene =="ราตรีสวัสดิ์") {
+        groupScene = "ราตรีสวัสดิ์";
+      } else {
+        print(groupScene);
       }
       return groupScene;
     }
 
-    String nameTH(String thName){
+    String nameTH(String thName) {
       if (thName == 'Taem Potsathorn') {
-              return "แต้ม พสธร";
-            } else if (thName == 'Taeng Jidapa') {
-              return "แตง จิดาภา";
-            } else if (thName == 'Tar Chanita') {
-              return "ต้า ชนิตา";
-            } else if (thName == 'Pat Supat') {
-              return "ภัทร์ สุภัทร์";
-            } else {
-              return "";
-            }
+        return "แต้ม พสธร";
+      } else if (thName == 'Taeng Jidapa') {
+        return "แตง จิดาภา";
+      } else if (thName == 'Tar Chanita') {
+        return "ต้า ชนิตา";
+      } else if (thName == 'Pat Supat') {
+        return "ภัทร์ สุภัทร์";
+      } else {
+        return "";
+      }
     }
 
     // bool isDoorLock() {
@@ -477,16 +526,16 @@ class _NeuHomeState extends State<NeuHome> {
       groupScene = "I'm Home";
     } else {}
 
-    FirebaseMessaging fcm  =  FirebaseMessaging();
-   // print(fcm.getToken());
-   //checkPreference();
+    FirebaseMessaging fcm = FirebaseMessaging();
+    // print(fcm.getToken());
+    //checkPreference();
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       endDrawer: InkWellDrawer(),
       backgroundColor: Color(0xFFe6ebf2),
       body: SingleChildScrollView(
-              child: Column(
+        child: Column(
           children: [
             Container(
               child: Center(
@@ -496,31 +545,33 @@ class _NeuHomeState extends State<NeuHome> {
                       height: 40.0,
                     ),
                     ListTile(
-                      
                       title: Text(
-                        (isEnglish)?'Welcome Home!':'ยินดีต้อนรับกลับบ้านค่ะ',
+                        (isEnglish)
+                            ? 'Welcome Home!'
+                            : 'ยินดีต้อนรับกลับบ้านค่ะ',
                         style: TextStyle(
                           color: themeColor,
-                         // letterSpacing: 1.5,
+                          // letterSpacing: 1.5,
                           fontSize: 25.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: "nunito",
                         ),
                       ),
                       subtitle: Text(
-                        (isEnglish)?'Taem Potsathorn':'คุณพสธร ดวงแก้วเจริญ',
+                        (isEnglish)
+                            ? 'Taem Potsathorn'
+                            : 'คุณพสธร ดวงแก้วเจริญ',
                         style: TextStyle(
-                          fontWeight: (!isEnglish)?FontWeight.bold:null,
+                          fontWeight: (!isEnglish) ? FontWeight.bold : null,
                           fontSize: 19.0,
                         ),
                       ),
                       trailing: Builder(
-                        builder: (cntx) =>GestureDetector(
-                          onTap: (){
-                            
+                        builder: (cntx) => GestureDetector(
+                          onTap: () {
                             Scaffold.of(cntx).openEndDrawer();
                           },
-                              child: Container(
+                          child: Container(
                               width: 50.0,
                               height: 50.0,
                               decoration: new BoxDecoration(
@@ -568,15 +619,17 @@ class _NeuHomeState extends State<NeuHome> {
                           });
                         },
                         child: Container(
-                            color: (groupScene == "I'm Home")
-                                ? ((!isActived) ? themeColor : Color(0xFFd51a00))
+                            color: (groupScene == "I'm Home" || groupScene =="มีคนอยู่บ้าน")
+                                ? ((!isActived)
+                                    ? themeColor
+                                    : Color(0xFFd51a00))
                                 : Color(0xFFe6ebf2),
                             height: 40,
                             width: 40,
                             child: Center(
                                 child: Icon(
                               SimpleLineIcons.home,
-                              color: (groupScene == "I'm Home")
+                              color: (groupScene == "I'm Home" || groupScene =="มีคนอยู่บ้าน")
                                   ? Colors.white
                                   : Colors.black.withOpacity(.5),
                             ))),
@@ -593,7 +646,7 @@ class _NeuHomeState extends State<NeuHome> {
                           //context.bloc<SceneCubit>().scenetoggle(value);
                           setState(() {
                             groupScene = value;
-                            (groupScene != "I'm Leave")
+                            (groupScene != "I'm Leave" )
                                 ? null
                                 : bdref.child('Scene').update({
                                     'Scene': groupScene,
@@ -601,7 +654,7 @@ class _NeuHomeState extends State<NeuHome> {
                           });
                         },
                         child: Container(
-                            color: (groupScene == "I'm Leave")
+                            color: (groupScene == "I'm Leave" ||groupScene ==  "ไม่มีคนอยู่บ้าน")
                                 ? (!isActived)
                                     ? themeColor
                                     : Color(0xFFd51a00)
@@ -614,7 +667,7 @@ class _NeuHomeState extends State<NeuHome> {
                                 top: 4,
                                 child: Icon(
                                   SimpleLineIcons.home,
-                                  color: (groupScene == "I'm Leave")
+                                  color: (groupScene == "I'm Leave" ||groupScene ==  "ไม่มีคนอยู่บ้าน")
                                       ? Colors.white
                                       : Colors.black.withOpacity(.5),
                                   size: 22,
@@ -625,7 +678,7 @@ class _NeuHomeState extends State<NeuHome> {
                                 bottom: 1,
                                 child: Icon(
                                   Icons.directions_walk_rounded,
-                                  color: (groupScene == "I'm Leave")
+                                  color: (groupScene == "I'm Leave" ||groupScene ==  "ไม่มีคนอยู่บ้าน")
                                       ? Colors.white
                                       : Colors.black.withOpacity(.5),
                                   // size: 20,
@@ -653,7 +706,7 @@ class _NeuHomeState extends State<NeuHome> {
                           });
                         },
                         child: Container(
-                            color: (groupScene == 'Good Morning')
+                            color: (groupScene == "Good Morning" || groupScene == "อรุณสวัสดิ์")
                                 ? (!isActived)
                                     ? themeColor
                                     : Color(0xFFd51a00)
@@ -663,7 +716,7 @@ class _NeuHomeState extends State<NeuHome> {
                             child: Center(
                                 child: Icon(
                               FontAwesome.sun_o,
-                              color: (groupScene == 'Good Morning')
+                              color: (groupScene == "Good Morning" || groupScene == "อรุณสวัสดิ์")
                                   ? Colors.white
                                   : Colors.black.withOpacity(.5),
                             ))),
@@ -689,7 +742,7 @@ class _NeuHomeState extends State<NeuHome> {
                           });
                         },
                         child: Container(
-                            color: (groupScene == 'Good Night')
+                            color: (groupScene == "Good Night" || groupScene =="ราตรีสวัสดิ์")
                                 ? (!isActived)
                                     ? themeColor
                                     : Color(0xFFd51a00)
@@ -699,7 +752,7 @@ class _NeuHomeState extends State<NeuHome> {
                             child: Center(
                                 child: Icon(
                               FontAwesome.moon_o,
-                              color: (groupScene == 'Good Night')
+                              color: (groupScene == "Good Night" || groupScene =="ราตรีสวัสดิ์")
                                   ? Colors.white
                                   : Colors.black.withOpacity(.5),
                             ))),
@@ -714,13 +767,16 @@ class _NeuHomeState extends State<NeuHome> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Text((isEnglish)?"Scene":"โหมด",
+                                Text((isEnglish) ? "Scene" : "โหมด",
                                     style: TextStyle(
                                       fontSize: 18.0,
                                       color: Colors.black.withOpacity(.5),
                                       fontWeight: FontWeight.bold,
                                     )),
-                                Text((isEnglish)?groupScene:groupSceneTH(), //trow Excep debug
+                                Text(
+                                    (isEnglish)
+                                        ? groupScene
+                                        : groupSceneTH(), //trow Excep debug
                                     style: TextStyle(
                                       fontSize: 17.0,
                                       color: (!isActived)
@@ -743,10 +799,12 @@ class _NeuHomeState extends State<NeuHome> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  (isEnglish)?'  Members Last Access':'  สมาชิกที่เข้าบ้านล่าสุด',
+                  (isEnglish)
+                      ? '  Members Last Access'
+                      : '  สมาชิกที่เข้าบ้านล่าสุด',
                   style: TextStyle(
                     color: Colors.black.withOpacity(.5),
-                    letterSpacing: (isEnglish)?1:0,
+                    letterSpacing: (isEnglish) ? 1 : 0,
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
                     fontFamily: "nunito",
@@ -758,7 +816,8 @@ class _NeuHomeState extends State<NeuHome> {
               height: 5.0,
             ),
             Neumorphic(
-                style: NeumorphicStyle(shape: NeumorphicShape.flat, intensity: 1),
+                style:
+                    NeumorphicStyle(shape: NeumorphicShape.flat, intensity: 1),
                 child: Container(
                   color: Color(0xFFe6ebf2),
                   width: MediaQuery.of(context).size.width - 20,
@@ -778,7 +837,11 @@ class _NeuHomeState extends State<NeuHome> {
                         ),
                         title: Text(
                           // ignore: null_aware_before_operator
-                          (memInfo?.length > 0 ? (isEnglish)? memInfo[0].name:nameTH(memInfo[0].name) : 'loading...'),
+                          (memInfo?.length > 0
+                              ? (isEnglish)
+                                  ? memInfo[0].name
+                                  : nameTH(memInfo[0].name)
+                              : 'loading...'),
                           style: TextStyle(
                             color: themeColor,
 
@@ -791,7 +854,9 @@ class _NeuHomeState extends State<NeuHome> {
                         // ignore: null_aware_before_operator
                         subtitle: Text(
                             // ignore: null_aware_before_operator
-                            (memInfo?.length > 0 ? memInfo[0].date : 'loading...') +
+                            (memInfo?.length > 0
+                                    ? memInfo[0].date
+                                    : 'loading...') +
                                 ', ' +
                                 // ignore: null_aware_before_operator
                                 (memInfo?.length > 0 ? memInfo[0].time : '')),
@@ -829,8 +894,9 @@ class _NeuHomeState extends State<NeuHome> {
                             children: [
                               Icon(
                                 Icons.policy,
-                                color:
-                                    (!isActived) ? themeColor : Color(0xFFd51a00),
+                                color: (!isActived)
+                                    ? themeColor
+                                    : Color(0xFFd51a00),
                                 size: 35,
                               ),
                             ],
@@ -838,10 +904,14 @@ class _NeuHomeState extends State<NeuHome> {
                           Row(
                             children: [
                               Text(
-                                (isEnglish)? 'Intrusion Detection':'ระบบตรวจจับการบุกรุก',
+                                (isEnglish)
+                                    ? 'Intrusion Detection'
+                                    : 'ระบบตรวจจับการบุกรุก',
                                 style: TextStyle(
-                                  color: (!isActived) ? themeColor : Color(0xFFd51a00),
-                                  letterSpacing: (isEnglish)?1:0,
+                                  color: (!isActived)
+                                      ? themeColor
+                                      : Color(0xFFd51a00),
+                                  letterSpacing: (isEnglish) ? 1 : 0,
                                   fontSize: 15.0,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: "nunito",
@@ -856,7 +926,7 @@ class _NeuHomeState extends State<NeuHome> {
                             statusSecurityDes,
                             style: TextStyle(
                               color: Colors.black.withOpacity(.5),
-                              letterSpacing: (isEnglish)?1:0,
+                              letterSpacing: (isEnglish) ? 1 : 0,
                               fontSize: 15.0,
                               fontFamily: "nunito",
                             ),
@@ -885,7 +955,8 @@ class _NeuHomeState extends State<NeuHome> {
                           color: Color(0xFFe6ebf2),
                           child: Icon(
                             iconSecurity,
-                            color: (!isActived) ? themeColor : Color(0xFFd51a00),
+                            color:
+                                (!isActived) ? themeColor : Color(0xFFd51a00),
                             size: 100,
                           ),
                         ),
@@ -902,10 +973,12 @@ class _NeuHomeState extends State<NeuHome> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  (isEnglish)?'  Security System Control':'  การควบคุมระบบรักษาความปลอดภัย',
+                  (isEnglish)
+                      ? '  Security System Control'
+                      : '  การควบคุมระบบรักษาความปลอดภัย',
                   style: TextStyle(
                     color: Colors.black.withOpacity(.5),
-                    letterSpacing: (isEnglish)?1:0,
+                    letterSpacing: (isEnglish) ? 1 : 0,
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
                     fontFamily: "nunito",
@@ -920,11 +993,12 @@ class _NeuHomeState extends State<NeuHome> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Neumorphic(
-                  style:
-                      NeumorphicStyle(shape: NeumorphicShape.flat, intensity: 1),
+                  style: NeumorphicStyle(
+                      shape: NeumorphicShape.flat, intensity: 1),
                   child: Container(
                     color: Color(0xFFe6ebf2),
                     width: MediaQuery.of(context).size.width / 2.2,
+                    //  height: 130,
                     height: MediaQuery.of(context).size.width / 3,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -956,7 +1030,9 @@ class _NeuHomeState extends State<NeuHome> {
                             GestureDetector(
                               onTap: () => _gotoLockink(),
                               child: Text(
-                                (isEnglish)?'Remote Locking':'ระบบล็อกจากระยะไกล',
+                                (isEnglish)
+                                    ? 'Remote Locking'
+                                    : 'ระบบล็อกจากระยะไกล',
                                 style: TextStyle(
                                   color: (isLocked)
                                       ? themeColor
@@ -979,7 +1055,11 @@ class _NeuHomeState extends State<NeuHome> {
                               width: 5,
                             ),
                             Text(
-                              (isEnglish)?'Manage your door latch':(isLocked) ?'สั่งการปลดล็อกประตู':'สั่งการล็อกประตู',
+                              (isEnglish)
+                                  ? 'Manage your door latch'
+                                  : (isLocked)
+                                      ? 'สั่งการปลดล็อกประตู'
+                                      : 'สั่งการล็อกประตู',
                               style: TextStyle(
                                 color: (isLocked)
                                     ? themeColor
@@ -997,7 +1077,13 @@ class _NeuHomeState extends State<NeuHome> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Text(
-                              (isLocked) ? (isEnglish)?'Lock':'ล็อก' : (isEnglish)?'Unlock':'ไม่ล็อก',
+                              (isLocked)
+                                  ? (isEnglish)
+                                      ? 'Lock'
+                                      : 'ล็อก'
+                                  : (isEnglish)
+                                      ? 'Unlock'
+                                      : 'ไม่ล็อก',
                               style: TextStyle(
                                 color: (isLocked)
                                     ? themeColor
@@ -1030,18 +1116,20 @@ class _NeuHomeState extends State<NeuHome> {
                                           context,
                                           opaque: false,
                                           cancelButton: Text(
-                                            (isEnglish)?'Cancel':"ยกเลิก",
+                                            (isEnglish) ? 'Cancel' : "ยกเลิก",
                                             style: const TextStyle(
                                                 fontSize: 16,
                                                 color: Colors.white),
-                                            semanticsLabel: (isEnglish)?'Cancel':"ยกเลิก",
+                                            semanticsLabel: (isEnglish)
+                                                ? 'Cancel'
+                                                : "ยกเลิก",
                                           ),
                                         )
                                       : setState(() {
                                           isLocked = value;
-                                          bdref.child('Remote Locking').update({
-                                            'Door':
-                                                (isLocked) ? 'Lock' : 'Unlock',
+                                          bdref.update({
+                                            'Rlock':
+                                                (isLockControl)? 'Unlock' : 'Lock',
                                           });
                                         });
                                 },
@@ -1093,7 +1181,9 @@ class _NeuHomeState extends State<NeuHome> {
                             GestureDetector(
                               onTap: () => _gotoLightnig(),
                               child: Text(
-                                (isEnglish)?'Security Lighting':'ระบบแสงสว่างอัจฉริยะ',
+                                (isEnglish)
+                                    ? 'Security Lighting'
+                                    : 'ระบบแสงสว่างอัจฉริยะ',
                                 style: TextStyle(
                                   color: (isOn)
                                       ? themeColor
@@ -1116,7 +1206,9 @@ class _NeuHomeState extends State<NeuHome> {
                               width: 5,
                             ),
                             Text(
-                              (isEnglish)?'Manage your lights':'ควบคุมแสงสว่างของบ้าน',
+                              (isEnglish)
+                                  ? 'Manage your lights'
+                                  : 'ควบคุมแสงสว่างของบ้าน',
                               style: TextStyle(
                                 color: (isOn)
                                     ? themeColor
@@ -1136,7 +1228,13 @@ class _NeuHomeState extends State<NeuHome> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Text(
-                              (isOn) ? (isEnglish)?'On':'เปิด' : (isEnglish)?'Off':'ปิด',
+                              (isOn)
+                                  ? (isEnglish)
+                                      ? 'On'
+                                      : 'เปิด'
+                                  : (isEnglish)
+                                      ? 'Off'
+                                      : 'ปิด',
                               style: TextStyle(
                                 color: (isOn)
                                     ? themeColor
@@ -1165,7 +1263,7 @@ class _NeuHomeState extends State<NeuHome> {
 
                                   bdref
                                       .child('Security Light')
-                                      .update({'Light': (isOn) ? 'On' : 'Off'});
+                                      .update({'LightControl': (isOnControl) ? 'Off' : 'On'});
                                   setState(() {});
                                 },
                               ),
@@ -1224,7 +1322,9 @@ class _NeuHomeState extends State<NeuHome> {
                             GestureDetector(
                               onTap: () => _gotoAlarm(),
                               child: Text(
-                                (isEnglish)?'Sound Alarm':'ระบบเสียงเตือนภัย',
+                                (isEnglish)
+                                    ? 'Sound Alarm'
+                                    : 'ระบบเสียงเตือนภัย',
                                 style: TextStyle(
                                   color: (isActived)
                                       ? themeColor
@@ -1247,7 +1347,9 @@ class _NeuHomeState extends State<NeuHome> {
                               width: 5,
                             ),
                             Text(
-                              (isEnglish)?'Manage your sound alarm':'ควบคุมการทำงานกริ่งเตือนภัย',
+                              (isEnglish)
+                                  ? 'Manage your sound alarm'
+                                  : 'ควบคุมการทำงานกริ่งเตือนภัย',
                               style: TextStyle(
                                 color: (isActived)
                                     ? themeColor
@@ -1265,7 +1367,13 @@ class _NeuHomeState extends State<NeuHome> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Text(
-                              (isActived) ? (isEnglish)?'Active':'ทำงาน' : (isEnglish)?'Inactive':'ไม่ทำงาน',
+                              (isActived)
+                                  ? (isEnglish)
+                                      ? 'Active'
+                                      : 'ทำงาน'
+                                  : (isEnglish)
+                                      ? 'Inactive'
+                                      : 'ไม่ทำงาน',
                               style: TextStyle(
                                 color: (isActived)
                                     ? themeColor
@@ -1292,7 +1400,8 @@ class _NeuHomeState extends State<NeuHome> {
                                   setState(() {
                                     isActived = value;
                                     bdref.child('Sound Alarm').update({
-                                      'Alert': (isActived) ? 'Active' : 'Inactive'
+                                      'AlertControl':
+                                          (isActiveControl) ? 'Inactive' : 'Active'
                                     });
 
                                     setState(() {});
@@ -1343,7 +1452,9 @@ class _NeuHomeState extends State<NeuHome> {
                             GestureDetector(
                               onTap: () => _gotoCamera(),
                               child: Text(
-                                (isEnglish)?'Video Streaming':'ระบบดูภาพเคลื่อนไหว',
+                                (isEnglish)
+                                    ? 'Video Streaming'
+                                    : 'ระบบดูภาพเคลื่อนไหว',
                                 style: TextStyle(
                                   color: themeColor,
                                   //letterSpacing: 1,
@@ -1364,7 +1475,9 @@ class _NeuHomeState extends State<NeuHome> {
                               width: 5,
                             ),
                             Text(
-                              (isEnglish)?'Monitors home activities':'ดูภาพเหตุการณ์บริเวณบ้าน',
+                              (isEnglish)
+                                  ? 'Monitors home activities'
+                                  : 'ดูภาพเหตุการณ์บริเวณบ้าน',
                               style: TextStyle(
                                 color: themeColor,
                                 //letterSpacing: 1,
@@ -1382,7 +1495,7 @@ class _NeuHomeState extends State<NeuHome> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Text(
-                              (isEnglish)?'Streaming...':'สตรีมมิ่ง...',
+                              (isEnglish) ? 'Streaming...' : 'สตรีมมิ่ง...',
                               style: TextStyle(
                                 color: themeColor,
                                 //letterSpacing: 1,

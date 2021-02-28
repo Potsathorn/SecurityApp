@@ -71,6 +71,8 @@ class MyApp extends StatelessWidget {
     //home:  NeuHome(),
     // home : TestVDO(),
     home: FirstPage(),
+    //home:  Home(
+     //     channel: IOWebSocketChannel.connect('ws://34.87.169.81:65080')),
        // home: AttendancePage(),
         // home:  ExampleHomePage(title: 'Passcode Lock Screen '),
         routes: {

@@ -21,7 +21,8 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
 
   bool isActive = false;
   String timerUnlock = "";
-  bool  isEnglish = true;
+  bool isEnglish = true;
+  bool isActiveControl = false;
 
   final bdref = FirebaseDatabase.instance.reference();
   var realTimeData;
@@ -40,9 +41,15 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
       (value == 'Active') ? isActive = true : isActive = false;
       //print(value);
       setState(() {});
-      
-      
     });
+    bdref.child('Sound Alarm').onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      String value = snapshot.value['AlertControl'];
+
+      (value == 'Active') ? isActiveControl = true : isActiveControl = false;
+    });
+
     bdref.child('Languages').onValue.listen((event) {
       var snapshot = event.snapshot;
 
@@ -52,115 +59,102 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
       //print(value);
     });
 
-
     bdref.child('Alarm History').onValue.listen((event) {
       alarmInfo.clear();
-     listHistory.clear();
+      listHistory.clear();
 
       var snapshot = event.snapshot;
       var members = snapshot.value;
 
-     listHistory.add(members);
+      listHistory.add(members);
 
       for (var i in listHistory) {
         i.forEach((key, value) {
-          
-
           alarmInfo.add(AlarmHistory(value['ID'], value['Type'], value['Date'],
-              value['Time'], value['Location'] ));
+              value['Time'], value['Location']));
         });
       }
-
-      
     });
-    
   }
 
   Color themeColors = Color(0xFF1565c0);
   @override
   Widget build(BuildContext context) {
-   
     realtime();
     alarmInfo.sort((b, a) {
       return a.id.compareTo(b.id);
     });
 
-    String typeTH(String tTH){
-      if(tTH=="Contact"){
+    String typeTH(String tTH) {
+      if (tTH == "Contact") {
         return "งัดประตู";
-      }
-      else if(tTH=="Motion"){
+      } else if (tTH == "Motion") {
         return "ความเคลื่อนไหว";
-      }
-      else{
+      } else {
         return "ทุบกระจก";
       }
-
     }
 
-    String locatTH(String lTH){
-      if(lTH=="Front Door"){
+    String locatTH(String lTH) {
+      if (lTH == "Front Door") {
         return "ประตูหน้า";
-      }
-      else if(lTH=="Back Door"){
+      } else if (lTH == "Back Door") {
         return "ประตูหลัง";
-      }
-      else if(lTH=="Kitchen"){
+      } else if (lTH == "Kitchen") {
         return "ห้องครัว";
-      }
-      else{
+      } else {
         return "ห้องนั่งเล่น";
       }
-
     }
 
-    TableRow _tableRow(String type,String locat,String date,String time){
+    TableRow _tableRow(String type, String locat, String date, String time) {
       return TableRow(children: [
-                  Text(
-                    type,
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(.6),
-                        fontFamily: "nunito",
-                        // fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                  Text(
-                    locat,
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(.6),
-                        fontFamily: "nunito",
-                        //fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                  Text(
-                    time,
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(.6),
-                        fontFamily: "nunito",
-                        //fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                  Text(
-                   date,
-                    style: TextStyle(
-                        color: Colors.black.withOpacity(.6),
-                        fontFamily: "nunito",
+        Text(
+          type,
+          style: TextStyle(
+              color: Colors.black.withOpacity(.6),
+              fontFamily: "nunito",
+              // fontWeight: FontWeight.bold,
+              fontSize: 15),
+        ),
+        Text(
+          locat,
+          style: TextStyle(
+              color: Colors.black.withOpacity(.6),
+              fontFamily: "nunito",
+              //fontWeight: FontWeight.bold,
+              fontSize: 15),
+        ),
+        Text(
+          time,
+          style: TextStyle(
+              color: Colors.black.withOpacity(.6),
+              fontFamily: "nunito",
+              //fontWeight: FontWeight.bold,
+              fontSize: 15),
+        ),
+        Text(
+          date,
+          style: TextStyle(
+              color: Colors.black.withOpacity(.6),
+              fontFamily: "nunito",
 
-                        //fontWeight: FontWeight.bold,
-                        fontSize: 15),
-                  ),
-                ]);
+              //fontWeight: FontWeight.bold,
+              fontSize: 15),
+        ),
+      ]);
     }
+
     return Scaffold(
       backgroundColor: Color(0xFFe6ebf2),
       appBar: AppBar(
-        backgroundColor: (isActive)? Colors.redAccent[700]: themeColors,
+        backgroundColor: (isActive) ? Colors.redAccent[700] : themeColors,
         title: Center(
-          child: Text((isEnglish)?'SOUND ALARM SYSTEM':"ระบบเสียงเตือนภัย"),
+          child: Text((isEnglish) ? 'SOUND ALARM SYSTEM' : "ระบบเสียงเตือนภัย"),
         ),
       ),
       body: SingleChildScrollView(
-              child: Column(
+        child: Column(
           // mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             SizedBox(
@@ -180,14 +174,18 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
               height: 10.0,
             ),
             Text(
-              (isActive) ? (isEnglish)?"ACTIVE":"ทำงาน" : (isEnglish)?"INACTIVE":"ไม่ทำงาน",
+              (isActive)
+                  ? (isEnglish)
+                      ? "ACTIVE"
+                      : "ทำงาน"
+                  : (isEnglish)
+                      ? "INACTIVE"
+                      : "ไม่ทำงาน",
               style: TextStyle(
-                   color: (isActive)? Colors.redAccent[700]: themeColors,
-
+                  color: (isActive) ? Colors.redAccent[700] : themeColors,
                   fontFamily: "nunito",
                   fontWeight: FontWeight.bold,
                   fontSize: 28),
-              
             ),
             SizedBox(
               height: 10.0,
@@ -203,11 +201,18 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
                 onPressed: () {
                   isActive = !isActive;
                   bdref.child('Sound Alarm').update({
-                    'Alert': (isActive) ? 'Active' : 'Inactive',
+                    'AlertControl': (isActiveControl) ? 'Inactive' : 'Active'
                   });
+                  setState(() {});
                 },
                 child: Text(
-                  (isActive) ? (isEnglish)?"Inactivate Alarm Bell":"หยุดการทำงาน" : (isEnglish)?"Activate Alarm Bell":"สั่งการทำงาน",
+                  (isActive)
+                      ? (isEnglish)
+                          ? "Inactivate Alarm Bell"
+                          : "หยุดการทำงาน"
+                      : (isEnglish)
+                          ? "Activate Alarm Bell"
+                          : "สั่งการทำงาน",
                   style: TextStyle(
                       color: Colors.black.withOpacity(.6),
                       fontFamily: "nunito",
@@ -219,11 +224,12 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
             ),
             Container(
               width: MediaQuery.of(context).size.width,
-              color: (isActive)? Colors.redAccent[700]: themeColors,
+              color: (isActive) ? Colors.redAccent[700] : themeColors,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Center(
-                  child: Text((isEnglish)?'ALARM HISTORY':"ประวัติการเตือนภัย",
+                  child: Text(
+                      (isEnglish) ? 'ALARM HISTORY' : "ประวัติการเตือนภัย",
                       style: TextStyle(
                           color: Colors.white.withOpacity(.8),
                           fontFamily: "nunito",
@@ -238,7 +244,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
                 children: [
                   TableRow(children: [
                     Text(
-                      (isEnglish)?"Type":"ประเภท",
+                      (isEnglish) ? "Type" : "ประเภท",
                       style: TextStyle(
                           color: Colors.black.withOpacity(.6),
                           fontFamily: "nunito",
@@ -246,7 +252,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
                           fontSize: 15),
                     ),
                     Text(
-                      (isEnglish)?"Location":"ตำแหน่ง",
+                      (isEnglish) ? "Location" : "ตำแหน่ง",
                       style: TextStyle(
                           color: Colors.black.withOpacity(.6),
                           fontFamily: "nunito",
@@ -254,7 +260,7 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
                           fontSize: 15),
                     ),
                     Text(
-                      (isEnglish)?"Time":"เวลา",
+                      (isEnglish) ? "Time" : "เวลา",
                       style: TextStyle(
                           color: Colors.black.withOpacity(.6),
                           fontFamily: "nunito",
@@ -262,22 +268,20 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
                           fontSize: 15),
                     ),
                     Text(
-                     (isEnglish)?"Date":"วันที่",
+                      (isEnglish) ? "Date" : "วันที่",
                       style: TextStyle(
                           color: Colors.black.withOpacity(.6),
                           fontFamily: "nunito",
-
                           fontWeight: FontWeight.bold,
                           fontSize: 15),
                     ),
                   ]),
-
-
                   for (var i in alarmInfo)
-                    _tableRow((isEnglish)?i.type:typeTH(i.type), (isEnglish)?i.locat:locatTH(i.locat), i.date, i.time)
-                  
-                  
-                  
+                    _tableRow(
+                        (isEnglish) ? i.type : typeTH(i.type),
+                        (isEnglish) ? i.locat : locatTH(i.locat),
+                        i.date,
+                        i.time)
                 ],
               ),
             )
@@ -287,7 +291,6 @@ class _AlarmSystemPageState extends State<AlarmSystemPage> {
     );
   }
 }
-
 
 class AlarmHistory {
   int id;
